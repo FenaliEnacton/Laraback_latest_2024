@@ -1,8 +1,8 @@
+import { Theme } from '@/Assets/Theme';
 import React from 'react';
-import {StyleSheet, ScrollView} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, ScrollView } from 'react-native';
 
-const ScrollContent = (props) => {
+const ScrollContent = props => {
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}

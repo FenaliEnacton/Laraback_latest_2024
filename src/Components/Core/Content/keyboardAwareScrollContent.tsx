@@ -1,7 +1,8 @@
-import React, {Component} from 'react';
-import {ScrollView, Keyboard, StyleSheet} from 'react-native';
+// @ts-nocheck
+import React, { Component } from 'react';
+import { ScrollView, Keyboard, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
 
 export default class Content extends Component {
   static defaultProps = {
@@ -32,24 +33,24 @@ export default class Content extends Component {
     this.keyboardWillHideSub.remove();
   }
 
-  keyboardWillShow = (event) => this.setState({isVisible: false});
+  keyboardWillShow = event => this.setState({ isVisible: false });
 
-  keyboardWillHide = (event) => this.setState({isVisible: true});
+  keyboardWillHide = event => this.setState({ isVisible: true });
 
   render() {
     let _style = [styles.content];
     if (!!this.props.hasFooter && this.state.isVisible) {
-      _style.push({marginBottom: 60});
+      _style.push({ marginBottom: 60 });
     }
     if (!this.props.hasHeader) {
-      _style.push({marginTop: 0});
+      _style.push({ marginTop: 0 });
     }
 
     return (
       <KeyboardAwareScrollView
         automaticallyAdjustContentInsets={false}
         resetScrollToCoords={
-          this.props.disableKBDismissScroll ? null : {x: 0, y: 0}
+          this.props.disableKBDismissScroll ? null : { x: 0, y: 0 }
         }
         extraHeight={100}
         keyboardShouldPersistTaps={
@@ -57,7 +58,7 @@ export default class Content extends Component {
             ? this.props.keyboardShouldPersistTaps
             : 'handled'
         }
-        ref={(c) => {
+        ref={c => {
           this._scrollview = c;
           this._root = c;
         }}

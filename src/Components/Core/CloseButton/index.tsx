@@ -1,18 +1,17 @@
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
 import React from 'react';
 import {
-  StyleSheet,
-  Platform,
-  Image,
   TouchableOpacity as AndroidTouch,
+  Platform,
+  StyleSheet,
 } from 'react-native';
-import {Theme} from '@assets/Theme';
-import {AppImages} from '@assets/Images';
-import {TouchableOpacity as IOSTouch} from 'react-native-gesture-handler';
 import FastImage from 'react-native-fast-image';
+import { TouchableOpacity as IOSTouch } from 'react-native-gesture-handler';
 
 const TouchableOpacity = Platform.OS === 'ios' ? IOSTouch : AndroidTouch;
 
-const CloseButton = (props) => {
+const CloseButton = props => {
   return (
     <TouchableOpacity
       style={[styles.btn, props.btnStyle]}

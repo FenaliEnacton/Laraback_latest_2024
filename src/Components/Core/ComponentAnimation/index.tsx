@@ -1,6 +1,6 @@
-import {Easing, StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import {SimpleAnimation} from 'react-native-simple-animations';
+import { Easing } from 'react-native';
+import { SimpleAnimation } from 'react-native-simple-animations';
 
 const ComponentAnimation = props => {
   return (
@@ -20,5 +20,3 @@ const ComponentAnimation = props => {
 };
 
 export default ComponentAnimation;
-
-const styles = StyleSheet.create({});
