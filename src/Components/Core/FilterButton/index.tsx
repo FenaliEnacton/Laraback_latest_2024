@@ -1,39 +1,35 @@
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import { translate } from '@/translations';
 import React from 'react';
-import {
-  StyleSheet,
-  Platform,
-  Image,
-  Text,
-  Animated,
-  // TouchableOpacity,
-} from 'react-native';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {AppImages} from '@assets/Images';
+import { Animated, Platform, StyleSheet, Text } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
 
 function FilterButton(props) {
   return (
-    <Animated.View
+    <AnimatedTouchableOpacity
       style={[
         styles.floating_filter_btn,
         {
           opacity: props.opacity,
         },
-        props.filter_applied ? {borderColor: Theme.COLORS.primary} : {},
+        props.filter_applied ? { borderColor: Theme.COLORS.primary } : {},
       ]}
       onPress={props.onPress}>
       <TouchableOpacity
         style={[
           styles.btn,
-          props.filter_applied ? {borderColor: Theme.COLORS.primary} : {},
+          props.filter_applied ? { borderColor: Theme.COLORS.primary } : {},
         ]}
         onPress={props.onPress}>
         <Text
           style={[
             styles.filter_btn_text,
-            props.filter_applied ? {color: Theme.COLORS.primary} : {},
+            props.filter_applied ? { color: Theme.COLORS.primary } : {},
           ]}>
           {translate('filter')}
         </Text>
@@ -47,7 +43,7 @@ function FilterButton(props) {
           resizeMode={FastImage.resizeMode.contain}
         />
       </TouchableOpacity>
-    </Animated.View>
+    </AnimatedTouchableOpacity>
   );
 }
 export default FilterButton;

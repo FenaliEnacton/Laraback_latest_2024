@@ -5,21 +5,20 @@ import {
   StyleSheet,
   TouchableOpacity as AndroidTouch,
   Dimensions,
-  Image,
   Modal,
+  Platform,
 } from 'react-native';
-const windowWidth = Dimensions.get('window').width;
 import LBButton from '../LBButton';
-// import Toast from '../Toast/FToast';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import {request_log_out} from '../../../Redux/Actions';
-import {translate} from '@translations';
-import {AppImages} from '../../../Assets/Images';
-import {TouchableOpacity as IOSTouch} from 'react-native-gesture-handler';
+import { connect } from 'react-redux';
+import { request_log_out } from '@/Redux/Actions/userAuthActions';
+import { AppImages } from '../../../Assets/Images';
+import { TouchableOpacity as IOSTouch } from 'react-native-gesture-handler';
 import FastImage from 'react-native-fast-image';
+import { translate } from '@/translations';
+import { Theme } from '@/Assets/Theme';
 
 const TouchableOpacity = Platform.OS === 'ios' ? IOSTouch : AndroidTouch;
+const windowWidth = Dimensions.get('window').width;
 
 const mapDispatchToProps = {
   request_log_out,
@@ -56,8 +55,8 @@ function LogoutModal(props) {
             }}>
             <LBButton
               label={translate('log_out')}
-              btnStyle={[styles.btnStyle]}
-              labelStyle={styles.btn_labelStyle}
+              // btnStyle={[styles.btnStyle]}
+              // labelStyle={styles.btn_labelStyle}
               onPress={() => {
                 props.request_log_out();
               }}

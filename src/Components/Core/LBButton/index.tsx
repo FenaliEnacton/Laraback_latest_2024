@@ -1,8 +1,8 @@
+import { Theme } from '@/Assets/Theme';
 import React from 'react';
-import {StyleSheet, TouchableOpacity, Platform, Text} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, TouchableOpacity, Platform, Text } from 'react-native';
 
-function CloseButton(props) {
+function LBButton(props) {
   return (
     <TouchableOpacity
       style={[styles.btn, props.btnStyle]}
@@ -12,7 +12,7 @@ function CloseButton(props) {
   );
 }
 
-export default CloseButton;
+export default LBButton;
 
 const styles = StyleSheet.create({
   btn: {

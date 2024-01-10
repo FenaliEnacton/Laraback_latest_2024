@@ -1,10 +1,10 @@
 import React from 'react';
-import {View, ViewPropTypes, StyleSheet} from 'react-native';
-import PropTypes from 'prop-types';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Theme} from '@assets/Theme';
-// import ScaleSheet from 'react-native-scalesheet';
-// import {isIphoneX} from '@helpers/utils';
+import { View, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Theme } from '@/Assets/Theme';
+import HeaderLeft from './HeaderLeft';
+import HeaderRight from './HeaderRight';
+import HeaderTitle from './HeaderTitle';
 
 const Header = props => {
   const insets = useSafeAreaInsets();
@@ -22,20 +22,28 @@ const Header = props => {
       ]}>
       <View
         {...props}
-        style={[styles.headerBox, {marginTop: insets.top + 5}, props.headerBox]}
+        style={[
+          styles.headerBox,
+          { marginTop: insets.top + 5 },
+          props.headerBox,
+        ]}
       />
     </View>
   );
 };
 
 export default Header;
-Header.propTypes = {
-  ...ViewPropTypes,
-  style: PropTypes.oneOfType([
-    PropTypes.object,
-    PropTypes.number,
-    PropTypes.array,
-  ]),
+
+Header.Left = ({ children }) => {
+  return <HeaderLeft>{children}</HeaderLeft>;
+};
+
+Header.Right = ({ children }) => {
+  return <HeaderRight>{children}</HeaderRight>;
+};
+
+Header.Title = ({ children }) => {
+  return <HeaderTitle>{children}</HeaderTitle>;
 };
 
 const styles = StyleSheet.create({

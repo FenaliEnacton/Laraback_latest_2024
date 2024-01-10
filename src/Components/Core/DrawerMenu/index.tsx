@@ -1,37 +1,34 @@
-import React, {useState} from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  Platform,
-  FlatList,
-  TouchableOpacity,
-  Animated,
-  Modal,
-  Dimensions,
-  I18nManager,
-} from 'react-native';
-import {connect} from 'react-redux';
-import CloseButton from '../CloseButton';
-import Icon from '@assets/icons';
-import LBButton from '../LBButton';
-import {AppImages} from '@assets/Images';
-import {Theme} from '@assets/Theme';
-import {routerList} from '@assets/RouterList';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {
+  request_user_bonus_summary,
+  request_user_cashback_summary,
   request_user_clicks_summary,
   request_user_payment_summary,
-  request_user_cashback_summary,
   request_user_referral_summary,
-  request_user_bonus_summary,
-} from '@user_redux/Actions';
-import {user_info_selector, user_lifetime_earning} from '@user_redux/Selectors';
-import {translate} from '@translations';
-import Config from '../../../react-native-config';
+} from '@/Redux/USER_REDUX/Actions/userSummaryActions';
+import React, { useState } from 'react';
+import {
+  Dimensions,
+  FlatList,
+  I18nManager,
+  Modal,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { connect } from 'react-redux';
+import CloseButton from '../CloseButton';
+import { AppImages } from '@/Assets/Images';
+import { routerList } from '@/Assets/RouterList';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import { is_user_logged_in, user_info_selector } from '@/Redux/Selectors';
+import { user_lifetime_earning } from '@/Redux/USER_REDUX/Selectors';
+import { translate } from '@/translations';
 import FastImage from 'react-native-fast-image';
-const windowWidth = Dimensions.get('window').width;
+import Config from '../../../react-native-config';
+import LBButton from '../LBButton';
 const windowHeight = Dimensions.get('window').height;
 
 const mapDispatchToProps = {
@@ -42,7 +39,7 @@ const mapDispatchToProps = {
   request_user_bonus_summary,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     is_member: is_user_logged_in(params) || false,
     user_info: user_info_selector(params) || {},
@@ -79,16 +76,16 @@ function DrawerMenu(props) {
     }
   }
 
-  function renderRoutes({item, index}) {
+  function renderRoutes({ item, index }) {
     if ((item.member_access && props.is_member) || !item.member_access) {
       return (
         <TouchableOpacity
-          style={[styles.menuTab, index === 0 ? {borderTopWidth: 0} : {}]}
+          style={[styles.menuTab, index === 0 ? { borderTopWidth: 0 } : {}]}
           onPress={() => handleTabPress(item)}>
           <View style={styles.left_tab}>
             {item.is_parent_first ? (
-              <Icon.AntDesign
-                style={styles.icon}
+              <Icons.AntDesign
+                // style={styles.icon}
                 name={I18nManager.isRTL ? 'right' : 'left'}
                 color={Theme.COLORS.primary}
                 size={18}
@@ -103,8 +100,8 @@ function DrawerMenu(props) {
             <Text style={styles.routeTitle}>{translate(item.title)}</Text>
           </View>
           {item.child_routes ? (
-            <Icon.AntDesign
-              style={styles.icon}
+            <Icons.AntDesign
+              // style={styles.icon}
               name={I18nManager.isRTL ? 'left' : 'right'}
               color={Theme.COLORS.primary}
               size={18}
@@ -152,7 +149,7 @@ function DrawerMenu(props) {
                   {props.total_earning} -{' '}
                 </Text>
                 <Text style={styles.userName}>{props.user_info.name}</Text>
-                <Icon.SimpleLineIcons
+                <Icons.SimpleLineIcons
                   name={'pencil'}
                   color={Theme.COLORS.white}
                   size={14}
@@ -164,8 +161,8 @@ function DrawerMenu(props) {
                 <View style={styles.sign_in_box}>
                   <LBButton
                     label={translate('sign_in')}
-                    btnStyle={styles.btnStyle}
-                    labelStyle={styles.btn_labelStyle}
+                    // btnStyle={styles.btnStyle}
+                    // labelStyle={styles.btn_labelStyle}
                     onPress={() => {
                       hideModal();
                       props.navigation.navigate('Login');
@@ -174,10 +171,10 @@ function DrawerMenu(props) {
                   <LBButton
                     label={translate('sign_up')}
                     btnStyle={[
-                      styles.btnStyle,
-                      {backgroundColor: Theme.COLORS.secondary},
+                      // styles.btnStyle,
+                      { backgroundColor: Theme.COLORS.secondary },
                     ]}
-                    labelStyle={styles.btn_labelStyle}
+                    // labelStyle={styles.btn_labelStyle}
                     onPress={() => {
                       hideModal();
                       props.navigation.navigate('Signup');
@@ -187,7 +184,7 @@ function DrawerMenu(props) {
               </>
             )}
             <FlatList
-              style={{flex: 1, marginBottom: 20}}
+              style={{ flex: 1, marginBottom: 20 }}
               bounces={false}
               data={router ? router : routerList}
               extraData={routerList}

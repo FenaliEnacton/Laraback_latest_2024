@@ -1,4 +1,4 @@
-import {Theme} from '@assets/Theme';
+import { Theme } from '@assets/Theme';
 import {
   Container,
   Header,
@@ -9,17 +9,19 @@ import {
   Loader,
   ScrollContent,
 } from '@components/core';
-import {translate} from '@translations';
+import { translate } from '@translations';
 import React from 'react';
-import {StyleSheet, Text} from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import HTMLView from 'react-native-htmlview';
-import {useRecoilValue} from 'recoil';
-import {objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
+import { useRecoilValue } from 'recoil';
+import { objectAtomFamily } from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
 import styles from './style';
 
 const AboutUs = props => {
-  const privacyTerms = useRecoilValue(objectAtomFamily(atomKeys.publicData.privacy_terms));
+  const privacyTerms = useRecoilValue(
+    objectAtomFamily(atomKeys.publicData.privacy_terms),
+  );
 
   return (
     <Container>

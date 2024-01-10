@@ -1,10 +1,11 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 
 const HeaderLeft = props => {
   return <View style={[styles.headerLeft, props.style]}>{props.children}</View>;
 };
 export default HeaderLeft;
+
 const styles = StyleSheet.create({
   headerLeft: {
     // paddingLeft: 10,

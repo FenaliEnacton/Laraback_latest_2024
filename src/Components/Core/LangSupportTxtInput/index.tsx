@@ -1,8 +1,8 @@
-import React, {forwardRef} from 'react';
-import {TextInput, StyleSheet, I18nManager} from 'react-native';
-import {Theme} from '@assets/Theme';
+import React, { forwardRef } from 'react';
+import { TextInput, StyleSheet, I18nManager } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 
-const LangSupportTxtInput = forwardRef((props, ref) => {
+const LangSupportTxtInput = forwardRef((props: any, ref: any) => {
   return (
     <TextInput
       ref={ref}

@@ -1,21 +1,18 @@
+import { Theme } from '@/Assets/Theme';
 import React from 'react';
 import {
-  Platform,
-  View,
-  Text,
   ActivityIndicator,
-  ViewPropTypes,
-  I18nManager,
   Dimensions,
+  Platform,
   StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import PropTypes from 'prop-types';
-import {Theme} from '@assets/Theme';
 
-const Loader = (props) => {
-  const {show, style = {}, transparent = false, vertical, text} = props;
+const Loader = props => {
+  const { show, style = {}, transparent = false, vertical, text } = props;
   if (show)
     return (
       <View
@@ -55,10 +52,6 @@ const Loader = (props) => {
   return null;
 };
 
-Loader.propTypes = {
-  ...ViewPropTypes,
-  transparent: PropTypes.bool,
-};
 export default Loader;
 
 const styles = StyleSheet.create({
@@ -82,7 +75,7 @@ const styles = StyleSheet.create({
     ...Platform.select({
       ios: {
         shadowColor: 'rgba(0,0,0, 0.7)',
-        shadowOffset: {height: 0, width: 0},
+        shadowOffset: { height: 0, width: 0 },
         shadowOpacity: 0.7,
       },
       android: {

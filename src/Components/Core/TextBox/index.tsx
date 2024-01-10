@@ -1,16 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import { Theme } from '@/Assets/Theme';
+import React from 'react';
 import {
-  View,
-  TextView,
-  StyleSheet,
   Dimensions,
+  StyleSheet,
   TextInput,
-  Text,
+  View,
+  Platform,
 } from 'react-native';
-import {Theme} from '@assets/Theme';
-import Config from 'react-native-config';
 
-const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 
 const InputText = props => {
@@ -42,11 +39,11 @@ const InputText = props => {
     </>
   );
 };
+
 const styles = StyleSheet.create({
   TextInput: {
     // ...Theme.fontStyles.h4Regular,
     height: '100%',
-    width: '100%',
     color: Theme.COLORS.black,
     //backgroundColor: 'red',
     marginRight: 5,

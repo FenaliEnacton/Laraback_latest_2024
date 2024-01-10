@@ -1,23 +1,29 @@
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  I18nManager,
+  Platform,
+} from 'react-native';
 
-const SearchButton = props => {
+const HeaderBackButton = props => {
   return (
     <TouchableOpacity
       style={[styles.btn, props.btnStyle]}
-      onPress={() => props.navigation.navigate('Search')}>
-      <Icon.AntDesign
-        name={'search1'}
+      onPress={() => props.onPress()}>
+      <Icons.Ionicons
+        style={styles.icon}
+        name={I18nManager.isRTL ? 'arrow-forward' : 'arrow-back-sharp'}
         color={Theme.COLORS.secondary}
-        size={16}
+        size={20}
       />
     </TouchableOpacity>
   );
 };
 
-export default SearchButton;
+export default HeaderBackButton;
 
 const styles = StyleSheet.create({
   btn: {
@@ -40,6 +46,12 @@ const styles = StyleSheet.create({
         elevation: 2,
       },
     }),
+    // backgroundColor: 'black',
   },
-  icon: {},
+  icon: {
+    // alignSelf: 'flex-start',
+    resizeMode: 'contain',
+    height: 20,
+    width: 20,
+  },
 });

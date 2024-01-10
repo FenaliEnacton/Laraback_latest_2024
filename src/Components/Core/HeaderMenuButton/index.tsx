@@ -1,24 +1,19 @@
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
 import React from 'react';
-import {StyleSheet, TouchableOpacity, I18nManager} from 'react-native';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
+import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 
-const HeaderBackButton = props => {
+const HeaderMenuButton = props => {
   return (
     <TouchableOpacity
       style={[styles.btn, props.btnStyle]}
       onPress={() => props.onPress()}>
-      <Icon.Ionicons
-        style={styles.icon}
-        name={I18nManager.isRTL ? 'arrow-forward' : 'arrow-back-sharp'}
-        color={Theme.COLORS.secondary}
-        size={20}
-      />
+      <Icons.Entypo name={'menu'} color={Theme.COLORS.secondary} size={20} />
     </TouchableOpacity>
   );
 };
 
-export default HeaderBackButton;
+export default HeaderMenuButton;
 
 const styles = StyleSheet.create({
   btn: {
@@ -30,7 +25,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     ...Platform.select({
       ios: {
-        shadowColor: 'rgba(0,0,0, 0.5)',
+        shadowColor: 'rgba(0,0,0, 0.7)',
         shadowOffset: {
           height: 0.5,
           width: 1,
@@ -44,7 +39,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'black',
   },
   icon: {
-    // alignSelf: 'flex-start',
+    alignSelf: 'flex-start',
     resizeMode: 'contain',
     height: 20,
     width: 20,
