@@ -1,9 +1,11 @@
-import {Platform, I18nManager} from 'react-native';
-import {COLORS} from './colors';
+import { Platform, I18nManager } from 'react-native';
+import { COLORS } from './colors';
+
 const bold_fontFamily = Platform.OS === 'ios' ? 'circe-bold' : 'circeBold';
 const regular_fontFamily =
   Platform.OS === 'ios' ? 'circe-regular' : 'circeSemiBold';
-export const fontStyles = {
+
+export const fontStyles: any = {
   h1Bold: {
     fontSize: 18,
     ...Platform.select({

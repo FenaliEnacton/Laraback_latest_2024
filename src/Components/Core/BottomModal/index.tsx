@@ -1,11 +1,19 @@
-import React, {useState, forwardRef} from 'react';
-import {View, StyleSheet, Animated, Dimensions, Modal} from 'react-native';
-import {Theme} from '@assets/Theme';
-const windowWidth = Dimensions.get('window').width;
+import { Theme } from '@/Assets/Theme';
+import React, { forwardRef } from 'react';
+import {
+  Dimensions,
+  Modal,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Platform,
+} from 'react-native';
+
+// const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const BottomModal = forwardRef((props, ref) => {
-  const {setBottomModalVisibleFalse, bottomModalShow} = props;
+const BottomModal = forwardRef((props: any, ref: any) => {
+  const { setBottomModalVisibleFalse, bottomModalShow } = props;
   // const [yPosition, setyPosition] = useState(700);
   // const transformHeight = new Animated.Value(yPosition);
 
@@ -17,16 +25,16 @@ const BottomModal = forwardRef((props, ref) => {
   //   }).start();
   // };
 
-  const hidePopup = () => {
-    // Animated.timing(transformHeight, {
-    //   toValue: yPosition,
-    //   duration: 400,
-    //   useNativeDriver: true,
-    // }).start();
-    // setTimeout(() => {
-    setBottomModalVisibleFalse();
-    // }, 500);
-  };
+  // const hidePopup = () => {
+  //   // Animated.timing(transformHeight, {
+  //   //   toValue: yPosition,
+  //   //   duration: 400,
+  //   //   useNativeDriver: true,
+  //   // }).start();
+  //   // setTimeout(() => {
+  //   setBottomModalVisibleFalse();
+  //   // }, 500);
+  // };
 
   const hideModal = () => {
     setBottomModalVisibleFalse();
@@ -41,7 +49,7 @@ const BottomModal = forwardRef((props, ref) => {
       visible={bottomModalShow}
       // onShow={startAnimation}
     >
-      <View
+      <TouchableOpacity
         activeOpacity={1}
         onPress={setBottomModalVisibleFalse}
         style={styles.modalBackground}>
@@ -57,7 +65,7 @@ const BottomModal = forwardRef((props, ref) => {
             </TouchableOpacity> */}
           {props.children}
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 });

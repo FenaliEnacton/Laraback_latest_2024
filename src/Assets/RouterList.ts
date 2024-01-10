@@ -1,4 +1,3 @@
-import {AppImages} from './Images';
 export const routerList = [
   {
     id: 11,
@@ -391,12 +390,14 @@ export const Register = [
 ];
 export const get_nav_list = required_routes => {
   return NavList.filter(function (element) {
+    // @ts-ignore
     return this.indexOf(element.id) !== -1;
   }, required_routes);
 };
 
 export const get_user_internal_nav_list = required_routes => {
   return UserRoutes.filter(function (element) {
+    // @ts-ignore
     return this.indexOf(element.id) !== -1;
   }, required_routes);
 };

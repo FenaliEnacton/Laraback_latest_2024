@@ -1,5 +1,6 @@
-import {AppImages} from './Images';
-import {get_currency_string} from '@user_redux/Utils';
+import { get_currency_string } from '@/Utils';
+import { AppImages } from './Images';
+
 export const Social_Share_List = [
   {
     id: '3464564',

@@ -1,18 +1,10 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  Platform,
-  View,
-  Text,
-  Image,
-} from 'react-native';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
-import {AppImages} from '../../../Assets/Images';
+import { StyleSheet, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
+import { AppImages } from '../../../Assets/Images';
+import { Theme } from '@/Assets/Theme';
 
-const CashbackString = (props) => {
+const CashbackString = props => {
   return (
     <View style={[styles.container, props.cb_style]}>
       {/* <Icon.FontAwesome

@@ -1,7 +1,9 @@
-import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {fontStyles} from './fontStyle';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
+import { fontStyles } from './fontStyle';
+import { COLORS } from './colors';
+
 const windowWidth = Dimensions.get('window').width;
-import {COLORS} from './colors';
+
 export const appStyle = StyleSheet.create({
   headerTitle: {
     ...fontStyles.h2Bold,

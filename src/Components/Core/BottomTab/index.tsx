@@ -1,3 +1,6 @@
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import { is_user_logged_in } from '@/Redux/Selectors';
 import React from 'react';
 import {
   View,
@@ -5,24 +8,19 @@ import {
   StyleSheet,
   Dimensions,
   Platform,
-  Image,
 } from 'react-native';
-import {Theme} from '@assets/Theme';
-import {AppImages} from '@assets/Images';
-import {connect} from 'react-redux';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import Icon from '@assets/icons';
-const windowWidth = Dimensions.get('window').width;
+import { connect } from 'react-redux';
 
+const windowWidth = Dimensions.get('window').width;
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     is_member: is_user_logged_in(params) || false,
   };
 };
 
-function BottomTab({state, descriptors, navigation, is_member}) {
+function BottomTab({ state, descriptors, navigation, is_member }) {
   const focusedOptions = descriptors[state.routes[state.index].key].options;
 
   if (focusedOptions.tabBarVisible === false) {
@@ -32,13 +30,13 @@ function BottomTab({state, descriptors, navigation, is_member}) {
   return (
     <View style={styles.tab}>
       {state.routes.map((route, index) => {
-        const {options} = descriptors[route.key];
-        const label =
-          options.tabBarLabel !== undefined
-            ? options.tabBarLabel
-            : options.title !== undefined
-            ? options.title
-            : route.name;
+        const { options } = descriptors[route.key];
+        // const label =
+        //   options.tabBarLabel !== undefined
+        //     ? options.tabBarLabel
+        //     : options.title !== undefined
+        //     ? options.title
+        //     : route.name;
 
         const isFocused = state.index === index;
 
@@ -69,12 +67,12 @@ function BottomTab({state, descriptors, navigation, is_member}) {
           <TouchableOpacity
             key={index.toString()}
             accessibilityRole="button"
-            accessibilityState={isFocused ? {selected: true} : {}}
+            accessibilityState={isFocused ? { selected: true } : {}}
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            style={{flex: 1}}>
+            style={{ flex: 1 }}>
             {/* <Image
               source={
                 isFocused
@@ -83,7 +81,7 @@ function BottomTab({state, descriptors, navigation, is_member}) {
               }
               style={styles.icon}
             /> */}
-            <Icon.Feather
+            <Icons.Feather
               style={styles.icon}
               name={
                 route.name === 'Home'
