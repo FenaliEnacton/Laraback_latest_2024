@@ -34,16 +34,34 @@ const Header = props => {
 
 export default Header;
 
-Header.Left = ({ children }) => {
-  return <HeaderLeft>{children}</HeaderLeft>;
+Header.Left = ({
+  children,
+  style,
+}: {
+  children?: React.ReactNode;
+  style?: any;
+}) => {
+  return <HeaderLeft style={style}>{children}</HeaderLeft>;
 };
 
-Header.Right = ({ children }) => {
-  return <HeaderRight>{children}</HeaderRight>;
+Header.Right = ({
+  children,
+  style,
+}: {
+  children?: React.ReactNode;
+  style?: any;
+}) => {
+  return <HeaderRight style={style}>{children}</HeaderRight>;
 };
 
-Header.Title = ({ children }) => {
-  return <HeaderTitle>{children}</HeaderTitle>;
+Header.Title = ({
+  children,
+  style,
+}: {
+  children?: React.ReactNode;
+  style?: any;
+}) => {
+  return <HeaderTitle style={style}>{children}</HeaderTitle>;
 };
 
 const styles = StyleSheet.create({

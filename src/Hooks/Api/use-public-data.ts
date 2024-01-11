@@ -113,7 +113,7 @@ const usePublicData = () => {
   );
 
   const [loadingContactUs, setLoadingContactUs] = useRecoilState(
-    booleanAtomFamily(atomKeys.metaData.loading_contact_us),
+    booleanAtomFamily(atomKeys.publicData.loading_contact_us),
   );
 
   const [deepLinkUrlData, setDeepLinkUrlData] = useRecoilState(

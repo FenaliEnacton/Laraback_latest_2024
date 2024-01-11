@@ -39,6 +39,8 @@ const Config = {
   ONE_SIGNAL: '26d502ce-957b-4561-aaac-1504ed59013d',
   DEEP_LINK_URL: 'larabackpro://larabackpro.com/',
   EMPTY_IMAGE_URL: 'https://laraback.enactweb.com//images/blank.png',
+  GOOGLE_ID:
+    '1031532029612-2n05bigcvcmn7i9vutnct7r4taje5ue2.apps.googleusercontent.com',
   ...global.Config,
 };
 export default Config;
