@@ -1,67 +1,66 @@
-import React, {Component} from 'react';
-import {BackHandler, Linking} from 'react-native';
-import {Toast, CustomDrawerMenu, BottomTab} from '@components/core';
-import {NavigationContainer, CommonActions} from '@react-navigation/native';
 import NetInfo from '@react-native-community/netinfo';
-import {translate} from '@translations';
-import {createStackNavigator} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-// import {createDrawerNavigator} from 'react-navigation-drawer';
-// import {CommonActions} from '@react-navigation/native';
-import {is_user_logged_in} from '@app_redux/Selectors';
-// import {BottomTab} from '@components/core';
-import {connect} from 'react-redux';
-import Home from '../Screens/Home';
-import LanguageSelect from '../Screens/Language';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { CommonActions, NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { Component } from 'react';
+import { BackHandler, Linking } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import OneSignal from 'react-native-onesignal';
+import { connect } from 'react-redux';
+import AboutUs from '../Screens/AboutUs';
+import AccountSettings from '../Screens/AccountSettings';
+import AllCouponCategories from '../Screens/AllCouponCategories';
+import AllDeals from '../Screens/AllDeals';
+import AllDealsCategories from '../Screens/AllDealsCategories';
+import AllStoreCategories from '../Screens/AllStoreCategories';
+import AllStores from '../Screens/AllStores';
+import ChangePassword from '../Screens/Auth/ChangePassword';
+import ConfirmRegistration from '../Screens/Auth/ConfirmRegistration';
+import ForgotPass from '../Screens/Auth/ForgotPass';
 import Login from '../Screens/Auth/Login';
 import Signup from '../Screens/Auth/Signup';
-import AllStores from '../Screens/AllStores';
-import StoreDetails from '../Screens/StoreDetails';
-import UserDashboard from '../Screens/UserDashboard';
-import Clicks from '../Screens/CashbackActivities/Clicks';
-import Shopping from '../Screens/CashbackActivities/Shopping';
-import Referral from '../Screens/CashbackActivities/Referral';
+import VerifyUser from '../Screens/Auth/VerifyUser';
 import Bonus from '../Screens/CashbackActivities/Bonus';
+import Clicks from '../Screens/CashbackActivities/Clicks';
+import Referral from '../Screens/CashbackActivities/Referral';
+import Shopping from '../Screens/CashbackActivities/Shopping';
 import CashbackPayment from '../Screens/CashbackPayment';
+import CashbackPaymentHistory from '../Screens/CashbackPaymentHistory';
 import ContactUs from '../Screens/ContactUs';
-import Welcome from '../Screens/Welcome';
-import AllStoreCategories from '../Screens/AllStoreCategories';
-import AllCouponCategories from '../Screens/AllCouponCategories';
-import AllDealsCategories from '../Screens/AllDealsCategories';
-import StoreCatDetail from '../Screens/StoreCatDetail';
+import CouponCatDetails from '../Screens/CouponCatDetail';
+import CreateClaim from '../Screens/CreateClaim';
+import FAQs from '../Screens/FAQs';
+import Favorites from '../Screens/Favorites';
+import Home from '../Screens/Home';
+import HowItWorks from '../Screens/HowItWorks';
+import LanguageSelect from '../Screens/Language';
+import MissingClaim from '../Screens/MissingClaim';
+import ViewMissingClaim from '../Screens/MissingClaim/ViewMissingClaim';
+import NoInternet from '../Screens/NoInternet';
+import OutPage from '../Screens/OutPage';
+import PrivacyPolicy from '../Screens/PrivacyPolicy';
 import ReferNEarn from '../Screens/ReferNEarn';
 import ReferralActivities from '../Screens/ReferNEarn/ReferralActivities';
 import ReferralInvites from '../Screens/ReferNEarn/ReferralInvites';
-import ShareNEarn from '../Screens/ShareNEarn';
-import ConfirmRegistration from '../Screens/Auth/ConfirmRegistration';
-import AboutUs from '../Screens/AboutUs';
-import OutPage from '../Screens/OutPage';
-import TermsOfUse from '../Screens/TermsOfUse';
-import HowItWorks from '../Screens/HowItWorks';
-import PrivacyPolicy from '../Screens/PrivacyPolicy';
-import CouponCatDetails from '../Screens/CouponCatDetail';
-import FAQs from '../Screens/FAQs';
-import Favorites from '../Screens/Favorites';
-import CreateClaim from '../Screens/CreateClaim';
-import CashbackPaymentHistory from '../Screens/CashbackPaymentHistory';
-import MissingClaim from '../Screens/MissingClaim';
-import SplashScreen from '../Screens/SplashScreen';
-import AllDeals from '../Screens/AllDeals';
-import ForgotPass from '../Screens/Auth/ForgotPass';
-import NoInternet from '../Screens/NoInternet';
-import ChangePassword from '../Screens/Auth/ChangePassword';
-import VerifyUser from '../Screens/Auth/VerifyUser';
 import Search from '../Screens/Search';
-import WebViewScreen from '../Screens/WebViewScreen';
+import ShareNEarn from '../Screens/ShareNEarn';
 import ShareNEarnHistory from '../Screens/ShareNEarn/ShareNEarnHistory';
-import ViewMissingClaim from '../Screens/MissingClaim/ViewMissingClaim';
-import AccountSettings from '../Screens/AccountSettings';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import OneSignal from 'react-native-onesignal';
-import {request_get_id_by_url} from '@app_redux/Actions';
-import {Theme} from '@assets/Theme';
+import SplashScreen from '../Screens/SplashScreen';
+import StoreCatDetail from '../Screens/StoreCatDetail';
+import StoreDetails from '../Screens/StoreDetails';
+import TermsOfUse from '../Screens/TermsOfUse';
+import UserDashboard from '../Screens/UserDashboard';
+import WebViewScreen from '../Screens/WebViewScreen';
+import Welcome from '../Screens/Welcome';
+import { is_user_logged_in } from '@/Redux/Selectors';
+import BottomTab from '@/Components/Core/BottomTab';
+import CustomDrawerMenu from '@/Components/Core/CustomDrawerMenu';
+import Toast from '@/Components/Core/Toast';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import { request_get_id_by_url } from '@/Redux/Actions/publicDataActions';
 
-import Config from 'react-native-config';
+// import Config from 'react-native-config';
 // import CustomDrawerMenu from '../Components/Core/CustomDrawerMenu';
 const Tab = createBottomTabNavigator();
 
@@ -69,10 +68,10 @@ const Stack = createStackNavigator();
 const MainStack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
-export const navigationRef = React.createRef();
-export const isReadyRef = React.createRef();
+export const navigationRef: any = React.createRef();
+export const isReadyRef: any = React.createRef();
 
-export function navigate(name, params) {
+export function navigate(name, params = {}) {
   if (isReadyRef.current && navigationRef.current) {
     // Perform navigation if the app has mounted
     navigationRef.current.navigate(name, params);
@@ -82,6 +81,7 @@ export function navigate(name, params) {
 }
 
 export function reset(...args) {
+  // @ts-ignore
   navigationRef.current?.dispatch(CommonActions.reset(...args));
 }
 
@@ -102,7 +102,7 @@ const mapStateToProps = state => {
 function MyTabs() {
   return (
     <Tab.Navigator
-      screenOptions={{headerShown: false}}
+      screenOptions={{ headerShown: false }}
       tabBar={props => <BottomTab {...props} />}>
       <Tab.Screen name="Home" component={Home} />
       <Tab.Screen name="AllStores" component={AllStores} />
@@ -127,7 +127,7 @@ function MyDrawer() {
     // </NavigationContainer>
   );
 }
-class AppNavigator extends Component {
+class AppNavigator extends Component<any> {
   state = {
     lastBack: null,
   };
@@ -162,7 +162,7 @@ class AppNavigator extends Component {
         } else {
           Toast.showBottom('Press back again to Exit');
         }
-        this.setState({lastBack: currentTime});
+        this.setState({ lastBack: currentTime });
         return true;
       } else {
         BackHandler.exitApp();
@@ -172,49 +172,52 @@ class AppNavigator extends Component {
   }
 
   oneSignalInit = () => {
-    OneSignal.setLogLevel(6, 0);
-    OneSignal.setAppId(Config.ONE_SIGNAL);
+    OneSignal.OneSignal.initialize(Config.ONE_SIGNAL);
+    OneSignal.OneSignal.Notifications.requestPermission(true);
+    // OneSignal.setLogLevel(6, 0);
+    // OneSignal.setAppId(Config.ONE_SIGNAL);
     //END OneSignal Init Code
 
     //Prompt for push on iOS
-    OneSignal.promptForPushNotificationsWithUserResponse(response => {
-      console.log('Prompt response:', response);
-    });
+    // OneSignal.promptForPushNotificationsWithUserResponse(response => {
+    //   console.log('Prompt response:', response);
+    // });
 
     //Method for handling notifications received while app in foreground
-    OneSignal.setNotificationWillShowInForegroundHandler(
-      notificationReceivedEvent => {
-        console.log(
-          'OneSignal: notification will show in foreground:',
-          notificationReceivedEvent,
-        );
-        let notification = notificationReceivedEvent.getNotification();
-        console.log('notification: ', notification);
-        const data = notification.additionalData;
-        console.log('additionalData: ', data);
-        // Complete with null means don't show a notification.
-        notificationReceivedEvent.complete(notification);
-      },
-    );
+    // OneSignal.setNotificationWillShowInForegroundHandler(
+    //   notificationReceivedEvent => {
+    //     console.log(
+    //       'OneSignal: notification will show in foreground:',
+    //       notificationReceivedEvent,
+    //     );
+    //     let notification = notificationReceivedEvent.getNotification();
+    //     console.log('notification: ', notification);
+    //     const data = notification.additionalData;
+    //     console.log('additionalData: ', data);
+    //     // Complete with null means don't show a notification.
+    //     notificationReceivedEvent.complete(notification);
+    //   },
+    // );
 
     //Method for handling notifications opened
-    OneSignal.setNotificationOpenedHandler(notification => {
-      console.log('OneSignal: notification opened:', notification);
-    });
+    // OneSignal.setNotificationOpenedHandler(notification => {
+    //   console.log('OneSignal: notification opened:', notification);
+    // });
   };
 
-  handleConnectivityChange = ({isConnected}) => {
+  handleConnectivityChange = ({ isConnected }) => {
     if (isConnected) {
-      this.setState({isConnected});
+      this.setState({ isConnected });
     } else {
-      this.setState({isConnected});
+      this.setState({ isConnected });
       navigate('NoInternet');
     }
   };
 
   componentWillUnmount() {
     isReadyRef.current = false;
-    Linking.removeEventListener('url', this.handle_deep_link_URL);
+    Linking.removeAllListeners('url');
+    // Linking.removeEventListener('url', this.handle_deep_link_URL);
     // OneSignal.removeEventListener('received', this.onReceived);
     // OneSignal.removeEventListener('opened', this.onOpened);
     // OneSignal.removeEventListener('ids', this.onIds);
@@ -231,7 +234,7 @@ class AppNavigator extends Component {
     if (extracted_link.includes('?referral=')) {
       link_data = extracted_link.split('?referral=');
       if (!this.props.is_member) {
-        navigate('Signup', {referrer_code: link_data[1]});
+        navigate('Signup', { referrer_code: link_data[1] });
       } else {
         Toast.showBottom(translate('you_are_already_logged_in'));
       }
@@ -249,8 +252,8 @@ class AppNavigator extends Component {
           isReadyRef.current = true;
         }}>
         <MainStack.Navigator
-          headerMode="none"
-          screenOptions={{headerShown: false}}
+          // headerMode="none"
+          screenOptions={{ headerShown: false, headerMode: 'screen' }}
           initialRouteName={'SplashScreen'}>
           <Stack.Screen name="LanguageSelect" component={LanguageSelect} />
           <Stack.Screen name="Login" component={Login} />
