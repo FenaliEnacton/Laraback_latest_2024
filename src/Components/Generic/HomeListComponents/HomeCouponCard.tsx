@@ -1,34 +1,28 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, FlatList, ScrollView} from 'react-native';
-import {
-  HomeListHeader,
-  TopCouponCard,
-  EmptyStoreCard,
-  TopCouponHomeFooter,
-  CouponModal,
-  SeeAllHeader,
-} from '@components/generic';
-import Icon from '@assets/icons';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import {SimpleAnimation} from 'react-native-simple-animations';
+import React, { useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
+import Config from '@/react-native-config';
+import { SimpleAnimation } from 'react-native-simple-animations';
+import { connect } from 'react-redux';
+import CouponModal from '../CouponModal';
+import HomeListHeader from '../HomeListHeader';
+import SeeAllHeader from '../SeeAllHeader';
+import TopCouponCard, { TopCouponHomeFooter } from '../TopCouponCard';
+import { EmptyStoreCard } from '../TopStoreCard';
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     loading: params.home_loading,
   };
 };
 const HomeCouponCard = props => {
-  const {item} = props;
+  const { item } = props;
   const [top_store_selected_index, setTop_store_selected_index] = useState(0);
   const [offerModalShow, setOfferModalShow] = useState(false);
   const [selectedCoupon, setSelectedCoupon] = useState([]);
 
-  const render_coupons = ({item, index}) => {
+  const render_coupons = ({ item, index }) => {
     return (
       <SimpleAnimation
         delay={0}
@@ -72,7 +66,7 @@ const HomeCouponCard = props => {
     }
   };
 
-  const render_empty_stores = ({item, index}) => {
+  const render_empty_stores = ({ item, index }) => {
     return <EmptyStoreCard />;
   };
   return (

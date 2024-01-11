@@ -1,27 +1,24 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import ContentLoader from 'react-content-loader';
 import {
-  View,
-  TouchableOpacity,
   Dimensions,
-  I18nManager,
-  Linking,
-  StyleSheet,
   Image,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
+import { connect } from 'react-redux';
 const windowWidth = Dimensions.get('window').width;
-import Carousel, {Pagination} from 'react-native-snap-carousel';
-import ContentLoader from 'react-content-loader/native';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {Rect} from 'react-native-svg';
-import {SimpleAnimation} from 'react-native-simple-animations';
-// import {is_user_logged_in} from '../../../Redux/Selectors';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import FastImage from 'react-native-fast-image';
-
-class HomeCarousel extends Component {
+import { Theme } from '@/Assets/Theme';
+import { navigate } from '@/Navigation/appNavigator';
+import { request_get_id_by_url } from '@/Redux/Actions/publicDataActions';
+import { is_user_logged_in } from '@/Redux/Selectors';
+import Config from '@/react-native-config';
+import { Rect } from 'react-content-loader/native';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+export let _carousel = React.createRef();
+class HomeCarousel extends Component<any> {
   state = {
     activeSlide: 0,
     carouselData: [],
@@ -53,7 +50,7 @@ class HomeCarousel extends Component {
         store_logo: '',
         coupon_code: null,
       };
-      this.props.navigation.navigate('WebViewScreen', {
+      navigate('WebViewScreen', {
         out_page_info: navigation_options,
       });
     }
@@ -116,8 +113,8 @@ class HomeCarousel extends Component {
   };
 
   pagination = () => {
-    const {item} = this.props;
-    const {activeSlide} = this.state;
+    const { item } = this.props;
+    const { activeSlide } = this.state;
     return (
       <View style={styles.pagination}>
         <Pagination
@@ -132,7 +129,7 @@ class HomeCarousel extends Component {
     );
   };
 
-  _renderItem = ({item, index}) => {
+  _renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={styles.swiperImage}
@@ -152,16 +149,13 @@ class HomeCarousel extends Component {
   };
 
   render() {
-    const {item} = this.props;
+    const { item } = this.props;
 
     return (
       <View style={styles.swiper}>
         {item.length < 1 ? (
           <View style={styles.svg_loader}>
-            <ContentLoader
-              width={windowWidth - 25}
-              height={140}
-              duration={1000}>
+            <ContentLoader width={windowWidth - 25} height={140}>
               <Rect
                 x="0"
                 y="0"
@@ -175,7 +169,7 @@ class HomeCarousel extends Component {
         ) : (
           <Carousel
             ref={c => {
-              this._carousel = c;
+              _carousel = c;
             }}
             //ref={c => carousel = c}
             loop={true}
@@ -187,7 +181,7 @@ class HomeCarousel extends Component {
             enableSnap={true}
             useScrollView={true}
             onSnapToItem={index => {
-              this.setState({activeSlide: index});
+              this.setState({ activeSlide: index });
             }}
             renderItem={item => this._renderItem(item)}
             sliderWidth={windowWidth - 25}
@@ -200,7 +194,7 @@ class HomeCarousel extends Component {
     );
   }
 }
-function mapStateToProps({params}) {
+function mapStateToProps({ params }) {
   // let id = params.user_info?.user?.ID ? params.user_info?.user?.ID : 0;
   return {
     home_sliders: params?.app_home_screen_data
@@ -212,7 +206,9 @@ function mapStateToProps({params}) {
   };
 }
 
-export default connect(mapStateToProps, {})(HomeCarousel);
+export default connect(mapStateToProps, { request_get_id_by_url })(
+  HomeCarousel,
+);
 
 const styles = StyleSheet.create({
   swiper: {
@@ -278,7 +274,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: windowWidth - 25,
     alignSelf: 'center',
-    borderColor: Theme.COLORS.appBackground,
     borderWidth: 1,
     borderRadius: 20,
   },

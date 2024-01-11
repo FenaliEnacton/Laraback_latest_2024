@@ -1,17 +1,9 @@
+import { Theme } from '@/Assets/Theme';
+import LBButton from '@/Components/Core/LBButton';
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  Dimensions,
-  Platform,
-} from 'react-native';
-import {LBButton} from '@components/core';
-const windowWidth = Dimensions.get('window').width;
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
+import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
+const windowWidth = Dimensions.get('window').width;
 
 function GradientFooter(props) {
   return (
@@ -24,7 +16,7 @@ function GradientFooter(props) {
       <View style={styles.content_view}>
         <Text
           numberOfLines={2}
-          style={[styles.sub_title, !props.main_title ? {fontSize: 15} : {}]}>
+          style={[styles.sub_title, !props.main_title ? { fontSize: 15 } : {}]}>
           {props.sub_title}
         </Text>
         <Text style={styles.main_title}>{props.main_title}</Text>

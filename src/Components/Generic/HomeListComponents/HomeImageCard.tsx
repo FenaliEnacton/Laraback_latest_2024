@@ -1,48 +1,21 @@
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-  Image,
-} from 'react-native';
-import {
-  HomeListHeader,
-  NewStoresCard,
-  EmptyStoreCard,
-  TopStoreHomeFooter,
-  SeeAllHeader,
-} from '@components/generic';
-import Icon from '@assets/icons';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import {request_get_id_by_url} from '@app_redux/Actions';
+import { Theme } from '@/Assets/Theme';
+import { request_get_id_by_url } from '@/Redux/Actions/publicDataActions';
+import React from 'react';
+import { Dimensions, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
 const windowWidth = Dimensions.get('window').width;
 
 const mapDispatchToProps = {
   request_get_id_by_url,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     loading: params.home_loading,
   };
 };
 const HomeImageCard = props => {
-  const {item} = props;
-
-  const renderStores = ({item, index}) => {
-    return (
-      <NewStoresCard store={item} />
-      //   <TopStoreCard store={item} bg_color={Theme.get_bg_color(index, 2)} />
-    );
-  };
   const open_url = async item => {
-    console.log(item);
     if (item.redirect_link) {
       let link_data = item.redirect_link.split('/');
       props.request_get_id_by_url(link_data[1], link_data[2]);

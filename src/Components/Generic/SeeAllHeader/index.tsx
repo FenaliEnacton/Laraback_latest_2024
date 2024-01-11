@@ -1,8 +1,8 @@
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import { translate } from '@/translations';
 import React from 'react';
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import Icon from '@assets/icons';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 const SeeAllHeader = props => {
   return (
@@ -12,7 +12,7 @@ const SeeAllHeader = props => {
     >
       <Text style={styles.view_all_text}>
         {translate('see_all')}
-        <Icon.Ionicons
+        <Icons.Ionicons
           name={'caret-forward'}
           color={Theme.COLORS.primary}
           size={15}

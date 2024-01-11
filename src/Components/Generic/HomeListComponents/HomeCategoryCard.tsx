@@ -1,21 +1,15 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, FlatList} from 'react-native';
-import {
-  HomeListHeader,
-  EmptyStoreCard,
-  TopStoreHomeFooter,
-  SeeAllHeader,
-  CatCard,
-} from '@components/generic';
-import Icon from '@assets/icons';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import Config from 'react-native-config';
+import React from 'react';
+import { FlatList, StyleSheet } from 'react-native';
+import { Theme } from '@/Assets/Theme';
+import Config from '@/react-native-config';
+import { connect } from 'react-redux';
+import CatCard from '../CatCard';
+import HomeListHeader from '../HomeListHeader';
+import SeeAllHeader from '../SeeAllHeader';
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     loading: params.home_loading,
   };
@@ -28,7 +22,7 @@ const HomeCategoryCard = props => {
   //     //   <TopStoreCard store={item} bg_color={Theme.get_bg_color(index, 2)} />
   //   );
   // };
-  const render_store_cat = ({item, index}) => {
+  const render_store_cat = ({ item, index }) => {
     return (
       // <ChildCatCard
       //   cat={item}
@@ -45,7 +39,7 @@ const HomeCategoryCard = props => {
       />
     );
   };
-  const render_categories = ({item, index}) => {
+  const render_categories = ({ item, index }) => {
     return (
       <CatCard
         cat={item}
@@ -56,7 +50,7 @@ const HomeCategoryCard = props => {
       />
     );
   };
-  const render_deal_cat = ({item, index}) => {
+  const render_deal_cat = ({ item, index }) => {
     return (
       // <ChildCatCard
       //   cat={item}
@@ -90,9 +84,6 @@ const HomeCategoryCard = props => {
     );
   };
 
-  const render_empty_stores = ({item, index}) => {
-    return <EmptyStoreCard />;
-  };
   const selectedCategories = item?.categories.slice(0, 8);
   return (
     <>
@@ -110,7 +101,6 @@ const HomeCategoryCard = props => {
           style={styles.list}
           extraData={props}
           numColumns={item?.category_type === 'CouponCategory' ? 2 : 4}
-          key={index => index.toString}
           columnWrapperStyle={styles.row}
           renderItem={
             item?.categories

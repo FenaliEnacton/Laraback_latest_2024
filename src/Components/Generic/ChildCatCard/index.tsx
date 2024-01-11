@@ -1,47 +1,23 @@
 import React from 'react';
 import {
+  Platform,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
-  Image,
-  Dimensions,
-  ImageBackground,
-  Platform,
 } from 'react-native';
-import Config from 'react-native-config';
-import {connect} from 'react-redux';
-import {translate} from '@translations';
+import { connect } from 'react-redux';
+import { Theme } from '@/Assets/Theme';
 import {
-  request_store_cat_details,
   request_coupon_cat_details,
-} from '@app_redux/Actions';
-import {Theme} from '@assets/Theme';
-import LinearGradient from 'react-native-linear-gradient';
+  request_store_cat_details,
+} from '@/Redux/Actions/publicDataActions';
+import Config from '@/react-native-config';
 import FastImage from 'react-native-fast-image';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  HeaderBackButton,
-  BottomModal,
-  CloseButton,
-  GradientHeader,
-  GradientButton,
-} from '@components/core';
-import {EmptyListView, DetailCard} from '@components/generic';
-import {
-  ListHeader,
-  ActivityNavigationList,
-  TabLoader,
-  UserInfoHeader,
-} from '@components/user';
-const windowWidth = Dimensions.get('window').width;
+import LinearGradient from 'react-native-linear-gradient';
 
 function ChildCatCard(props) {
-  const {cat, data_type} = props;
+  const { cat, data_type } = props;
 
   function handle_cat_click() {
     if (data_type === 'store') {
@@ -59,31 +35,9 @@ function ChildCatCard(props) {
   }
 
   return (
-    // <TouchableOpacity
-    //   style={styles.child_cat_container}
-    //   onPress={() => handle_cat_click()}>
-    //   <ImageBackground
-    //     imageStyle={{borderRadius: 10}}
-    //     source={{uri: cat.header_image ? cat.header_image : ''}}
-    //     style={styles.cat_featured_img}>
-    //     <View style={styles.overView} />
-    //     <Text style={styles.cat_name} numberOfLines={1}>
-    //       {cat.name[Config.LANG]
-    //         ? cat.name[Config.LANG]
-    //         : cat.name
-    //         ? cat.name
-    //         : ''}
-    //     </Text>
-    //     {cat.offers_count ? (
-    //       <Text style={styles.cat_stores}>
-    //         {cat.offers_count} - {translate(`${data_type}s`)}
-    //       </Text>
-    //     ) : null}
-    //   </ImageBackground>
-    // </TouchableOpacity>
     <LinearGradient
-      start={{x: 1.0, y: 0.5}}
-      end={{x: 0.25, y: 0}}
+      start={{ x: 1.0, y: 0.5 }}
+      end={{ x: 0.25, y: 0 }}
       colors={[
         Theme.GRADIENT_COLOR_SET[1][
           props.index % Theme.GRADIENT_COLOR_SET[1].length
@@ -99,8 +53,8 @@ function ChildCatCard(props) {
         onPress={() => handle_cat_click()}>
         <View style={styles.image_container}>
           <FastImage
-            source={{uri: cat.icon ? cat.icon : Config.EMPTY_IMAGE_URL}}
-            style={{height: '100%', width: '100%', borderRadius: 10}}
+            source={{ uri: cat.icon ? cat.icon : Config.EMPTY_IMAGE_URL }}
+            style={{ height: '100%', width: '100%', borderRadius: 10 }}
             resizeMode={FastImage.resizeMode.contain}
           />
         </View>
@@ -130,7 +84,7 @@ const mapDispatchToProps = {
   request_coupon_cat_details,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(ChildCatCard);

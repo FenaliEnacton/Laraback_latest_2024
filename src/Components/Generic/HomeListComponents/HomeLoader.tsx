@@ -1,10 +1,8 @@
+import { Theme } from '@/Assets/Theme';
 import React from 'react';
-import {ScrollView, Text} from 'react-native';
-import ContentLoader from 'react-content-loader/native';
-import {Rect} from 'react-native-svg';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
+import ContentLoader from 'react-content-loader';
+import { Rect } from 'react-content-loader/native';
+import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -12,9 +10,9 @@ const HomeLoader = props => {
   const empty_arr = [1, 2, 3, 4, 5, 6];
 
   return (
-    <View style={styles.svg_container}>
+    <View style={{}}>
       <View style={styles.carousel}>
-        <ContentLoader width={windowWidth - 25} height={140} duration={1000}>
+        <ContentLoader width={windowWidth - 25} height={140}>
           <Rect
             x="0"
             y="0"
@@ -29,7 +27,7 @@ const HomeLoader = props => {
         {empty_arr.map(e => {
           return (
             <View style={styles.svg_loader}>
-              <ContentLoader height={130} duration={1000}>
+              <ContentLoader height={130}>
                 <Rect x="15" y="20" rx="4" ry="4" width="90" height="40" />
                 <Rect x="15" y="70" rx="4" ry="4" width="60" height="12" />
                 <Rect x="15" y="100" rx="4" ry="4" width="120" height="10" />
@@ -43,7 +41,7 @@ const HomeLoader = props => {
         {empty_arr.map(e => {
           return (
             <View style={styles.svg_loader}>
-              <ContentLoader height={130} duration={1000}>
+              <ContentLoader height={130}>
                 <Rect x="15" y="20" rx="4" ry="4" width="90" height="40" />
                 <Rect x="15" y="70" rx="4" ry="4" width="60" height="12" />
                 <Rect x="15" y="100" rx="4" ry="4" width="120" height="10" />
@@ -56,7 +54,7 @@ const HomeLoader = props => {
         {empty_arr.map(e => {
           return (
             <View style={styles.svg_loader}>
-              <ContentLoader height={130} duration={1000}>
+              <ContentLoader height={130}>
                 <Rect x="15" y="20" rx="4" ry="4" width="90" height="40" />
                 <Rect x="15" y="70" rx="4" ry="4" width="60" height="12" />
                 <Rect x="15" y="100" rx="4" ry="4" width="120" height="10" />
@@ -84,7 +82,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     width: windowWidth - 25,
     alignSelf: 'center',
-    borderColor: Theme.COLORS.appBackground,
     borderWidth: 1,
     borderRadius: 20,
   },

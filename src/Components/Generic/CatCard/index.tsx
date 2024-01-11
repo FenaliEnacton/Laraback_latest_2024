@@ -1,27 +1,24 @@
+import { Theme } from '@/Assets/Theme';
+import {
+  request_coupon_cat_details,
+  request_store_cat_details,
+} from '@/Redux/Actions/publicDataActions';
+import Config from '@/react-native-config';
 import React from 'react';
 import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Image,
   Dimensions,
   Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-const windowWidth = Dimensions.get('window').width;
-import Config from 'react-native-config';
-import {connect} from 'react-redux';
-import {
-  request_store_cat_details,
-  request_coupon_cat_details,
-} from '@app_redux/Actions';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
-import LinearGradient from 'react-native-linear-gradient';
 import FastImage from 'react-native-fast-image';
+import { connect } from 'react-redux';
 
+const windowWidth = Dimensions.get('window').width;
 function CatCard(props) {
-  const {cat} = props;
+  const { cat } = props;
   const icon_url = cat.icon ? cat.icon : Config.EMPTY_IMAGE_URL;
 
   function handle_cat_click() {
@@ -50,7 +47,7 @@ function CatCard(props) {
           <View style={styles.couponIconContainer}>
             <FastImage
               style={styles.couponIconCard}
-              source={{uri: icon_url}}
+              source={{ uri: icon_url }}
               resizeMode={FastImage.resizeMode.contain}
             />
           </View>
@@ -71,8 +68,8 @@ function CatCard(props) {
           <View style={styles.imgCard}>
             <View style={styles.image_container}>
               <FastImage
-                source={{uri: icon_url}}
-                style={{height: '100%', width: '100%', borderRadius: 10}}
+                source={{ uri: icon_url }}
+                style={{ height: '100%', width: '100%', borderRadius: 10 }}
                 resizeMode={FastImage.resizeMode.contain}
               />
             </View>
@@ -100,7 +97,7 @@ const mapDispatchToProps = {
   request_coupon_cat_details,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {};
 };
 export default connect(mapStateToProps, mapDispatchToProps)(CatCard);

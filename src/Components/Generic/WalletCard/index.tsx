@@ -1,30 +1,28 @@
-import React, {useState} from 'react';
+import { Register } from '@/Assets/RouterList';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import NavigationList from '@/Components/User/NavigationList';
+import { is_user_logged_in, user_info_selector } from '@/Redux/Selectors';
+import { user_lifetime_earning } from '@/Redux/USER_REDUX/Selectors';
+import { translate } from '@/translations';
+import { BlurView } from '@react-native-community/blur';
+import React from 'react';
 import {
+  Dimensions,
+  Platform,
   StyleSheet,
   Text,
-  View,
   TouchableOpacity,
-  Platform,
-  Image,
-  Dimensions,
+  View,
 } from 'react-native';
-import {Theme} from '@assets/Theme';
-import {connect} from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
-import Icon from '@assets/icons';
-import {user_info_selector, user_lifetime_earning} from '@user_redux/Selectors';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import LBButton from '../../Core/LBButton';
-import {translate} from '@translations';
-import {BlurView} from '@react-native-community/blur';
-import {NavigationList} from '@components/user';
-import {Register} from '@assets/RouterList';
+import { connect } from 'react-redux';
 
 const width = Dimensions.get('window').width;
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     user_info: user_info_selector(params) || {},
     total_earning: params?.user_dashboard_data
@@ -40,8 +38,8 @@ const WalletCard = props => {
       <View style={styles.walletCardBack}>
         <View style={styles.walletCard}>
           <LinearGradient
-            start={{x: 0, y: -1}}
-            end={{x: 1, y: 0}}
+            start={{ x: 0, y: -1 }}
+            end={{ x: 1, y: 0 }}
             locations={[0.2, 0.6, 1]}
             colors={['#f9a5e1', '#f99cbb', '#fcd2bc']}
             style={[styles.linearWalletCard]}>
@@ -50,7 +48,7 @@ const WalletCard = props => {
               onPress={() => {
                 props.navigation.navigate('AccountSettings');
               }}>
-              <Icon.SimpleLineIcons
+              <Icons.SimpleLineIcons
                 name={'pencil'}
                 color={Theme.COLORS.white}
                 size={12}
@@ -140,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#7a64e6',
     borderRadius: 10,
     marginTop: 10,
-    transform: [{rotate: '173deg'}],
+    transform: [{ rotate: '173deg' }],
     ...Platform.select({
       ios: {
         shadowColor: 'rgba(0,0,0, 0.5)',
@@ -184,7 +182,7 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     borderRadius: 10,
-    transform: [{rotate: '-173deg'}],
+    transform: [{ rotate: '-173deg' }],
     top: 7,
     left: 0,
     paddingHorizontal: 10,

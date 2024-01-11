@@ -1,35 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import { get_currency_string } from '@/Utils';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import React from 'react';
 import {
+  Dimensions,
+  Image,
+  Platform,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text,
-  Image,
-  Dimensions,
-  ImageBackground,
 } from 'react-native';
-import {Toast} from '@components/core';
-import {connect} from 'react-redux';
-import LinearGradient from 'react-native-linear-gradient';
-import {translate} from '@translations';
-import Clipboard from '@react-native-community/clipboard';
-import {AppImages} from '@assets/Images';
-import Icon from '@assets/icons';
-import Config from 'react-native-config';
-import {Theme} from '@assets/Theme';
-import {get_currency_string} from '@user_redux/Utils';
 import FastImage from 'react-native-fast-image';
+import { connect } from 'react-redux';
+import { navigate } from '../../../Navigation/appNavigator';
 const windowWidth = Dimensions.get('window').width;
-import ImageColors from 'react-native-image-colors';
-import {navigate} from '../../../Navigation/appNavigator';
 
 function DealCard(props) {
-  const {deal} = props;
+  const { deal } = props;
 
-  function copy_code() {
-    Clipboard.setString(deal.code);
-    Toast.successBottom(translate('copied'));
-  }
+  // function copy_code() {
+  //   Clipboard.setString(deal.code);
+  //   Toast.successBottom(translate('copied'));
+  // }
 
   return (
     // <TouchableOpacity
@@ -90,7 +85,7 @@ function DealCard(props) {
       onPress={props.deal_onPress}>
       <View style={styles.logo_img}>
         <Image
-          source={{uri: deal.image ? deal.image : Config.EMPTY_IMAGE_URL}}
+          source={{ uri: deal.image ? deal.image : Config.EMPTY_IMAGE_URL }}
           // source={AppImages.launch_screen_kk}
           style={styles.logo}
           // resizeMode={FastImage.resizeMode.contain}
@@ -101,7 +96,7 @@ function DealCard(props) {
           source={{
             uri: deal.store.logo ? deal.store.logo : Config.EMPTY_IMAGE_URL,
           }}
-          style={{height: '100%', width: '100%'}}
+          style={{ height: '100%', width: '100%' }}
           resizeMode={FastImage.resizeMode.contain}
         />
       </View>
@@ -119,7 +114,10 @@ function DealCard(props) {
       </Text>
       <TouchableOpacity style={styles.cbRateView} onPress={props.deal_onPress}>
         <Text style={[styles.cbRateText]}>{deal.cashback_string}</Text>
-        <Icon.FontAwesome name="chevron-right" color={Theme.COLORS.secondary} />
+        <Icons.FontAwesome
+          name="chevron-right"
+          color={Theme.COLORS.secondary}
+        />
       </TouchableOpacity>
     </TouchableOpacity>
     // </LinearGradient>
@@ -137,7 +135,7 @@ function TopDealHomeFooter(props) {
       }>
       <Text style={styles.view_all_text}>
         {translate('see_all')}
-        <Icon.Ionicons
+        <Icons.Ionicons
           name={'caret-forward'}
           color={Theme.COLORS.black}
           size={15}
@@ -149,7 +147,7 @@ function TopDealHomeFooter(props) {
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {};
 };
 
@@ -157,7 +155,7 @@ const ConnectedComponent = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(TopDealHomeFooter);
-export {ConnectedComponent as TopDealHomeFooter};
+export { ConnectedComponent as TopDealHomeFooter };
 export default connect(mapStateToProps, mapDispatchToProps)(DealCard);
 const styles = StyleSheet.create({
   container: {

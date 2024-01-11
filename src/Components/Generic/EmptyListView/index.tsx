@@ -1,9 +1,9 @@
+import { Theme } from '@/Assets/Theme';
+import { translate } from '@/translations';
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
+import { View, Text, StyleSheet } from 'react-native';
 
-const EmptyListView = (props) => {
+const EmptyListView = props => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>

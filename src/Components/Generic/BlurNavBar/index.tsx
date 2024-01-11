@@ -1,8 +1,7 @@
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
+import { Theme } from '@/Assets/Theme';
+import { BlurView } from '@react-native-community/blur';
 import React from 'react';
-import {BlurView} from '@react-native-community/blur';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
+import { Dimensions, StyleSheet, View } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 
 const BlurNavBar = props => {

@@ -1,3 +1,4 @@
+import { Theme } from '@/Assets/Theme';
 import React from 'react';
 import {
   View,
@@ -7,11 +8,10 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import {Theme} from '@assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 
 export default function HomeListHeader(props) {
-  function render_cat({item, index}) {
+  function render_cat({ item, index }) {
     return (
       <TouchableOpacity
         style={styles.cat_button}
@@ -19,7 +19,9 @@ export default function HomeListHeader(props) {
         <Text
           style={[
             styles.cat_name,
-            props.selected_cat === index ? {color: Theme.COLORS.secondary} : {},
+            props.selected_cat === index
+              ? { color: Theme.COLORS.secondary }
+              : {},
           ]}>
           {item.name}
         </Text>
@@ -27,7 +29,7 @@ export default function HomeListHeader(props) {
           style={[
             styles.underLine,
             props.selected_cat === index
-              ? {backgroundColor: Theme.COLORS.secondary}
+              ? { backgroundColor: Theme.COLORS.secondary }
               : {},
           ]}
         />

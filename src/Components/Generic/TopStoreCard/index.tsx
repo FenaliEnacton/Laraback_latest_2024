@@ -1,56 +1,32 @@
-import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Image,
-  Dimensions,
-} from 'react-native';
-import {connect} from 'react-redux';
-import Icon from '@assets/icons';
-import {Toast} from '@components/core';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
 import {
   request_store_cat_details,
   request_store_details,
-} from '@app_redux/Actions';
-import {CashbackString, Loader} from '@components/core';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {get_fav_stores_ids} from '@app_redux/Selectors';
-import ContentLoader from 'react-content-loader/native';
-import Config from 'react-native-config';
-import {Rect} from 'react-native-svg';
+} from '@/Redux/Actions/publicDataActions';
+import { get_fav_stores_ids, is_user_logged_in } from '@/Redux/Selectors';
 import {
-  request_user_remove_fav,
   request_user_add_fav,
-} from '@user_redux/Actions';
-import FastImage from 'react-native-fast-image';
-const windowWidth = Dimensions.get('window').width;
+  request_user_remove_fav,
+} from '@/Redux/USER_REDUX/Actions/userFavsActions';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import React from 'react';
+import ContentLoader from 'react-content-loader';
+import { Rect } from 'react-content-loader/native';
+import {
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { connect } from 'react-redux';
+
 function TopStoreCard(props) {
-  const {store, fav_store_ids} = props;
+  const { store } = props;
   // const [is_fav, setIs_fav] = useState(fav_store_ids.includes(store.id));
-
-  // useEffect(() => {
-  //   setIs_fav(fav_store_ids.includes(store.id));
-  // }, [fav_store_ids]);
-  const [primaryColor, setPrimaryColor] = useState('#fff');
-  const [storeTitleColor, setStoreTitleColor] = useState('#000');
-  // useEffect(() => {
-  //   Theme.fetchColors(props.store.logo ? props.store.logo : '').then(color => {
-  //     setPrimaryColor(color.background);
-  //     let colors = Theme.hexToRgbA(primaryColor);
-  //     getContrastColor(colors.r, colors.g, colors.b, colors.a);
-  //   });
-  // });
-
-  // function getContrastColor(R, G, B, A) {
-  //   const brightness = R * 0.299 + G * 0.587 + B * 0.114 + (1 - A) * 255;
-  //   return brightness > 186
-  //     ? setStoreTitleColor('#000000')
-  //     : setStoreTitleColor('#FFFFFF');
-  // }
 
   const get_cashback_string = (amount, amount_type) => {
     let string = '';
@@ -68,17 +44,17 @@ function TopStoreCard(props) {
     return string;
   };
 
-  function handle_fav_click() {
-    if (props.is_member) {
-      if (fav_store_ids.includes(store.id)) {
-        props.request_user_remove_fav('store', store.id);
-      } else {
-        props.request_user_add_fav('store', store.id);
-      }
-    } else {
-      Toast.showBottom(translate('please_login'));
-    }
-  }
+  // function handle_fav_click() {
+  //   if (props.is_member) {
+  //     if (fav_store_ids.includes(store.id)) {
+  //       props.request_user_remove_fav('store', store.id);
+  //     } else {
+  //       props.request_user_add_fav('store', store.id);
+  //     }
+  //   } else {
+  //     Toast.showBottom(translate('please_login'));
+  //   }
+  // }
 
   return (
     <>
@@ -117,7 +93,7 @@ function TopStoreCard(props) {
         onPress={() => props.request_store_details(store.id)}>
         <Image
           style={styles.store_logo}
-          source={{uri: store.logo ? store.logo : Config.EMPTY_IMAGE_URL}}
+          source={{ uri: store.logo ? store.logo : Config.EMPTY_IMAGE_URL }}
           resizeMode={'contain'}
         />
         {/* <Text style={styles.title}>{store.name ? store.name : ''}</Text> */}
@@ -149,7 +125,7 @@ function TopStoreHomeFooter(props) {
       }>
       <Text style={styles.view_all_text}>
         {translate('see_all')}
-        <Icon.Ionicons
+        <Icons.Ionicons
           name={'caret-forward'}
           color={Theme.COLORS.black}
           size={15}
@@ -161,8 +137,8 @@ function TopStoreHomeFooter(props) {
 
 export const EmptyStoreCard = () => {
   return (
-    <View style={styles.svg_loader}>
-      <ContentLoader height={130} duration={1000}>
+    <View style={styles.container}>
+      <ContentLoader height={130}>
         <Rect x="15" y="20" rx="4" ry="4" width="90" height="40" />
         <Rect x="15" y="70" rx="4" ry="4" width="60" height="12" />
         <Rect x="15" y="100" rx="4" ry="4" width="120" height="10" />
@@ -178,7 +154,7 @@ const mapDispatchToProps = {
   request_user_add_fav,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     fav_store_ids: get_fav_stores_ids(params) || [],
     is_member: is_user_logged_in(params) || false,
@@ -189,7 +165,7 @@ const ConnectedComponent = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(TopStoreHomeFooter);
-export {ConnectedComponent as TopStoreHomeFooter};
+export { ConnectedComponent as TopStoreHomeFooter };
 export default connect(mapStateToProps, mapDispatchToProps)(TopStoreCard);
 
 const styles = StyleSheet.create({

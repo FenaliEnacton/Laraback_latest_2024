@@ -1,33 +1,28 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, FlatList} from 'react-native';
-import {
-  HomeListHeader,
-  TopStoreCard,
+import { Theme } from '@/Assets/Theme';
+import Config from '@/react-native-config';
+import React, { useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import ComponentAnimation from '../../Core/ComponentAnimation';
+import FeaturedStore from '../FeaturedStore';
+import HomeListHeader from '../HomeListHeader';
+import SeeAllHeader from '../SeeAllHeader';
+import TopStoreCard, {
   EmptyStoreCard,
   TopStoreHomeFooter,
-  SeeAllHeader,
-  NewStoresCard,
-} from '@components/generic';
-import Icon from '@assets/icons';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import {SimpleAnimation} from 'react-native-simple-animations';
-import FeaturedStore from './FeaturedStore';
-import ComponentAnimation from '../Core/ComponentAnimation';
+} from '../TopStoreCard';
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     loading: params.home_loading,
   };
 };
 const HomeTopStore = props => {
-  const {item} = props;
+  const { item } = props;
   const [top_store_selected_index, setTop_store_selected_index] = useState(0);
-  const renderStores = ({item, index}) => {
+  const renderStores = ({ item, index }) => {
     return (
       <ComponentAnimation direction={'left'} index={index + 5}>
         {props.isFeatured ? (
@@ -62,7 +57,7 @@ const HomeTopStore = props => {
     }
   };
 
-  const render_empty_stores = ({item, index}) => {
+  const render_empty_stores = ({ item, index }) => {
     return <EmptyStoreCard />;
   };
   return (
@@ -95,7 +90,7 @@ const HomeTopStore = props => {
           extraData={props}
           showsHorizontalScrollIndicator={false}
           renderItem={renderStores}
-          ListFooterComponent={() => render_stores_footer}
+          ListFooterComponent={render_stores_footer}
         />
       ) : (
         <FlatList

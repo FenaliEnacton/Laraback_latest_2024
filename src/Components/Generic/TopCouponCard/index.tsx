@@ -1,36 +1,32 @@
-import React from 'react';
-import {
-  StyleSheet,
-  TouchableOpacity,
-  View,
-  Text,
-  Image,
-  Dimensions,
-} from 'react-native';
-import {CashbackString, Toast} from '@components/core';
-import {connect} from 'react-redux';
-import {translate} from '@translations';
-import Clipboard from '@react-native-community/clipboard';
-import {AppImages} from '@assets/Images';
-import LinearGradient from 'react-native-linear-gradient';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
 import {
   request_coupon_cat_details,
   request_store_details,
-} from '@app_redux/Actions';
+} from '@/Redux/Actions/publicDataActions';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
 import dayjs from 'dayjs';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
-import Config from 'react-native-config';
+import React from 'react';
+import {
+  Dimensions,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import FastImage from 'react-native-fast-image';
-const windowWidth = Dimensions.get('window').width;
+import LinearGradient from 'react-native-linear-gradient';
+import { connect } from 'react-redux';
 const width = Dimensions.get('window').width;
 function TopCouponCard(props) {
-  const {offer} = props;
+  const { offer } = props;
 
-  function copy_code() {
-    Clipboard.setString(offer.code);
-    Toast.successBottom(translate('copied'));
-  }
+  // function copy_code() {
+  //   Clipboard.setString(offer.code);
+  //   Toast.successBottom(translate('copied'));
+  // }
   const get_cashback_string = (amount, amount_type) => {
     let string = '';
     let amt = Number(amount).toFixed(2);
@@ -98,12 +94,12 @@ function TopCouponCard(props) {
     // </TouchableOpacity>
 
     <LinearGradient
-      start={{x: 0, y: 0}}
-      end={{x: 0, y: 1}}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 0, y: 1 }}
       colors={['#f5e3e6', '#d9e4f5']}
       style={[styles.gradientCard, props.style]}>
-      <View style={[styles.circle, {top: -17}]} />
-      <View style={[styles.circle, {bottom: -17}]} />
+      <View style={[styles.circle, { top: -17 }]} />
+      <View style={[styles.circle, { bottom: -17 }]} />
       <View style={styles.cashbackCard}>
         <View style={styles.border}>
           <Text style={[styles.cashbackText]}>CASHBACK</Text>
@@ -112,7 +108,7 @@ function TopCouponCard(props) {
       <TouchableOpacity
         onPress={props.couponOnPress}
         style={[styles.dealCard, props.style]}>
-        <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
           <View style={styles.logoImg}>
             <FastImage
               source={{
@@ -124,7 +120,7 @@ function TopCouponCard(props) {
               resizeMode={FastImage.resizeMode.contain}
             />
           </View>
-          <View style={{justifyContent: 'center'}}>
+          <View style={{ justifyContent: 'center' }}>
             <Text style={styles.cbText}>
               {get_cb_prefix(offer.store.cashback_string)}
               <Text style={styles.percentText}>
@@ -146,7 +142,7 @@ function TopCouponCard(props) {
           <View style={styles.expDate}>
             {offer?.expiry_date ? (
               <>
-                <Icon.AntDesign
+                <Icons.AntDesign
                   name="clockcircleo"
                   size={15}
                   color={Theme.COLORS.grey}
@@ -175,7 +171,7 @@ function TopCouponHomeFooter(props) {
       onPress={() => props.request_coupon_cat_details(props.category.id)}>
       <Text style={styles.view_all_text}>
         {translate('see_all')}
-        <Icon.Ionicons
+        <Icons.Ionicons
           name={'caret-forward'}
           color={Theme.COLORS.black}
           size={15}
@@ -190,7 +186,7 @@ const mapDispatchToProps = {
   request_store_details,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {};
 };
 
@@ -198,7 +194,7 @@ const ConnectedComponent = connect(
   mapStateToProps,
   mapDispatchToProps,
 )(TopCouponHomeFooter);
-export {ConnectedComponent as TopCouponHomeFooter};
+export { ConnectedComponent as TopCouponHomeFooter };
 export default connect(mapStateToProps, mapDispatchToProps)(TopCouponCard);
 const styles = StyleSheet.create({
   container: {
@@ -424,7 +420,7 @@ const styles = StyleSheet.create({
   },
   cashbackText: {
     ...Theme.fontStyles.h1Bold,
-    transform: [{rotate: '270deg'}],
+    transform: [{ rotate: '270deg' }],
     width: 150,
     height: 25,
     alignSelf: 'center',

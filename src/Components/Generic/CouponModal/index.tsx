@@ -1,26 +1,28 @@
-import React, {Component} from 'react';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import CashbackString from '@/Components/Core/CashbackString';
+import CloseButton from '@/Components/Core/CloseButton';
+import Toast from '@/Components/Core/Toast';
+import { navigate } from '@/Navigation/appNavigator';
+import { request_store_details } from '@/Redux/Actions/publicDataActions';
+import { is_user_logged_in } from '@/Redux/Selectors';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import Clipboard from '@react-native-community/clipboard';
+import dayjs from 'dayjs';
+import React from 'react';
 import {
+  Dimensions,
+  Modal,
+  Platform,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  Platform,
   View,
-  Dimensions,
-  StyleSheet,
-  Image,
-  Modal,
 } from 'react-native';
-import Icon from '@assets/icons';
-import {AppImages} from '@assets/Images';
-import {translate} from '@translations';
-import {request_store_details} from '@app_redux/Actions';
-import Clipboard from '@react-native-community/clipboard';
-import {Toast, CashbackString, CloseButton} from '@components/core';
-import Config from 'react-native-config';
-import dayjs from 'dayjs';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
 import FastImage from 'react-native-fast-image';
+import { connect } from 'react-redux';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -29,8 +31,7 @@ function CouponModal(props) {
   const {
     offerModalShow,
     coupon,
-    coupon: {store},
-    navigation: {navigate} = {},
+    coupon: { store },
     is_member,
     setCouponModalVisibleFalse,
     app_settings,
@@ -57,9 +58,9 @@ function CouponModal(props) {
       coupon_code: coupon.code,
     };
     if (is_member) {
-      navigate('OutPage', {out_page_info: navigation_options});
+      navigate('OutPage', { out_page_info: navigation_options });
     } else {
-      navigate('Login', {out_page_info: navigation_options});
+      navigate('Login', { out_page_info: navigation_options });
     }
   }
 
@@ -69,7 +70,7 @@ function CouponModal(props) {
       animationType="fade"
       onRequestClose={setCouponModalVisibleFalse}
       visible={offerModalShow}>
-      <View
+      <TouchableOpacity
         activeOpacity={1}
         onPress={setCouponModalVisibleFalse}
         style={styles.modalBackground}>
@@ -91,7 +92,9 @@ function CouponModal(props) {
               props.request_store_details(store.id);
             }}>
             <FastImage
-              source={{uri: store?.logo ? store?.logo : Config.EMPTY_IMAGE_URL}}
+              source={{
+                uri: store?.logo ? store?.logo : Config.EMPTY_IMAGE_URL,
+              }}
               style={styles.store_logo}
               resizeMode={FastImage.resizeMode.contain}
             />
@@ -101,7 +104,7 @@ function CouponModal(props) {
           </Text>
           {store?.cashback_enabled && store.cashback_string ? (
             <CashbackString
-              icon={{marginTop: 2, alignSelf: 'center'}}
+              icon={{ marginTop: 2, alignSelf: 'center' }}
               cb_style={styles.cb_style}
               cashback_string={store.cashback_string}
             />
@@ -127,7 +130,7 @@ function CouponModal(props) {
               <View style={styles.cpn_code_empty} />
             )}
             <View style={styles.date_box}>
-              <Icon.AntDesign
+              <Icons.AntDesign
                 name={'calendar'}
                 color={Theme.COLORS.black}
                 size={14}
@@ -158,12 +161,12 @@ function CouponModal(props) {
             </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 }
 
-function mapStateToProps({params}) {
+function mapStateToProps({ params }) {
   return {
     is_member: is_user_logged_in(params) || false,
     app_settings: params.app_settings || {},
@@ -383,4 +386,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, {request_store_details})(CouponModal);
+export default connect(mapStateToProps, { request_store_details })(CouponModal);

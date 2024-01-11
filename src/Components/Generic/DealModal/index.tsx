@@ -1,29 +1,28 @@
-import React, {Component} from 'react';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import CloseButton from '@/Components/Core/CloseButton';
+import Toast from '@/Components/Core/Toast';
+import { navigate } from '@/Navigation/appNavigator';
+import { request_store_details } from '@/Redux/Actions/publicDataActions';
+import { is_user_logged_in } from '@/Redux/Selectors';
+import { get_currency_string } from '@/Utils';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import Clipboard from '@react-native-community/clipboard';
+import dayjs from 'dayjs';
+import React from 'react';
 import {
+  Dimensions,
+  Modal,
+  Platform,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  Platform,
   View,
-  Dimensions,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Modal,
 } from 'react-native';
-import Icon from '@assets/icons';
-import {AppImages} from '@assets/Images';
-import {translate} from '@translations';
-import Clipboard from '@react-native-community/clipboard';
-import {Toast, CashbackString, CloseButton} from '@components/core';
-import {get_currency_string} from '@user_redux/Utils';
-import Config from 'react-native-config';
-import {request_store_details} from '@app_redux/Actions';
-import dayjs from 'dayjs';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import DealModalLoader from './DealModalLoader';
 import FastImage from 'react-native-fast-image';
+import { connect } from 'react-redux';
+import DealModalLoader from './DealModalLoader';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -31,10 +30,8 @@ function DealModal(props) {
   const {
     dealModalShow,
     deal,
-    deal: {store},
-    navigation: {navigate} = {},
+    deal: { store },
     setDealModalVisibleFalse,
-    setDealModalVisibleTrue,
     is_member,
     app_settings,
   } = props;
@@ -61,9 +58,9 @@ function DealModal(props) {
       coupon_code: deal.code,
     };
     if (is_member) {
-      navigate('OutPage', {out_page_info: navigation_options});
+      navigate('OutPage', { out_page_info: navigation_options });
     } else {
-      navigate('Login', {out_page_info: navigation_options});
+      navigate('Login', { out_page_info: navigation_options });
     }
   }
 
@@ -73,7 +70,7 @@ function DealModal(props) {
       animationType="fade"
       onRequestClose={setDealModalVisibleFalse}
       visible={dealModalShow}>
-      <View
+      <TouchableOpacity
         activeOpacity={1}
         onPress={setDealModalVisibleFalse}
         style={styles.modalBackground}>
@@ -151,7 +148,7 @@ function DealModal(props) {
                   <View style={styles.cpn_code_empty} />
                 )}
                 <View style={styles.date_box}>
-                  <Text style={styles.exp_date}>
+                  <Text>
                     <Text style={styles.offer_price}>
                       {get_currency_string(deal.offer_price)}
                     </Text>
@@ -189,12 +186,12 @@ function DealModal(props) {
             </>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 }
 
-function mapStateToProps({params}) {
+function mapStateToProps({ params }) {
   return {
     // is_user_logged_in_prop: is_user_logged_in(params),
     deal: params.deal_info || {},
@@ -451,4 +448,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps, {request_store_details})(DealModal);
+export default connect(mapStateToProps, { request_store_details })(DealModal);

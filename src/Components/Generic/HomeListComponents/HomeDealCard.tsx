@@ -1,36 +1,31 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View, FlatList} from 'react-native';
-import {
-  HomeListHeader,
-  DealCard,
-  EmptyStoreCard,
-  DealModal,
-  TopDealHomeFooter,
-  SeeAllHeader,
-} from '@components/generic';
-import Icon from '@assets/icons';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import {request_deal_info} from '@app_redux/Actions';
-import Config from 'react-native-config';
-import {SimpleAnimation} from 'react-native-simple-animations';
+import React, { useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
+import { Theme } from '@/Assets/Theme';
+import { request_deal_info } from '@/Redux/Actions/publicDataActions';
+import Config from '@/react-native-config';
+import { SimpleAnimation } from 'react-native-simple-animations';
+import { connect } from 'react-redux';
+import DealCard, { TopDealHomeFooter } from '../DealCard';
+import DealModal from '../DealModal';
+import HomeListHeader from '../HomeListHeader';
+import SeeAllHeader from '../SeeAllHeader';
+import { EmptyStoreCard } from '../TopStoreCard';
 
 const mapDispatchToProps = {
   request_deal_info,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     loading: params.deal_loading,
   };
 };
 const HomeDealCard = props => {
-  const {item} = props;
+  const { item } = props;
   const [top_store_selected_index, setTop_store_selected_index] = useState(0);
   const [DealModalShow, setDealModalShow] = useState(false);
 
-  const renderStores = ({item, index}) => {
+  const renderStores = ({ item, index }) => {
     return (
       <SimpleAnimation
         delay={0}
@@ -43,7 +38,7 @@ const HomeDealCard = props => {
         <DealCard
           deal={item}
           bg_color={Theme.get_bg_color(index, 8)}
-          style={{marginHorizontal: 8}}
+          style={{ marginHorizontal: 8 }}
           deal_onPress={() => {
             setDealModalShow(true);
             props.request_deal_info(item.id);
@@ -76,7 +71,7 @@ const HomeDealCard = props => {
     }
   };
 
-  const render_empty_stores = ({item, index}) => {
+  const render_empty_stores = ({ item, index }) => {
     return <EmptyStoreCard />;
   };
   return (
@@ -107,7 +102,7 @@ const HomeDealCard = props => {
           extraData={props}
           showsHorizontalScrollIndicator={false}
           renderItem={renderStores}
-          ListFooterComponent={() => render_stores_footer}
+          ListFooterComponent={render_stores_footer}
         />
       ) : (
         <FlatList

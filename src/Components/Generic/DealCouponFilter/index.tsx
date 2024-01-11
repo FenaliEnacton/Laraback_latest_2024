@@ -1,49 +1,49 @@
-import React, {Component, createRef} from 'react';
+import { filter_sort_arr } from '@/Assets/AppDataConfig';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import CloseButton from '@/Components/Core/CloseButton';
+import { translate } from '@/translations';
+import React, { Component } from 'react';
 import {
-  Text,
-  TouchableOpacity,
-  Platform,
-  View,
-  StyleSheet,
   Dimensions,
   FlatList,
-  ScrollView,
-  Image,
   Modal,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import Icon from '@assets/icons';
-import {CloseButton} from '@components/core';
+import FastImage from 'react-native-fast-image';
+import RnRangeSlider from 'rn-range-slider';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import {AppImages} from '@assets/Images';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import {filter_sort_arr} from '@assets/AppDataConfig';
-import RangeSlider from 'rn-range-slider';
-import FastImage from 'react-native-fast-image';
 export const _rangeSlider = React.createRef();
 
-export default class DealCouponFilter extends Component {
+export default class DealCouponFilter extends Component<any> {
   state = {
     modalUpdate: false,
   };
 
   updateData = () => {
     if (this.props.filter_data && this.props.min_price) {
-      _rangeSlider?.current?.setLowValue(
-        this.props.min_price
-          ? this.props.min_price
-          : this.props.filter_data?.price?.min
-          ? this.props.filter_data?.price?.min
-          : '',
-      );
-      _rangeSlider?.current?.setHighValue(
-        this.props.max_price
-          ? this.props.max_price
-          : this.props.filter_data?.price?.max
-          ? this.props.filter_data.price.max
-          : '',
-      );
+      // _rangeSlider?.current?.setLowValue(
+      //   this.props.min_price
+      //     ? this.props.min_price
+      //     : this.props.filter_data?.price?.min
+      //     ? this.props.filter_data?.price?.min
+      //     : '',
+      // );
+      // _rangeSlider?.current?.setHighValue(
+      //   this.props.max_price
+      //     ? this.props.max_price
+      //     : this.props.filter_data?.price?.max
+      //     ? this.props.filter_data.price.max
+      //     : '',
+      // );
     }
   };
 
@@ -55,16 +55,16 @@ export default class DealCouponFilter extends Component {
 
   updateModal = (key, index) => {
     //to force this component to re-render when sectionList changes
-    this.setState({modalUpdate: !this.state.modalUpdate});
+    this.setState({ modalUpdate: !this.state.modalUpdate });
     this.props.addIdsToFilterList(key, index);
   };
 
-  render_cats = ({item, index}) => {
+  render_cats = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={styles.filter_tab}
         onPress={() => this.props.handle_cat_change(item.id)}>
-        <Icon.FontAwesome
+        <Icons.FontAwesome
           name={
             this.props.selected_ids.cats.includes(item.id)
               ? 'check-square-o'
@@ -82,12 +82,12 @@ export default class DealCouponFilter extends Component {
     );
   };
 
-  render_stores = ({item, index}) => {
+  render_stores = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={styles.filter_tab}
         onPress={() => this.props.handle_store_change(item.id)}>
-        <Icon.FontAwesome
+        <Icons.FontAwesome
           name={
             this.props.selected_ids.stores.includes(item.id)
               ? 'check-square-o'
@@ -105,13 +105,13 @@ export default class DealCouponFilter extends Component {
     );
   };
 
-  render_sort_type = ({item, index}) => {
+  render_sort_type = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={[
           styles.sort_tab,
           this.props.sort_type === item.value
-            ? {backgroundColor: Theme.COLORS.primary}
+            ? { backgroundColor: Theme.COLORS.primary }
             : {},
         ]}
         onPress={() => this.props.handle_sort_type_change(item.value)}>
@@ -141,7 +141,7 @@ export default class DealCouponFilter extends Component {
       filter_data,
       onPriceValueChanged,
       is_store_page,
-    } = this.props;
+    } = this.props as any;
     return (
       <Modal
         transparent={true}
@@ -149,7 +149,7 @@ export default class DealCouponFilter extends Component {
         animationType="fade"
         onRequestClose={setFilterModalVisibleFalse}
         visible={filterModalVisible}>
-        <View
+        <TouchableOpacity
           activeOpacity={1}
           onPress={setFilterModalVisibleFalse}
           style={styles.modalBackground}>
@@ -171,7 +171,7 @@ export default class DealCouponFilter extends Component {
               onPress={() => setFilterModalVisibleFalse()}
             />
 
-            <View style={{marginTop: 15}}>
+            <View style={{ marginTop: 15 }}>
               <Text style={styles.filter_title}>{translate('sort_by')}</Text>
               <FlatList
                 style={styles.sort_box}
@@ -198,9 +198,8 @@ export default class DealCouponFilter extends Component {
                   </Text>
                 </View>
 
-                <RangeSlider
+                <RnRangeSlider
                   style={styles.slider}
-                  gravity={'center'}
                   min={filter_data.price.min}
                   max={filter_data.price.max}
                   // low={
@@ -222,8 +221,9 @@ export default class DealCouponFilter extends Component {
                   renderRailSelected={this.selectedRail}
                   step={1}
                   onValueChanged={(low, high, fromUser) => {
-                    clearTimeout(this.sliderTimeOutId);
-                    this.sliderTimeOutId = setTimeout(() => {
+                    let sliderTimeOutId;
+                    clearTimeout(sliderTimeOutId);
+                    sliderTimeOutId = setTimeout(() => {
                       onPriceValueChanged(low, high);
                     }, 10);
                   }}
@@ -279,7 +279,7 @@ export default class DealCouponFilter extends Component {
               <Text style={styles.btnTxt}>{translate('filter')}</Text>
             </TouchableOpacity>
           </ScrollView>
-        </View>
+        </TouchableOpacity>
       </Modal>
     );
   }

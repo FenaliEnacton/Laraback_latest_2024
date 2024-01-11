@@ -1,14 +1,21 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Platform,
+} from 'react-native';
 import React from 'react';
-import {Theme} from '@assets/Theme';
-import {connect} from 'react-redux';
-import {request_store_details} from '@app_redux/Actions';
+import { connect } from 'react-redux';
+import { Theme } from '@/Assets/Theme';
+import { request_store_details } from '@/Redux/Actions/publicDataActions';
 
 const mapDispatchToProps = {
   request_store_details,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     loading: params.loading,
   };
@@ -16,13 +23,13 @@ const mapStateToProps = ({params}) => {
 
 const FeaturedStore = props => {
   return (
-    <View style={{alignItems: 'center'}}>
+    <View style={{ alignItems: 'center' }}>
       <TouchableOpacity
         activeOpacity={0.7}
         style={[styles.popularBrandIcon, props.style]}
         onPress={() => props.request_store_details(props.store.id)}>
         <Image
-          source={{uri: props.store?.logo}}
+          source={{ uri: props.store?.logo }}
           style={styles.popularBrandImage}
           borderRadius={40}
         />

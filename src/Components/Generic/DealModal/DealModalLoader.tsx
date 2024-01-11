@@ -1,17 +1,13 @@
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
 import React from 'react';
-import ContentLoader from 'react-content-loader/native';
-import {Rect} from 'react-native-svg';
-import {Theme} from '@assets/Theme';
+import ContentLoader from 'react-content-loader';
+import { Rect } from 'react-content-loader/native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 const DealModalLoader = () => {
-  const empty_arr = [1, 2, 3, 4, 5, 6];
-
   return (
     <View style={styles.svg_container}>
-      <ContentLoader width={windowWidth * 0.95} height={300} duration={1000}>
+      <ContentLoader width={windowWidth * 0.95} height={300}>
         <Rect x="240" y="30" rx="4" ry="4" width="100" height="40" />
         <Rect x="125" y="90" rx="4" ry="4" width="120" height="70" />
         <Rect x="130" y="180" rx="4" ry="4" width="100" height="10" />
