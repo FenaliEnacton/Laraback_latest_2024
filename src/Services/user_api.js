@@ -1,5 +1,5 @@
 import apisauce from 'apisauce';
-import {is_app} from '../Utils';
+import { is_app } from '../Utils';
 import Config from 'react-native-config';
 import get_url_value from './api_routes';
 export const internalApi = apisauce.create({
@@ -15,14 +15,14 @@ const publicAPI = dataType => {
   return internalApi.get(dataType);
 };
 
-const user_app_api = (route_name, append_url = null, header) => {
+const user_app_api = (route_name, append_url = '', header) => {
   let url = Config.API_URL + get_url_value(route_name);
   if (append_url) {
     url = url + append_url;
   }
   return internalApi.get(url);
 };
-const user_post_app_api = (route_name, body = {}, append_url = null, header) => {
+const user_post_app_api = (route_name, body = {}, append_url = '', header) => {
   let url = Config.API_URL + get_url_value(route_name);
   if (append_url) {
     url = url + append_url;
@@ -30,7 +30,7 @@ const user_post_app_api = (route_name, body = {}, append_url = null, header) => 
   return internalApi.post(url, body);
 };
 
-const user_web_api = (route_name, append_url = null, query, header) => {
+const user_web_api = (route_name, append_url = '', query, header) => {
   let url = Config.API_URL + get_url_value(route_name);
   if (append_url) {
     url = url + append_url;
@@ -38,7 +38,7 @@ const user_web_api = (route_name, append_url = null, query, header) => {
   return internalApi.get(url, query);
 };
 
-const user_post_web_api = (route_name, body = {}, append_url = null, header) => {
+const user_post_web_api = (route_name, body = {}, append_url = '', header) => {
   let url = Config.API_URL + get_url_value(route_name);
   if (append_url) {
     url = url + append_url;
@@ -55,7 +55,13 @@ const user_auth_api = (url, body, header) => {
           ...body,
           _token: res.data,
         };
-        resolve(internalApi.post(Config.API_URL + get_url_value(url), request_body, {}));
+        resolve(
+          internalApi.post(
+            Config.API_URL + get_url_value(url),
+            request_body,
+            {},
+          ),
+        );
       } else {
         reject();
       }

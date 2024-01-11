@@ -1,26 +1,20 @@
-import {Toast} from '@components/core';
-import {useRecoilState} from 'recoil';
-import {arrayAtomFamily, booleanAtomFamily, objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
+import { useRecoilState } from 'recoil';
+import { booleanAtomFamily, objectAtomFamily } from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
 import user_api from '../../Services/user_api';
-import {
-  get_api_error_string,
-  get_exception_string,
-  get_translation,
-  handle_api_error,
-  is_app,
-  show_fail_message,
-  show_success_message,
-} from '../../Utils';
+import { handle_api_error } from '../../Utils';
 
 const useUserSummary = () => {
-  const [loadingUserCashbackSummary, setLoadingUserCashbackSummary] = useRecoilState(
-    booleanAtomFamily(atomKeys.userSummary.loading_user_cashback_summary),
-  );
+  const [loadingUserCashbackSummary, setLoadingUserCashbackSummary] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userSummary.loading_user_cashback_summary),
+    );
   const [userCashbackSummary, setUserCashbackSummary] = useRecoilState(
     objectAtomFamily(atomKeys.userSummary.user_cashback_summary),
   );
-  const [userInfo, setUserInfo] = useRecoilState(objectAtomFamily(atomKeys.userAuth.user_info));
+  const [userInfo, setUserInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.userAuth.user_info),
+  );
 
   const [loadingUserBonusSummary, setLoadingUserBonusSummary] = useRecoilState(
     booleanAtomFamily(atomKeys.userSummary.loading_user_bonus_summary),
@@ -29,23 +23,26 @@ const useUserSummary = () => {
     objectAtomFamily(atomKeys.userSummary.user_bonus_summary),
   );
 
-  const [loadingUserReferralSummary, setLoadingUserReferralSummary] = useRecoilState(
-    booleanAtomFamily(atomKeys.userSummary.loading_user_referral_summary),
-  );
+  const [loadingUserReferralSummary, setLoadingUserReferralSummary] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userSummary.loading_user_referral_summary),
+    );
   const [userReferralSummary, setUserReferralSummary] = useRecoilState(
     objectAtomFamily(atomKeys.userSummary.user_referral_summary),
   );
 
-  const [loadingUserClicksSummary, setLoadingUserClicksSummary] = useRecoilState(
-    booleanAtomFamily(atomKeys.userSummary.loading_user_clicks_summary),
-  );
+  const [loadingUserClicksSummary, setLoadingUserClicksSummary] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userSummary.loading_user_clicks_summary),
+    );
   const [userClicksSummary, setUserClicksSummary] = useRecoilState(
     objectAtomFamily(atomKeys.userSummary.user_clicks_summary),
   );
 
-  const [loadingUserPaymentSummary, setLoadingUserPaymentSummary] = useRecoilState(
-    booleanAtomFamily(atomKeys.userSummary.loading_user_payment_summary),
-  );
+  const [loadingUserPaymentSummary, setLoadingUserPaymentSummary] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userSummary.loading_user_payment_summary),
+    );
   const [userPaymentSummary, setUserPaymentSummary] = useRecoilState(
     objectAtomFamily(atomKeys.userSummary.user_payment_summary),
   );
@@ -53,15 +50,25 @@ const useUserSummary = () => {
   async function request_user_cashback_summary() {
     try {
       setLoadingUserCashbackSummary(true);
-      const response = await user_api.user_dashboard_api('user.summary.cashback');
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.summary.cashback',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserCashbackSummary(res);
         setUserInfo(response.data.user);
         setLoadingUserCashbackSummary(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.summary.cashback');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.summary.cashback',
+        );
         setUserCashbackSummary({});
         setLoadingUserCashbackSummary(false);
         return {};
@@ -78,14 +85,22 @@ const useUserSummary = () => {
     try {
       setLoadingUserBonusSummary(true);
       const response = await user_api.user_dashboard_api('user.summary.bonus');
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserBonusSummary(res);
         setUserInfo(response.data.user);
         setLoadingUserBonusSummary(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.summary.bonus');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.summary.bonus',
+        );
         setUserBonusSummary({});
         setLoadingUserBonusSummary(false);
         return {};
@@ -102,15 +117,25 @@ const useUserSummary = () => {
   async function request_user_referral_summary() {
     try {
       setLoadingUserReferralSummary(true);
-      const response = await user_api.user_dashboard_api('user.summary.referral');
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.summary.referral',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserReferralSummary(res);
         setUserInfo(response.data.user);
         setLoadingUserReferralSummary(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.summary.referral');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.summary.referral',
+        );
         setUserReferralSummary({});
         setLoadingUserReferralSummary(false);
         return {};
@@ -127,14 +152,22 @@ const useUserSummary = () => {
     try {
       setLoadingUserClicksSummary(true);
       const response = await user_api.user_dashboard_api('user.summary.clicks');
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserClicksSummary(res);
         setUserInfo(response.data.user);
         setLoadingUserClicksSummary(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.summary.clicks');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.summary.clicks',
+        );
         setUserClicksSummary({});
         setLoadingUserClicksSummary(false);
         return {};
@@ -150,15 +183,25 @@ const useUserSummary = () => {
   async function request_user_payment_summary() {
     try {
       setLoadingUserPaymentSummary(true);
-      const response = await user_api.user_dashboard_api('user.summary.payment');
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.summary.payment',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserPaymentSummary(res);
         setUserInfo(response.data.user);
         setLoadingUserPaymentSummary(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.summary.payment');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.summary.payment',
+        );
         setUserPaymentSummary({});
         setLoadingUserPaymentSummary(false);
         return {};

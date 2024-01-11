@@ -1,16 +1,20 @@
-import {useRecoilState, useSetRecoilState} from 'recoil';
-import {booleanAtomFamily, objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
-import Config from 'react-native-config';
+import { useRecoilState } from 'recoil';
+import { booleanAtomFamily, objectAtomFamily } from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
 import api from '../../Services/api';
+import Config from '@/react-native-config';
 
 const useMetaData = () => {
-  const [allStores, setAllStores] = useRecoilState(objectAtomFamily(atomKeys.metaData.all_store));
+  const [allStores, setAllStores] = useRecoilState(
+    objectAtomFamily(atomKeys.metaData.all_store),
+  );
   const [allStoresLoading, setAllStoresLoading] = useRecoilState(
     booleanAtomFamily(atomKeys.metaData.loading_all_store),
   );
 
-  const [allCategories, setAllCategories] = useRecoilState(objectAtomFamily(atomKeys.metaData.all_categories));
+  const [allCategories, setAllCategories] = useRecoilState(
+    objectAtomFamily(atomKeys.metaData.all_categories),
+  );
   const [allCategoriesLoading, setAllCategoriesLoading] = useRecoilState(
     booleanAtomFamily(atomKeys.metaData.loading_all_categories),
   );
@@ -18,11 +22,14 @@ const useMetaData = () => {
   const [storesAlphaCharList, setStoresAlphaCharList] = useRecoilState(
     objectAtomFamily(atomKeys.metaData.stores_alpha_char_list),
   );
-  const [storesAlphaCharListLoading, setStoresAlphaCharListLoading] = useRecoilState(
-    booleanAtomFamily(atomKeys.metaData.loading_stores_alpha_char_list),
-  );
+  const [storesAlphaCharListLoading, setStoresAlphaCharListLoading] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.metaData.loading_stores_alpha_char_list),
+    );
 
-  const [storesByAlpha, setStoresByAlpha] = useRecoilState(objectAtomFamily(atomKeys.metaData.stores_by_alpha));
+  const [storesByAlpha, setStoresByAlpha] = useRecoilState(
+    objectAtomFamily(atomKeys.metaData.stores_by_alpha),
+  );
   const [storesByAlphaLoading, setStoresByAlphaLoading] = useRecoilState(
     booleanAtomFamily(atomKeys.metaData.loading_stores_by_alpha),
   );
@@ -30,7 +37,9 @@ const useMetaData = () => {
   async function request_all_stores() {
     try {
       setAllStoresLoading(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/app/stores');
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/app/stores',
+      );
       if (response.ok) {
         const res = response.data;
         setAllStores(res.data);
@@ -51,7 +60,9 @@ const useMetaData = () => {
   async function request_all_categories(cat_type) {
     try {
       setAllCategoriesLoading(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/categories/' + cat_type);
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/categories/' + cat_type,
+      );
       if (response.ok && response.data?.data) {
         const res = {};
         res[cat_type] = response.data?.data;
@@ -73,7 +84,9 @@ const useMetaData = () => {
   async function requestStoresAlphaCharList() {
     try {
       setStoresAlphaCharListLoading(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/app/storeAlphaList');
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/app/storeAlphaList',
+      );
 
       if (response.ok && response.data.data) {
         const res = response.data;
@@ -96,7 +109,11 @@ const useMetaData = () => {
     }
   }
   async function requestStoresByAlpha(stores_alpha_char) {
-    let api_url = Config.API_URL + Config.PUBLIC_PREFIX + '/app/storesbyAlpha/' + encodeURIComponent(stores_alpha_char);
+    let api_url =
+      Config.API_URL +
+      Config.PUBLIC_PREFIX +
+      '/app/storesbyAlpha/' +
+      encodeURIComponent(stores_alpha_char);
     try {
       setStoresByAlphaLoading(true);
       const response = await api.publicAPI(api_url);

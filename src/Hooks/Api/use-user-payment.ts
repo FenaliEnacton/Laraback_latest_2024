@@ -1,8 +1,11 @@
-import {Toast} from '@components/core';
-import {useRecoilState} from 'recoil';
-import {navigate} from '../../Navigation/appNavigator';
-import {arrayAtomFamily, booleanAtomFamily, objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
+import { useRecoilState } from 'recoil';
+import { navigate } from '../../Navigation/appNavigator';
+import {
+  arrayAtomFamily,
+  booleanAtomFamily,
+  objectAtomFamily,
+} from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
 import user_api from '../../Services/user_api';
 import {
   get_api_error_string,
@@ -14,54 +17,74 @@ import {
   show_success_message,
 } from '../../Utils';
 import useUserSummary from './use-user-summary';
+import Toast from '@/Components/Core/Toast';
 
 const useUserPayment = () => {
   const [loadingUserPaymentList, setLoadingUserPaymentList] = useRecoilState(
     booleanAtomFamily(atomKeys.userPayment.loading_user_payment_list),
   );
-  const [userPaymentList, setUserPaymentList] = useRecoilState(arrayAtomFamily(atomKeys.userPayment.user_payment_list));
-  const [userInfo, setUserInfo] = useRecoilState(objectAtomFamily(atomKeys.userAuth.user_info));
-
-  const [loadingUserPaymentMethods, setLoadingUserPaymentMethods] = useRecoilState(
-    booleanAtomFamily(atomKeys.userPayment.loading_user_payment_methods),
+  const [userPaymentList, setUserPaymentList] = useRecoilState(
+    arrayAtomFamily(atomKeys.userPayment.user_payment_list),
   );
+  const [userInfo, setUserInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.userAuth.user_info),
+  );
+
+  const [loadingUserPaymentMethods, setLoadingUserPaymentMethods] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userPayment.loading_user_payment_methods),
+    );
   const [userPaymentMethods, setUserPaymentMethods] = useRecoilState(
     objectAtomFamily(atomKeys.userPayment.user_payment_methods),
   );
 
-  const [loadingUserPaymentAddMethods, setLoadingUserPaymentAddMethods] = useRecoilState(
-    booleanAtomFamily(atomKeys.userPayment.loading_user_payment_add_methods),
-  );
+  const [loadingUserPaymentAddMethods, setLoadingUserPaymentAddMethods] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userPayment.loading_user_payment_add_methods),
+    );
   const [userPaymentAddMethods, setUserPaymentAddMethods] = useRecoilState(
     objectAtomFamily(atomKeys.userPayment.user_payment_add_methods),
   );
 
-  const [loadingUserPaymentRequest, setLoadingUserPaymentRequest] = useRecoilState(
-    booleanAtomFamily(atomKeys.userPayment.loading_user_payment_request),
-  );
+  const [loadingUserPaymentRequest, setLoadingUserPaymentRequest] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userPayment.loading_user_payment_request),
+    );
   const [userPaymentRequest, setUserPaymentRequest] = useRecoilState(
     objectAtomFamily(atomKeys.userPayment.user_payment_request),
   );
 
-  const [loadingUserPaymentEmailVerify, setLoadingUserPaymentEmailVerify] = useRecoilState(
-    booleanAtomFamily(atomKeys.userPayment.loading_user_payment_email_verify),
-  );
+  const [loadingUserPaymentEmailVerify, setLoadingUserPaymentEmailVerify] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userPayment.loading_user_payment_email_verify),
+    );
   const [userPaymentEmailVerify, setUserPaymentEmailVerify] = useRecoilState(
     objectAtomFamily(atomKeys.userPayment.user_payment_email_verify),
   );
-  const {request_user_payment_summary} = useUserSummary();
+  const { request_user_payment_summary } = useUserSummary();
   async function request_user_payment_list(user_payment_month) {
     try {
       setLoadingUserPaymentList(true);
-      const response = await user_api.user_dashboard_api('user.payment.list', user_payment_month);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.payment.list',
+        user_payment_month,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserPaymentList(res);
         setUserInfo(response.data.user);
         setLoadingUserPaymentList(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.payment.list');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.payment.list',
+        );
         setUserPaymentList([]);
         setLoadingUserPaymentList(false);
         return [];
@@ -74,18 +97,29 @@ const useUserPayment = () => {
       return [];
     }
   }
-  async function request_user_payment_methods() {
+  async function request_user_payment_methods(user_payment_month) {
     try {
       setLoadingUserPaymentMethods(true);
-      const response = await user_api.user_dashboard_api('user.payment.methods', user_payment_month);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.payment.methods',
+        user_payment_month,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserPaymentMethods(res);
         setUserInfo(response.data.user);
         setLoadingUserPaymentMethods(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.payment.methods');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.payment.methods',
+        );
         setUserPaymentMethods([]);
         setLoadingUserPaymentMethods(false);
         return [];
@@ -111,26 +145,39 @@ const useUserPayment = () => {
         mode: add_pay_mode,
         method_name: add_pay_mode_method_name,
         account: add_pay_mode_account,
+        reqvia: is_app() ? 'mobile_app' : 'web',
       };
-      if (is_app()) {
-        data.reqvia = is_app() ? 'mobile_app' : 'web';
-      }
-      const response = await user_api.user_dashboard_post_api('user.payment.method.add', data);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_post_api(
+        'user.payment.method.add',
+        data,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
 
         setUserPaymentAddMethods(res);
         setLoadingUserPaymentAddMethods(false);
         if (is_app()) {
-          Toast.successBottom(get_translation('user_dashboard.payment_mode.payment_mode_success'));
+          Toast.successBottom(
+            get_translation('user_dashboard.payment_mode.payment_mode_success'),
+          );
         } else {
           show_success_message({
-            text: get_translation('user_dashboard.payment_mode.payment_mode_success'),
+            text: get_translation(
+              'user_dashboard.payment_mode.payment_mode_success',
+            ),
           });
         }
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.payment.method.add');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.payment.method.add',
+        );
         setUserPaymentAddMethods({});
         setLoadingUserPaymentAddMethods(false);
         if (is_app()) {
@@ -139,16 +186,20 @@ const useUserPayment = () => {
               ? get_exception_string(response.data.data)
               : response.data.msg
               ? get_api_error_string(response.data.msg)
-              : get_translation('user_dashboard.payment_mode.payment_mode_error'),
+              : get_translation(
+                  'user_dashboard.payment_mode.payment_mode_error',
+                ),
           );
         } else {
           show_fail_message(
             response.data.data?.error
-              ? {html: get_exception_string(response.data.data)}
+              ? { html: get_exception_string(response.data.data) }
               : {
                   text: response.data.msg
                     ? get_api_error_string(response.data.msg)
-                    : get_translation('user_dashboard.payment_mode.payment_mode_error'),
+                    : get_translation(
+                        'user_dashboard.payment_mode.payment_mode_error',
+                      ),
                 },
           );
         }
@@ -160,16 +211,24 @@ const useUserPayment = () => {
       console.error(error);
       handle_api_error(error);
       if (is_app()) {
-        Toast.errorBottom(get_translation('user_dashboard.payment_mode.payment_mode_error'));
+        Toast.errorBottom(
+          get_translation('user_dashboard.payment_mode.payment_mode_error'),
+        );
       } else {
         show_fail_message({
-          text: get_translation('user_dashboard.payment_mode.payment_mode_error'),
+          text: get_translation(
+            'user_dashboard.payment_mode.payment_mode_error',
+          ),
         });
       }
       return {};
     }
   }
-  async function request_user_payment_request(user_payout_mode_id, user_pay_mode, user_payment_amount) {
+  async function request_user_payment_request(
+    user_payout_mode_id,
+    user_pay_mode,
+    user_payment_amount,
+  ) {
     try {
       setLoadingUserPaymentRequest(true);
       let data = {
@@ -178,25 +237,40 @@ const useUserPayment = () => {
         payment_amount: user_payment_amount,
       };
 
-      const response = await user_api.user_dashboard_post_api('user.payment.request', data);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_post_api(
+        'user.payment.request',
+        data,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
 
         setUserPaymentRequest(res);
         setUserInfo(response.data.user);
         setLoadingUserPaymentRequest(false);
         if (is_app()) {
-          Toast.successBottom(get_translation('user_dashboard.payment.payout_request_success'));
+          Toast.successBottom(
+            get_translation('user_dashboard.payment.payout_request_success'),
+          );
           request_user_payment_summary();
           navigate('CashbackPaymentHistory');
         } else {
           show_success_message({
-            text: get_translation('user_dashboard.payment.payout_request_success'),
+            text: get_translation(
+              'user_dashboard.payment.payout_request_success',
+            ),
           });
         }
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.payment.request');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.payment.request',
+        );
         setUserPaymentRequest({});
         setLoadingUserPaymentRequest(false);
         if (is_app()) {
@@ -210,11 +284,13 @@ const useUserPayment = () => {
         } else {
           show_fail_message(
             response.data.data?.error
-              ? {html: get_exception_string(response.data.data)}
+              ? { html: get_exception_string(response.data.data) }
               : {
                   text: response.data.msg
                     ? get_api_error_string(response.data.msg)
-                    : get_translation('user_dashboard.payment.payout_request_error'),
+                    : get_translation(
+                        'user_dashboard.payment.payout_request_error',
+                      ),
                 },
           );
         }
@@ -226,7 +302,9 @@ const useUserPayment = () => {
       console.error(error);
       handle_api_error(error);
       if (is_app()) {
-        Toast.errorBottom(get_translation('user_dashboard.payment.payout_request_error'));
+        Toast.errorBottom(
+          get_translation('user_dashboard.payment.payout_request_error'),
+        );
       } else {
         show_fail_message({
           text: get_translation('user_dashboard.payment.payout_request_error'),
@@ -238,15 +316,26 @@ const useUserPayment = () => {
   async function request_user_payment_email_verify(payment_id) {
     try {
       setLoadingUserPaymentEmailVerify(true);
-      const response = await user_api.user_dashboard_post_api('user.payment.email_request', {}, payment_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_post_api(
+        'user.payment.email_request',
+        {},
+        payment_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
 
         setUserPaymentEmailVerify(res);
         setUserInfo(response.data.user);
         setLoadingUserPaymentEmailVerify(false);
         if (is_app()) {
-          Toast.successBottom(get_translation('user_dashboard.payment.email_sent'));
+          Toast.successBottom(
+            get_translation('user_dashboard.payment.email_sent'),
+          );
         } else {
           show_success_message({
             text: get_translation('user_dashboard.payment.email_sent'),
@@ -254,7 +343,10 @@ const useUserPayment = () => {
         }
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.payment.email_request');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.payment.email_request',
+        );
         setUserPaymentEmailVerify({});
         setLoadingUserPaymentEmailVerify(false);
         if (is_app()) {
@@ -268,11 +360,13 @@ const useUserPayment = () => {
         } else {
           show_fail_message(
             response.data.data?.error
-              ? {html: get_exception_string(response.data.data)}
+              ? { html: get_exception_string(response.data.data) }
               : {
                   text: response.data.msg
                     ? get_api_error_string(response.data.msg)
-                    : get_translation('user_dashboard.payment.email_sent_failed'),
+                    : get_translation(
+                        'user_dashboard.payment.email_sent_failed',
+                      ),
                 },
           );
         }
@@ -284,7 +378,9 @@ const useUserPayment = () => {
       console.error(error);
       handle_api_error(error);
       if (is_app()) {
-        Toast.errorBottom(get_translation('user_dashboard.payment.email_sent_failed'));
+        Toast.errorBottom(
+          get_translation('user_dashboard.payment.email_sent_failed'),
+        );
       } else {
         show_fail_message({
           text: get_translation('user_dashboard.payment.email_sent_failed'),

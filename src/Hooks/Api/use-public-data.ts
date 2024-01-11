@@ -1,28 +1,40 @@
-import {Toast} from '@components/core';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import {useRecoilState} from 'recoil';
-import {get_route_name} from '../../Assets/RouterList';
-import {navigate} from '../../Navigation/appNavigator';
-import {arrayAtomFamily, booleanAtomFamily, objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
-import {get_default_country_code, get_exception_string} from '../../Redux/USER_REDUX/Utils';
+import { useRecoilState } from 'recoil';
+import { get_route_name } from '../../Assets/RouterList';
+import { navigate } from '../../Navigation/appNavigator';
+import {
+  arrayAtomFamily,
+  booleanAtomFamily,
+  objectAtomFamily,
+} from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
+import {
+  get_default_country_code,
+  get_exception_string,
+} from '../../Redux/USER_REDUX/Utils';
 import api from '../../Services/api';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import Toast from '@/Components/Core/Toast';
 
 const usePublicData = () => {
   const [welcomeScreenData, setWelcomeScreenData] = useRecoilState(
     objectAtomFamily(atomKeys.publicData.welcome_screen_data),
   );
-  const [loadingWelcomeScreenData, setLoadingWelcomeScreenData] = useRecoilState(
-    booleanAtomFamily(atomKeys.publicData.loading_welcome_screen_data),
-  );
+  const [loadingWelcomeScreenData, setLoadingWelcomeScreenData] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.publicData.loading_welcome_screen_data),
+    );
 
-  const [privacyTerms, setPrivacyTerms] = useRecoilState(objectAtomFamily(atomKeys.publicData.privacy_terms));
+  const [privacyTerms, setPrivacyTerms] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.privacy_terms),
+  );
   const [loadingPrivacyTerms, setLoadingPrivacyTerms] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_privacy_terms),
   );
 
-  const [referNEarnInfo, setReferNEarnInfo] = useRecoilState(objectAtomFamily(atomKeys.publicData.refer_n_earn_info));
+  const [referNEarnInfo, setReferNEarnInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.refer_n_earn_info),
+  );
   const [loadingReferNEarnInfo, setLoadingReferNEarnInfo] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_refer_n_earn_info),
   );
@@ -30,18 +42,30 @@ const usePublicData = () => {
   const [loadingShareNEarnInfo, setLoadingShareNEarnInfo] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_share_n_earn_info),
   );
-  const [shareNEarnInfo, setShareNEarnInfo] = useRecoilState(objectAtomFamily(atomKeys.publicData.share_n_earn_info));
+  const [shareNEarnInfo, setShareNEarnInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.share_n_earn_info),
+  );
 
-  const [faqs, setFaqs] = useRecoilState(arrayAtomFamily(atomKeys.publicData.faqs));
-  const [loadingFaqs, setLoadingFaqs] = useRecoilState(booleanAtomFamily(atomKeys.publicData.loading_faqs));
+  const [faqs, setFaqs] = useRecoilState(
+    arrayAtomFamily(atomKeys.publicData.faqs),
+  );
+  const [loadingFaqs, setLoadingFaqs] = useRecoilState(
+    booleanAtomFamily(atomKeys.publicData.loading_faqs),
+  );
 
-  const [appSettings, setAppSettings] = useRecoilState(objectAtomFamily(atomKeys.publicData.app_settings));
+  const [appSettings, setAppSettings] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.app_settings),
+  );
   const [loadingAppSettings, setLoadingAppSettings] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_app_settings),
   );
 
-  const [storeCatDetails, setStoreCatDetails] = useRecoilState(objectAtomFamily(atomKeys.publicData.store_cat_details));
-  const [storeCat, setStoreCat] = useRecoilState(objectAtomFamily(atomKeys.publicData.store_cat));
+  const [storeCatDetails, setStoreCatDetails] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.store_cat_details),
+  );
+  const [storeCat, setStoreCat] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.store_cat),
+  );
   const [loadingStoreCatDetails, setLoadingStoreCatDetails] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_store_cat_details),
   );
@@ -53,12 +77,16 @@ const usePublicData = () => {
     booleanAtomFamily(atomKeys.publicData.loading_coupon_cat_details),
   );
 
-  const [dealInfo, setDealInfo] = useRecoilState(objectAtomFamily(atomKeys.publicData.deal_info));
+  const [dealInfo, setDealInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.deal_info),
+  );
   const [loadingDealInfo, setLoadingDealInfo] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_deal_info),
   );
 
-  const [storeDetails, setStoreDetails] = useRecoilState(objectAtomFamily(atomKeys.publicData.store_details));
+  const [storeDetails, setStoreDetails] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.store_details),
+  );
   const [loadingStoreDetails, setLoadingStoreDetails] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_store_details),
   );
@@ -66,9 +94,10 @@ const usePublicData = () => {
   const [filteredCouponData, setFilteredCouponData] = useRecoilState(
     objectAtomFamily(atomKeys.publicData.filtered_coupon_data),
   );
-  const [loadingFilteredCouponData, setLoadingFilteredCouponData] = useRecoilState(
-    booleanAtomFamily(atomKeys.publicData.loading_filtered_coupon_data),
-  );
+  const [loadingFilteredCouponData, setLoadingFilteredCouponData] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.publicData.loading_filtered_coupon_data),
+    );
   const [filteredDealData, setFilteredDealData] = useRecoilState(
     objectAtomFamily(atomKeys.publicData.filtered_Deal_data),
   );
@@ -76,7 +105,9 @@ const usePublicData = () => {
     booleanAtomFamily(atomKeys.publicData.loading_filtered_Deal_data),
   );
 
-  const [dealFilterInfo, setDealFilterInfo] = useRecoilState(objectAtomFamily(atomKeys.publicData.deal_filter_info));
+  const [dealFilterInfo, setDealFilterInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.deal_filter_info),
+  );
   const [loadingDealFilterInfo, setLoadingDealFilterInfo] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_deal_filter_info),
   );
@@ -85,25 +116,38 @@ const usePublicData = () => {
     booleanAtomFamily(atomKeys.metaData.loading_contact_us),
   );
 
-  const [deepLinkUrlData, setDeepLinkUrlData] = useRecoilState(objectAtomFamily(atomKeys.publicData.deep_link_url));
+  const [deepLinkUrlData, setDeepLinkUrlData] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.deep_link_url),
+  );
   const [loadingDeepLinkUrl, setLoadingDeepLinkUrl] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_deep_link_url),
   );
 
-  const [bonusTypes, setBonusTypes] = useRecoilState(objectAtomFamily(atomKeys.publicData.bonus_types));
+  const [bonusTypes, setBonusTypes] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.bonus_types),
+  );
   const [loadingBonusTypes, setLoadingBonusTypes] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_bonus_types),
   );
 
-  const [homeScreenData, setHomeScreenData] = useRecoilState(objectAtomFamily(atomKeys.publicData.home_screen_data));
+  const [homeScreenData, setHomeScreenData] = useRecoilState(
+    objectAtomFamily(atomKeys.publicData.home_screen_data),
+  );
   const [loadingHomeScreenData, setLoadingHomeScreenData] = useRecoilState(
     booleanAtomFamily(atomKeys.publicData.loading_home_screen_data),
   );
   async function request_welcome_screen_data() {
     try {
       setLoadingWelcomeScreenData(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/welcome');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/welcome',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setWelcomeScreenData(res);
         setLoadingWelcomeScreenData(false);
@@ -123,8 +167,15 @@ const usePublicData = () => {
   async function request_privacy_terms() {
     try {
       setLoadingPrivacyTerms(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/privacyTerms');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/privacyTerms',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setPrivacyTerms(res);
         setLoadingPrivacyTerms(false);
@@ -144,8 +195,15 @@ const usePublicData = () => {
   async function request_refer_n_earn_info() {
     try {
       setLoadingReferNEarnInfo(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/referEarn');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/referEarn',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setReferNEarnInfo(res);
         setLoadingReferNEarnInfo(false);
@@ -165,8 +223,15 @@ const usePublicData = () => {
   async function request_share_n_earn_info() {
     try {
       setLoadingShareNEarnInfo(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/shareEarn');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/shareEarn',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setShareNEarnInfo(res);
         setLoadingShareNEarnInfo(false);
@@ -186,8 +251,15 @@ const usePublicData = () => {
   async function request_faqs() {
     try {
       setLoadingFaqs(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/faqs');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/faqs',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setFaqs(res);
         setLoadingFaqs(false);
@@ -207,8 +279,15 @@ const usePublicData = () => {
   async function request_app_settings() {
     try {
       setLoadingAppSettings(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/app/settings');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/app/settings',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setAppSettings(res);
         Config.SHOULD_VERIFY_PHONE = res?.cashback?.should_verify_phone;
@@ -233,8 +312,15 @@ const usePublicData = () => {
     try {
       setLoadingStoreCatDetails(true);
       setStoreCat(store_cat);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/app/stores/' + store_cat_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/app/stores/' + store_cat_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setStoreCatDetails(res);
         navigate('StoreCatDetail');
@@ -255,8 +341,15 @@ const usePublicData = () => {
   async function request_coupon_cat_details(coupon_cat_id) {
     try {
       setLoadingStoreCatDetails(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/app/catInfo/' + coupon_cat_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/app/catInfo/' + coupon_cat_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setCouponCatDetails(res);
         setLoadingCouponCatDetails(false);
@@ -277,8 +370,15 @@ const usePublicData = () => {
   async function request_deal_info(deal_id) {
     try {
       setLoadingDealInfo(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/app/dealInfo/' + deal_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/app/dealInfo/' + deal_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setDealInfo(res);
         setLoadingDealInfo(false);
@@ -298,8 +398,15 @@ const usePublicData = () => {
   async function request_store_details(store_id) {
     try {
       setLoadingStoreDetails(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/app/storeInfo/' + store_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/app/storeInfo/' + store_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setStoreDetails(res);
         setLoadingStoreDetails(false);
@@ -335,8 +442,16 @@ const usePublicData = () => {
         page: coupon_filter_page_no || 1,
         perPage: coupon_filter_per_page || 30,
       };
-      const response = await api.publicPostAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/coupons', body);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicPostAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/coupons',
+        body,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setFilteredCouponData(res);
         setLoadingFilteredCouponData(false);
@@ -377,8 +492,16 @@ const usePublicData = () => {
         max_price: deal_filter_max_price || null,
         seq: deal_filter_sequence || 'ascending',
       };
-      const response = await api.publicPostAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/deals', body);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicPostAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/deals',
+        body,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setFilteredDealData(res);
         setLoadingFilteredDealData(false);
@@ -395,7 +518,10 @@ const usePublicData = () => {
       return {};
     }
   }
-  async function request_deals_filter_info(deal_filter_cats, deal_filter_stores) {
+  async function request_deals_filter_info(
+    deal_filter_cats,
+    deal_filter_stores,
+  ) {
     try {
       setLoadingDealFilterInfo(true);
       let body = {
@@ -403,8 +529,16 @@ const usePublicData = () => {
         store: deal_filter_stores || null,
         is_data: true,
       };
-      const response = await api.publicPostAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/dealsFilter', body);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicPostAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/dealsFilter',
+        body,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setDealFilterInfo(res);
         setLoadingDealFilterInfo(false);
@@ -430,8 +564,16 @@ const usePublicData = () => {
         message: message,
         reason: subject,
       };
-      const response = await api.publicPostAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/contactUs', body);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicPostAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/contactUs',
+        body,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setLoadingContactUs(false);
         Toast.successBottom(translate('request_sent_successfully'));
@@ -457,7 +599,11 @@ const usePublicData = () => {
   async function request_get_id_by_url(obj_type, slug) {
     try {
       setLoadingDeepLinkUrl(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + `/app/deeplink/${obj_type}/${slug}`);
+      const response = await api.publicAPI(
+        Config.API_URL +
+          Config.PUBLIC_PREFIX +
+          `/app/deeplink/${obj_type}/${slug}`,
+      );
       if (response.ok) {
         let route_name = get_route_name(obj_type);
         const res = response.data.data;
@@ -469,17 +615,35 @@ const usePublicData = () => {
             navigate(route_name);
             break;
           case 'CouponCatDetails':
-            if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+            if (
+              response.ok &&
+              response.data.success &&
+              response.data.data &&
+              !response.data.data.error
+            ) {
               request_coupon_cat_details(response.data.data.id);
             }
             break;
           case 'StoreCatDetail':
-            if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
-              request_store_cat_details(response.data.data.id, response.data.data);
+            if (
+              response.ok &&
+              response.data.success &&
+              response.data.data &&
+              !response.data.data.error
+            ) {
+              request_store_cat_details(
+                response.data.data.id,
+                response.data.data,
+              );
             }
             break;
           case 'StoreDetails':
-            if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+            if (
+              response.ok &&
+              response.data.success &&
+              response.data.data &&
+              !response.data.data.error
+            ) {
               request_store_details(response.data.data.id);
             }
             break;
@@ -504,8 +668,15 @@ const usePublicData = () => {
   async function request_bonus_types() {
     try {
       setLoadingBonusTypes(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/bonusTypes');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/bonusTypes',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setBonusTypes(res);
         setLoadingBonusTypes(false);
@@ -525,8 +696,15 @@ const usePublicData = () => {
   async function request_app_home_screen_data() {
     try {
       setLoadingHomeScreenData(true);
-      const response = await api.publicAPI(Config.API_URL + Config.PUBLIC_PREFIX + '/apphome');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await api.publicAPI(
+        Config.API_URL + Config.PUBLIC_PREFIX + '/apphome',
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setHomeScreenData(res);
         setLoadingHomeScreenData(false);

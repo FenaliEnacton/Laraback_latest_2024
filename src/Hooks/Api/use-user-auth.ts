@@ -1,37 +1,56 @@
-import {Toast} from '@components/core';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import {getUniqueId} from 'react-native-device-info';
+import { getUniqueId } from 'react-native-device-info';
 import OneSignal from 'react-native-onesignal';
-import {useRecoilState} from 'recoil';
-import {go_back, navigate, reset} from '../../Navigation/appNavigator';
-import {arrayAtomFamily, booleanAtomFamily, objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
+import { useRecoilState } from 'recoil';
+import { go_back, navigate, reset } from '../../Navigation/appNavigator';
+import {
+  arrayAtomFamily,
+  booleanAtomFamily,
+  objectAtomFamily,
+} from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
 import api from '../../Services/api';
-import {internalApi} from '../../Services/user_api';
-import {getErrorMsg, verificationSuccess} from '../../Utils';
+import { internalApi } from '../../Services/user_api';
+import {
+  getErrorMsg,
+  get_api_error_string,
+  get_exception_string,
+  verificationSuccess,
+} from '../../Utils';
 import useUserDashboard from './use-user-dashboard';
 import useUserFav from './use-user-fav';
+import Toast from '@/Components/Core/Toast';
+import { translate } from '@/translations';
+import Config from '@/react-native-config';
 
 const useUserAuth = () => {
-  const [loadingLogin, setLoadingLogin] = useRecoilState(booleanAtomFamily(atomKeys.userAuth.loadingLogin));
+  const [loadingLogin, setLoadingLogin] = useRecoilState(
+    booleanAtomFamily(atomKeys.userAuth.loadingLogin),
+  );
 
   const [loadingForgotPassword, setLoadingForgotPassword] = useRecoilState(
     booleanAtomFamily(atomKeys.userAuth.loading_forgot_password),
   );
-  const [forgotPassRes, setForgotPassRes] = useRecoilState(booleanAtomFamily(atomKeys.userAuth.forgot_pass_res));
+  const [forgotPassRes, setForgotPassRes] = useRecoilState(
+    booleanAtomFamily(atomKeys.userAuth.forgot_pass_res),
+  );
 
   const [loadingRegistration, setLoadingRegistration] = useRecoilState(
     booleanAtomFamily(atomKeys.userAuth.loading_registration),
   );
-  const [userToken, setUserToken] = useRecoilState(arrayAtomFamily(atomKeys.userAuth.user_token));
+  const [userToken, setUserToken] = useRecoilState(
+    arrayAtomFamily(atomKeys.userAuth.user_token),
+  );
   const [loadingSocialLogin, setLoadingSocialLogin] = useRecoilState(
     booleanAtomFamily(atomKeys.userAuth.loading_social_login),
   );
 
-  const [loadingLogout, setLoadingLogout] = useRecoilState(booleanAtomFamily(atomKeys.userAuth.loading_logout));
-  const [userInfo, setUserInfo] = useRecoilState(objectAtomFamily(atomKeys.userAuth.user_info));
+  const [loadingLogout, setLoadingLogout] = useRecoilState(
+    booleanAtomFamily(atomKeys.userAuth.loading_logout),
+  );
+  const [userInfo, setUserInfo] = useRecoilState<any>(
+    objectAtomFamily(atomKeys.userAuth.user_info),
+  );
   const [userDashboardData, setUserDashboardData] = useRecoilState(
     objectAtomFamily(atomKeys.userAuth.user_dashboard_data),
   );
@@ -43,15 +62,16 @@ const useUserAuth = () => {
   const [userVerificationOtp, setUserVerificationOtp] = useRecoilState(
     booleanAtomFamily(atomKeys.userAuth.user_verification_otp),
   );
-  const [loadingUserVerificationOtp, setLoadingUserVerificationOtp] = useRecoilState(
-    booleanAtomFamily(atomKeys.userAuth.loading_user_verification_otp),
-  );
+  const [loadingUserVerificationOtp, setLoadingUserVerificationOtp] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userAuth.loading_user_verification_otp),
+    );
   const [loadingUserEmailOtp, setLoadingUserEmailOtp] = useRecoilState(
     booleanAtomFamily(atomKeys.userAuth.loading_user_email_otp),
   );
 
-  const {request_user_dashboard, request_user_modules} = useUserDashboard();
-  const {request_user_fav} = useUserFav();
+  const { request_user_dashboard, request_user_modules } = useUserDashboard();
+  const { request_user_fav } = useUserFav();
 
   async function request_user_login(email, password, out_page_info) {
     try {
@@ -61,25 +81,26 @@ const useUserAuth = () => {
         password: password,
         device_name: getUniqueId,
       });
-      if (response.ok && response.data.success && response.data.data && !response.data?.data?.error) {
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data?.data?.error
+      ) {
         const res = response.data.data;
         internalApi.setHeader('Authorization', 'Bearer ' + res);
         // ////////////////////////
-        OneSignal.setExternalUserId(email, results => {
-          // The results will contain push and email success statuses
-          console.log('Results of setting external user id');
-          console.log(results);
-        });
-        OneSignal.setEmail(email);
+        OneSignal.OneSignal.login(email);
+        OneSignal.OneSignal.User.addEmail(email);
         // //////////////////
         request_user_dashboard(true);
         request_user_fav('store');
 
         if (out_page_info) {
           go_back();
-          navigate('OutPage', {out_page_info: out_page_info});
+          navigate('OutPage', { out_page_info: out_page_info });
         } else {
-          reset({index: 0, routes: [{name: 'Home'}]});
+          reset({ index: 0, routes: [{ name: 'Home' }] });
         }
         await AsyncStorage.setItem(
           'USER_AUTH',
@@ -101,7 +122,9 @@ const useUserAuth = () => {
           Toast.errorBottom(response.data?.data?.error?.email[0]);
         } else {
           Toast.errorBottom(
-            response.data?.data?.message ? response.data?.data?.message : translate('login_request_failed'),
+            response.data?.data?.message
+              ? response.data?.data?.message
+              : translate('login_request_failed'),
           );
         }
         setUserToken([]);
@@ -122,8 +145,13 @@ const useUserAuth = () => {
         email: email,
         otp: otp,
       });
-      console.log({first: response});
-      if (response.ok && response.data.success && response.data.data && !response.data?.data?.error) {
+      console.log({ first: response });
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data?.data?.error
+      ) {
         const res = response.data.data;
         setForgotPassRes(true);
         Toast.showTop(translate('Otp_sent_to_your_mail'));
@@ -134,7 +162,9 @@ const useUserAuth = () => {
           Toast.errorBottom(response.data?.data?.error?.email[0]);
         } else {
           Toast.errorBottom(
-            response.data?.data?.message ? response.data?.data?.message : translate('login_request_failed'),
+            response.data?.data?.message
+              ? response.data?.data?.message
+              : translate('login_request_failed'),
           );
         }
         setForgotPassRes(false);
@@ -149,7 +179,12 @@ const useUserAuth = () => {
     }
   }
 
-  async function request_user_registration(email, password, mobile, referrer_code) {
+  async function request_user_registration(
+    email,
+    password,
+    mobile,
+    referrer_code,
+  ) {
     try {
       setLoadingRegistration(true);
       const response = await api.user_auth_api('auth/register', {
@@ -159,16 +194,17 @@ const useUserAuth = () => {
         referrer_code: referrer_code,
         device_name: getUniqueId,
       });
-      if (response.ok && response.data.success && response.data.data && !response.data?.data?.error) {
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data?.data?.error
+      ) {
         const res = response.data.data;
         internalApi.setHeader('Authorization', 'Bearer ' + res);
         // ////////////////////////
-        OneSignal.setExternalUserId(email, results => {
-          // The results will contain push and email success statuses
-          console.log('Results of setting external user id');
-          console.log(results);
-        });
-        OneSignal.setEmail(email);
+        OneSignal.OneSignal.login(email);
+        OneSignal.OneSignal.User.addEmail(email);
         // //////////////////
 
         request_user_dashboard(true);
@@ -197,7 +233,9 @@ const useUserAuth = () => {
           Toast.errorBottom(response.data?.data?.error?.referrer_code[0]);
         } else {
           Toast.errorBottom(
-            response.data?.data?.message ? response.data?.data?.message : translate('registration_request_failed'),
+            response.data?.data?.message
+              ? response.data?.data?.message
+              : translate('registration_request_failed'),
           );
         }
         setUserToken([]);
@@ -225,12 +263,11 @@ const useUserAuth = () => {
   ) {
     try {
       setLoadingSocialLogin(true);
-      const response = await api.user_auth_api('auth/exists', {
+      const user_exist_response = await api.user_auth_api('auth/exists', {
         email: email,
         provider_id: social_id,
         provider_type: social_type,
       });
-      console.log({first: response});
       if (
         (user_exist_response.ok &&
           user_exist_response.data.success &&
@@ -239,7 +276,7 @@ const useUserAuth = () => {
         (!user_exist_response.data.data && is_verified) ||
         social_type === 'apple'
       ) {
-        const response = await api.user_auth_api('auth/social', {
+        const response: any = await api.user_auth_api('auth/social', {
           email: email,
           provider_id: social_id,
           provider_type: social_type,
@@ -248,18 +285,21 @@ const useUserAuth = () => {
           phone_number: mobile,
           device_name: getUniqueId,
         });
-        console.log({response});
         const res = response.data.data;
-        if (response.ok && response.data.success && response.data.data && !response.data?.data?.error) {
-          internalApi.setHeader('Authorization', 'Bearer ' + response.data.data);
+        if (
+          response.ok &&
+          response.data.success &&
+          response.data.data &&
+          !response.data?.data?.error
+        ) {
+          internalApi.setHeader(
+            'Authorization',
+            'Bearer ' + response.data.data,
+          );
           setUserToken(response.data.data);
           // ////////////////////////
-          OneSignal.setExternalUserId(email, results => {
-            // The results will contain push and email success statuses
-            console.log('Results of setting external user id');
-            console.log(results);
-          });
-          OneSignal.setEmail(email);
+          OneSignal.OneSignal.login(email);
+          OneSignal.OneSignal.User.addEmail(email);
 
           // //////////////////
 
@@ -281,9 +321,9 @@ const useUserAuth = () => {
           );
           if (out_page_info) {
             go_back();
-            navigate('OutPage', {out_page_info: out_page_info});
+            navigate('OutPage', { out_page_info: out_page_info });
           } else {
-            reset({index: 0, routes: [{name: 'Home'}]});
+            reset({ index: 0, routes: [{ name: 'Home' }] });
           }
         } else {
           if (response.data?.data?.error?.email) {
@@ -292,7 +332,9 @@ const useUserAuth = () => {
             Toast.errorBottom(response.data?.data?.error?.phone_number[0]);
           } else {
             Toast.errorBottom(
-              response.data?.data?.message ? response.data?.data?.message : translate('login_request_failed'),
+              response.data?.data?.message
+                ? response.data?.data?.message
+                : translate('login_request_failed'),
             );
           }
           setUserToken([]);
@@ -300,11 +342,13 @@ const useUserAuth = () => {
         setLoadingSocialLogin(false);
         return res;
       } else {
-        if (response.data?.data?.error?.email) {
-          Toast.errorBottom(response.data?.data?.error?.email[0]);
+        if (user_exist_response.data?.data?.error?.email) {
+          Toast.errorBottom(user_exist_response.data?.data?.error?.email[0]);
         } else {
           Toast.errorBottom(
-            response.data?.data?.message ? response.data?.data?.message : translate('login_request_failed'),
+            user_exist_response.data?.data?.message
+              ? user_exist_response.data?.data?.message
+              : translate('login_request_failed'),
           );
         }
         setUserToken([]);
@@ -327,17 +371,11 @@ const useUserAuth = () => {
       });
       if (response.ok && response.data.success && response.data.data) {
         Toast.showBottom(translate('log_out_successfully'));
-        OneSignal.removeExternalUserId(results => {
-          // The results will contain push and email success statuses
-          console.log('Results of removing external user id');
-          console.log(results);
-        });
-        OneSignal.logoutEmail(error => {
-          //handle error if it occurred
-          console.log(error);
-        });
+        OneSignal.OneSignal.logout();
+        OneSignal.OneSignal.User.removeEmail(userInfo.email);
+
         ///////////
-        reset({index: 0, routes: [{name: 'Home'}]});
+        reset({ index: 0, routes: [{ name: 'Home' }] });
         internalApi.setHeader('Authorization', '');
         await AsyncStorage.removeItem('USER_AUTH');
         setUserToken([]);
@@ -364,7 +402,11 @@ const useUserAuth = () => {
     }
   }
 
-  async function request_forgot_change_password(email, password, change_pass_otp) {
+  async function request_forgot_change_password(
+    email,
+    password,
+    change_pass_otp,
+  ) {
     try {
       setLoadingForgotChangePass(true);
       const response = await api.user_auth_api('auth/password/update', {
@@ -372,11 +414,16 @@ const useUserAuth = () => {
         password: password,
         otp: Number(change_pass_otp),
       });
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         Toast.successBottom(translate('password_changed_successfully'));
         navigate('Login');
         setLoadingForgotChangePass(false);
-        return res;
+        return true;
       } else {
         Toast.errorBottom(
           response.data.data?.error
@@ -405,6 +452,7 @@ const useUserAuth = () => {
     is_social,
     social_id,
     social_type,
+    is_module_verify,
   ) {
     try {
       const action = {
@@ -419,8 +467,8 @@ const useUserAuth = () => {
         social_type,
       };
       setLoadingUserVerificationOtp(true);
-      let e_response = {};
-      let m_response = {};
+      let e_response: any = {};
+      let m_response: any = {};
       e_response = Config.SHOULD_VERIFY_EMAIL
         ? await api.user_auth_api('auth/otp/email', {
             email: email,
@@ -446,31 +494,51 @@ const useUserAuth = () => {
         ) {
           is_module_verify
             ? setUserVerificationOtp(true)
-            : verificationSuccess('Otp_sent_to_your_mail_and_contact_no', action);
+            : verificationSuccess(
+                'Otp_sent_to_your_mail_and_contact_no',
+                action,
+              );
         } else {
-          let message = getErrorMsg(e_response) + '\n' + getErrorMsg(m_response);
+          let message =
+            getErrorMsg(e_response) + '\n' + getErrorMsg(m_response);
           setUserVerificationOtp(false);
-          Toast.errorBottom(message ? message : translate('otp_request_failed'));
+          Toast.errorBottom(
+            message ? message : translate('otp_request_failed'),
+          );
         }
       } else if (Config.SHOULD_VERIFY_EMAIL) {
-        if (e_response.ok && e_response.data.success && e_response.data.data && !e_response.data.data.error) {
-          action.payload.is_module_verify
+        if (
+          e_response.ok &&
+          e_response.data.success &&
+          e_response.data.data &&
+          !e_response.data.data.error
+        ) {
+          is_module_verify
             ? setUserVerificationOtp(true)
             : verificationSuccess('Otp_sent_to_your_mail', action);
         } else {
           let message = getErrorMsg(e_response);
           setUserVerificationOtp(false);
-          Toast.errorBottom(message ? message : translate('otp_request_failed'));
+          Toast.errorBottom(
+            message ? message : translate('otp_request_failed'),
+          );
         }
       } else if (Config.SHOULD_VERIFY_PHONE) {
-        if (m_response.ok && m_response.data.success && m_response.data.data && !m_response.data.data.error) {
-          action.payload.is_module_verify
+        if (
+          m_response.ok &&
+          m_response.data.success &&
+          m_response.data.data &&
+          !m_response.data.data.error
+        ) {
+          is_module_verify
             ? setUserVerificationOtp(true)
             : verificationSuccess('Otp_sent_to_your_phone', action);
         } else {
           let message = getErrorMsg(m_response);
           setUserVerificationOtp(false);
-          Toast.errorBottom(message ? message : translate('otp_request_failed'));
+          Toast.errorBottom(
+            message ? message : translate('otp_request_failed'),
+          );
         }
       }
       setLoadingUserVerificationOtp(false);
@@ -484,14 +552,14 @@ const useUserAuth = () => {
     }
   }
 
-  async function request_forgot_pass_email(email, otp) {
+  async function request_user_email_otp(email, otp) {
     try {
       setLoadingUserEmailOtp(true);
       const response = await api.user_auth_api('auth/otp/verify', {
         email: email,
         otp: otp,
       });
-      console.log({first: response});
+      console.log({ first: response });
       if (response.ok && response.data.success && response.data.data) {
         const res = response.data.data;
         Toast.successBottom(translate('Otp_sent_to_your_mail'));
@@ -529,7 +597,7 @@ const useUserAuth = () => {
     request_user_register_verification,
     loadingUserVerificationOtp,
     userVerificationOtp,
-    request_forgot_pass_email,
+    request_user_email_otp,
     loadingUserEmailOtp,
   };
 };

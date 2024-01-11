@@ -1,52 +1,67 @@
-import {useRecoilState} from 'recoil';
-import {arrayAtomFamily, booleanAtomFamily, objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
-import user_api from '../../Services/user_api';
+import { useRecoilState } from 'recoil';
 import {
-  get_api_error_string,
-  get_exception_string,
-  get_translation,
-  handle_api_error,
-  is_app,
-  show_success_message_with_reload,
-} from '../../Utils';
-import {navigate} from '../../Navigation/appNavigator';
-import {Toast} from '@components/core';
-import {translate} from '@translations';
+  arrayAtomFamily,
+  booleanAtomFamily,
+  objectAtomFamily,
+} from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
+import user_api from '../../Services/user_api';
+import { handle_api_error } from '../../Utils';
 
 const useUserFav = () => {
-  const [loadingUserFav, setLoadingUserFav] = useRecoilState(booleanAtomFamily(atomKeys.userFav.loading_user_fav));
-  const [userFavData, setUserFavData] = useRecoilState(arrayAtomFamily(atomKeys.userFav.user_fav_data));
-  const [userInfo, setUserInfo] = useRecoilState(objectAtomFamily(atomKeys.userAuth.user_info));
+  const [loadingUserFav, setLoadingUserFav] = useRecoilState(
+    booleanAtomFamily(atomKeys.userFav.loading_user_fav),
+  );
+  const [userFavData, setUserFavData] = useRecoilState(
+    arrayAtomFamily(atomKeys.userFav.user_fav_data),
+  );
+  const [userInfo, setUserInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.userAuth.user_info),
+  );
 
   const [loadingUserAddFav, setLoadingUserAddFav] = useRecoilState(
     booleanAtomFamily(atomKeys.userFav.loading_user_add_fav),
   );
-  const [userFavAdded, setUserFavAdded] = useRecoilState(booleanAtomFamily(atomKeys.userFav.user_fav_added));
+  const [userFavAdded, setUserFavAdded] = useRecoilState(
+    booleanAtomFamily(atomKeys.userFav.user_fav_added),
+  );
 
   const [loadingUserRemoveFav, setLoadingUserRemoveFav] = useRecoilState(
     booleanAtomFamily(atomKeys.userFav.loading_user_remove_fav),
   );
-  const [userFavRemoved, setUserFavRemoved] = useRecoilState(booleanAtomFamily(atomKeys.userFav.user_fav_removed));
+  const [userFavRemoved, setUserFavRemoved] = useRecoilState(
+    booleanAtomFamily(atomKeys.userFav.user_fav_removed),
+  );
 
   async function request_user_fav(fav_type) {
     try {
       setLoadingUserFav(true);
-      const response = await user_api.user_dashboard_api('user.fav.list', fav_type);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.fav.list',
+        fav_type,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data;
         setUserFavData(res);
         setUserInfo(response.data.user);
         setLoadingUserFav(false);
         return res;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.fav.list');
-        setUserFavData({});
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.fav.list',
+        );
+        setUserFavData([]);
         setLoadingUserFav(false);
         return {};
       }
     } catch (error) {
-      setUserFavData({});
+      setUserFavData([]);
       setLoadingUserFav(false);
       console.error(error);
       handle_api_error(error);
@@ -56,15 +71,27 @@ const useUserFav = () => {
   async function request_user_add_fav(fav_type, fav_id) {
     try {
       setLoadingUserAddFav(true);
-      const response = await user_api.user_dashboard_post_api('user.fav.add', {}, fav_type + '/' + fav_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_post_api(
+        'user.fav.add',
+        {},
+        fav_type + '/' + fav_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         request_user_fav(fav_type);
         setUserFavAdded(true);
         setUserInfo(response.data.user);
         setLoadingUserAddFav(false);
         return true;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.fav.add');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.fav.add',
+        );
         setUserFavAdded(false);
         setLoadingUserAddFav(false);
         return false;
@@ -80,15 +107,27 @@ const useUserFav = () => {
   async function request_user_remove_fav(fav_type, fav_id) {
     try {
       setLoadingUserRemoveFav(true);
-      const response = await user_api.user_dashboard_post_api('user.fav.remove', {}, fav_type + '/' + fav_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      const response = await user_api.user_dashboard_post_api(
+        'user.fav.remove',
+        {},
+        fav_type + '/' + fav_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         request_user_fav(fav_type);
         setUserFavRemoved(true);
         setUserInfo(response.data.user);
         setLoadingUserRemoveFav(false);
         return true;
       } else {
-        handle_api_error(response.problem + response.data?.error, 'user.fav.remove');
+        handle_api_error(
+          response.problem + response.data?.error,
+          'user.fav.remove',
+        );
         setUserFavRemoved(false);
         setLoadingUserRemoveFav(false);
         return false;

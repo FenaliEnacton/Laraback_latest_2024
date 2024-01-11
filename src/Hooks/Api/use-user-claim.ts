@@ -1,6 +1,10 @@
-import {useRecoilState} from 'recoil';
-import {arrayAtomFamily, booleanAtomFamily, objectAtomFamily} from '../../Recoil/atom';
-import {atomKeys} from '../../Recoil/atom-keys';
+import { useRecoilState } from 'recoil';
+import {
+  arrayAtomFamily,
+  booleanAtomFamily,
+  objectAtomFamily,
+} from '../../Recoil/atom';
+import { atomKeys } from '../../Recoil/atom-keys';
 import user_api from '../../Services/user_api';
 import {
   get_api_error_string,
@@ -8,31 +12,41 @@ import {
   get_translation,
   handle_api_error,
   is_app,
+  show_fail_message,
   show_success_message_with_reload,
 } from '../../Utils';
-import {navigate} from '../../Navigation/appNavigator';
-import {Toast} from '@components/core';
+import { navigate } from '../../Navigation/appNavigator';
+import Toast from '@/Components/Core/Toast';
 
 const useUserClaim = () => {
   const [loadingUserClaimList, setLoadingUserClaimList] = useRecoilState(
     booleanAtomFamily(atomKeys.userClaim.loading_user_claim_list),
   );
-  const [userClaimList, setUserClaimList] = useRecoilState(arrayAtomFamily(atomKeys.userClaim.user_claim_list));
-  const [userInfo, setUserInfo] = useRecoilState(objectAtomFamily(atomKeys.userAuth.user_info));
+  const [userClaimList, setUserClaimList] = useRecoilState<any>(
+    arrayAtomFamily(atomKeys.userClaim.user_claim_list),
+  );
+  const [userInfo, setUserInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.userAuth.user_info),
+  );
 
   const [loadingUserClaimInfo, setLoadingUserClaimInfo] = useRecoilState(
     booleanAtomFamily(atomKeys.userClaim.loading_user_claim_info),
   );
-  const [userClaimInfo, setUserClaimInfo] = useRecoilState(objectAtomFamily(atomKeys.userClaim.user_claim_info));
+  const [userClaimInfo, setUserClaimInfo] = useRecoilState(
+    objectAtomFamily(atomKeys.userClaim.user_claim_info),
+  );
 
   const [loadingUserClaimStores, setLoadingUserClaimStores] = useRecoilState(
     booleanAtomFamily(atomKeys.userClaim.loading_user_claim_stores),
   );
-  const [userClaimStores, setUserClaimStores] = useRecoilState(objectAtomFamily(atomKeys.userClaim.user_claim_stores));
-
-  const [loadingUserClaimStoresClicks, setLoadingUserClaimStoresClicks] = useRecoilState(
-    booleanAtomFamily(atomKeys.userClaim.loading_user_claim_stores_clicks),
+  const [userClaimStores, setUserClaimStores] = useRecoilState(
+    objectAtomFamily(atomKeys.userClaim.user_claim_stores),
   );
+
+  const [loadingUserClaimStoresClicks, setLoadingUserClaimStoresClicks] =
+    useRecoilState(
+      booleanAtomFamily(atomKeys.userClaim.loading_user_claim_stores_clicks),
+    );
   const [userClaimStoresClicks, setUserClaimStoresClicks] = useRecoilState(
     objectAtomFamily(atomKeys.userClaim.user_claim_stores_clicks),
   );
@@ -46,7 +60,12 @@ const useUserClaim = () => {
         'user.claim.list',
         '?page=' + page_no + '&perPage=' + per_page,
       );
-      if (response.ok && response.data.success && response.data.data && !response.data.error) {
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.error
+      ) {
         const res = response.data.data.data;
         if (response.data.data.current_page != 1) {
           setUserClaimList([...userClaimList, ...res]);
@@ -71,8 +90,16 @@ const useUserClaim = () => {
   async function request_claim_info(user_claim_id) {
     try {
       setLoadingUserClaimInfo(true);
-      const response = await user_api.user_dashboard_api('user.claim.info', user_claim_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.claim.info',
+        user_claim_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         navigate('ViewMissingClaim');
         setUserClaimInfo(res);
@@ -97,7 +124,12 @@ const useUserClaim = () => {
     try {
       setLoadingUserClaimStores(true);
       const response = await user_api.user_dashboard_api('user.claim.stores');
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         let default_store_id = response.data.data[0]?.store_id;
         request_user_claim_store_clicks(default_store_id);
@@ -120,11 +152,21 @@ const useUserClaim = () => {
     }
   }
 
-  async function request_user_claim_store_clicks(user_claims_store_clicks_store_id) {
+  async function request_user_claim_store_clicks(
+    user_claims_store_clicks_store_id,
+  ) {
     try {
       setLoadingUserClaimStoresClicks(true);
-      const response = await user_api.user_dashboard_api('user.claim.store.clicks', user_claims_store_clicks_store_id);
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await user_api.user_dashboard_api(
+        'user.claim.store.clicks',
+        user_claims_store_clicks_store_id,
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         const res = response.data.data;
         setUserClaimStoresClicks(res);
         setUserInfo(response.data.user);
@@ -177,12 +219,24 @@ const useUserClaim = () => {
         // type: 'image/jpeg',
         uri: receipt.uri,
       });
-      const response = await user_api.user_dashboard_post_api('user.claim.make', form_body, '', {
-        'Content-Type': 'multipart/form-data',
-      });
-      if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
+      const response = await user_api.user_dashboard_post_api(
+        'user.claim.make',
+        form_body,
+        '',
+        {
+          'Content-Type': 'multipart/form-data',
+        },
+      );
+      if (
+        response.ok &&
+        response.data.success &&
+        response.data.data &&
+        !response.data.data.error
+      ) {
         if (is_app()) {
-          Toast.successBottom(get_translation('user_dashboard.claim.create_claim_success'));
+          Toast.successBottom(
+            get_translation('user_dashboard.claim.create_claim_success'),
+          );
           navigate('MissingClaims');
         } else {
           await show_success_message_with_reload({
@@ -206,11 +260,13 @@ const useUserClaim = () => {
         } else {
           show_fail_message(
             response.data.data?.error
-              ? {html: get_exception_string(response.data.data)}
+              ? { html: get_exception_string(response.data.data) }
               : {
                   text: response.data.msg
                     ? get_api_error_string(response.data.msg)
-                    : get_translation('user_dashboard.claim.claim_request_failed'),
+                    : get_translation(
+                        'user_dashboard.claim.claim_request_failed',
+                      ),
                 },
           );
         }
@@ -220,7 +276,9 @@ const useUserClaim = () => {
     } catch (error) {
       setLoadingUserClaimMake(false);
       if (is_app()) {
-        Toast.errorBottom(get_translation('user_dashboard.claim.claim_request_failed'));
+        Toast.errorBottom(
+          get_translation('user_dashboard.claim.claim_request_failed'),
+        );
       } else {
         show_fail_message({
           text: get_translation('user_dashboard.claim.claim_request_failed'),
