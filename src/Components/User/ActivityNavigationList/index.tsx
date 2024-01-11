@@ -1,16 +1,15 @@
-import React, {useState} from 'react';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import { translate } from '@/translations';
+import React from 'react';
 import {
+  Dimensions,
+  I18nManager,
   StyleSheet,
   Text,
-  Dimensions,
   TouchableOpacity,
-  I18nManager,
   View,
-  Platform,
 } from 'react-native';
-import Icon from '@assets/icons';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 
 function ActivityNavigationList(props) {
@@ -30,11 +29,11 @@ function ActivityNavigationList(props) {
             }}
             style={[
               styles.navBtn,
-              i === lists.length - 1 ? {borderBottomWidth: 0} : {},
+              i === lists.length - 1 ? { borderBottomWidth: 0 } : {},
             ]}
             key={i.toString() + item.id}>
             <Text style={styles.title}>{translate(item.title)}</Text>
-            <Icon.AntDesign
+            <Icons.AntDesign
               style={styles.icon}
               name={I18nManager.isRTL ? 'left' : 'right'}
               color={Theme.COLORS.black}

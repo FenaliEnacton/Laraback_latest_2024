@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ContentLoader from 'react-content-loader';
 import {
   Dimensions,
   Image,
@@ -15,7 +14,7 @@ import { navigate } from '@/Navigation/appNavigator';
 import { request_get_id_by_url } from '@/Redux/Actions/publicDataActions';
 import { is_user_logged_in } from '@/Redux/Selectors';
 import Config from '@/react-native-config';
-import { Rect } from 'react-content-loader/native';
+import ContentLoader, { Rect } from 'react-content-loader/native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 export let _carousel = React.createRef();
 class HomeCarousel extends Component<any> {

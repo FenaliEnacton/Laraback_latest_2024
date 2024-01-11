@@ -1,25 +1,23 @@
-import React from 'react';
-import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
-import {connect} from 'react-redux';
-import {AppImages} from '@assets/Images';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import {user_reward_amount} from '@user_redux/Selectors';
+import { Theme } from '@/Assets/Theme';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
 import dayjs from 'dayjs';
-import {Theme} from '@assets/Theme';
+import React from 'react';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { connect } from 'react-redux';
 const windowWidth = Dimensions.get('window').width;
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     user_claim_info: params.user_claim_info || {},
     user_claim_id: params.user_claim_id || '',
   };
 };
 
-const ClaimInfo = (props) => {
-  const {user_claim_info, user_claim_id} = props;
+const ClaimInfo = props => {
+  const { user_claim_info, user_claim_id } = props;
   return (
     <View style={styles.cashbackEarnedView}>
       <View style={styles.topTab}>
@@ -51,7 +49,7 @@ const ClaimInfo = (props) => {
             <Text
               style={[
                 styles.amount,
-                {color: Theme.get_status_dark_color(user_claim_info.status)},
+                { color: Theme.get_status_dark_color(user_claim_info.status) },
               ]}>
               {user_claim_info.status}
             </Text>

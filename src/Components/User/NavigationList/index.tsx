@@ -1,24 +1,17 @@
-import React, {useState} from 'react';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import LogoutModal from '@/Components/Core/LogoutModal';
+import { translate } from '@/translations';
+import React, { useState } from 'react';
 import {
+  Dimensions,
+  FlatList,
+  Platform,
   StyleSheet,
   Text,
-  Dimensions,
   TouchableOpacity,
-  Image,
-  I18nManager,
   View,
-  Platform,
-  FlatList,
-  Easing,
 } from 'react-native';
-import Icon from '@assets/icons';
-import {translate} from '@translations';
-import {LogoutModal} from '@components/core';
-import {Theme} from '@assets/Theme';
-import Config from 'react-native-config';
-import _ from 'lodash';
-import FastImage from 'react-native-fast-image';
-import {SimpleAnimation} from 'react-native-simple-animations';
 const windowWidth = Dimensions.get('window').width;
 
 function NavigationList(props) {
@@ -43,7 +36,7 @@ function NavigationList(props) {
         data={lists}
         numColumns={props.numberColumn ? props.numberColumn : 3}
         keyExtractor={(item, index) => index.toString()}
-        renderItem={({item, index}) => {
+        renderItem={({ item, index }) => {
           return (
             <TouchableOpacity
               style={[styles.navCard, props.style]}
@@ -53,9 +46,9 @@ function NavigationList(props) {
               <View
                 style={[
                   styles.iconCircle,
-                  {backgroundColor: Theme.bg_gradient_color(index, 2)},
+                  { backgroundColor: Theme.bg_gradient_color(index, 2) },
                 ]}>
-                <Icon.MaterialCommunityIcons
+                <Icons.MaterialCommunityIcons
                   name={item.icon}
                   size={18}
                   color={Theme.bg_gradient_color(index, 3)}

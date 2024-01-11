@@ -1,7 +1,6 @@
 import { Theme } from '@/Assets/Theme';
 import React from 'react';
-import ContentLoader from 'react-content-loader';
-import { Rect } from 'react-content-loader/native';
+import ContentLoader, { Rect } from 'react-content-loader/native';
 import { Dimensions, ScrollView, StyleSheet, View } from 'react-native';
 
 const windowWidth = Dimensions.get('window').width;

@@ -12,8 +12,7 @@ import {
 import Config from '@/react-native-config';
 import { translate } from '@/translations';
 import React from 'react';
-import ContentLoader from 'react-content-loader';
-import { Rect } from 'react-content-loader/native';
+import ContentLoader, { Rect } from 'react-content-loader/native';
 import {
   Image,
   Platform,

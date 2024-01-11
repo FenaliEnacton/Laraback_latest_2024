@@ -1,52 +1,51 @@
+import { Theme } from '@/Assets/Theme';
+import { user_reward_amount } from '@/Redux/Selectors';
+import { translate } from '@/translations';
 import React from 'react';
-import {StyleSheet, Text, View, Image, Dimensions} from 'react-native';
-import {connect} from 'react-redux';
-import {AppImages} from '@assets/Images';
-import {translate} from '@translations';
-import {user_cashback_amount} from '@user_redux/Selectors';
-import {Theme} from '@assets/Theme';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { connect } from 'react-redux';
 const windowWidth = Dimensions.get('window').width;
 
-const CashbackEarned = (props) => {
-  const {user_cashback_data} = props;
+const mapDispatchToProps = {};
+
+const mapStateToProps = ({ params }) => {
+  return {
+    user_reward_data: params.user_dashboard_data
+      ? user_reward_amount(params.user_dashboard_data)
+      : {},
+  };
+};
+
+const CashbackEarned = props => {
+  const { user_reward_data } = props;
   return (
     <View style={styles.cashbackEarnedView}>
       <View style={styles.topTab}>
         <Text style={styles.cashbackSubTitle}>
-          {translate('total_cashback_earned')}
+          {translate('total_reward_earned')}
         </Text>
-        <Text style={styles.totalText}>{user_cashback_data.total}</Text>
+        <Text style={styles.totalText}>{user_reward_data.total}</Text>
       </View>
       <View style={styles.bottomTab}>
         <View style={styles.cashbackInfo}>
           <View style={styles.pendingBox}>
-            <Text style={styles.statusType}>{translate('paid_cb')}</Text>
-            <Text style={styles.amount}>{user_cashback_data.paid}</Text>
+            <Text style={styles.statusType}>{translate('paid_re')}</Text>
+            <Text style={styles.amount}>{user_reward_data.paid}</Text>
           </View>
           <View style={styles.pendingBoxCenter}>
-            <Text style={styles.statusType}>{translate('pending_cb')}</Text>
-            <Text style={styles.amount}>{user_cashback_data.pending}</Text>
+            <Text style={styles.statusType}>{translate('pending_re')}</Text>
+            <Text style={styles.amount}>{user_reward_data.pending}</Text>
           </View>
           <View style={styles.pendingBox}>
             <Text style={styles.statusType}>
               {translate('available_payment')}
             </Text>
-            <Text style={styles.amount}>{user_cashback_data.confirmed}</Text>
+            <Text style={styles.amount}>{user_reward_data.confirmed}</Text>
           </View>
         </View>
       </View>
     </View>
   );
-};
-
-const mapDispatchToProps = {};
-
-const mapStateToProps = ({params}) => {
-  return {
-    user_cashback_data: params.user_dashboard_data
-      ? user_cashback_amount(params.user_dashboard_data)
-      : {},
-  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CashbackEarned);
@@ -55,7 +54,6 @@ const styles = StyleSheet.create({
   cashbackEarnedView: {
     width: windowWidth - 20,
     ...Theme.appStyle.userWhiteCard,
-    marginTop: 10,
   },
   topTab: {
     flexDirection: 'row',
@@ -64,7 +62,6 @@ const styles = StyleSheet.create({
   },
   cashbackSubTitle: {
     ...Theme.fontStyles.h2Bold,
-    paddingTop: 0,
   },
   totalText: {
     ...Theme.fontStyles.h2Bold,
@@ -75,12 +72,17 @@ const styles = StyleSheet.create({
     width: '100%',
     marginTop: 10,
   },
+  image: {
+    height: 60,
+    width: 60,
+    resizeMode: 'contain',
+    marginLeft: 10,
+  },
   cashbackInfo: {
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     width: windowWidth - 50,
     alignItems: 'center',
-    alignSelf: 'center',
   },
   pendingBox: {
     alignItems: 'center',

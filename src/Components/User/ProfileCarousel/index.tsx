@@ -1,26 +1,21 @@
-import React, {useState} from 'react';
+import { Theme } from '@/Assets/Theme';
+import { user_cashback_amount, user_reward_amount } from '@/Redux/Selectors';
+import { translate } from '@/translations';
+import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
   Dimensions,
+  StyleSheet,
+  Text,
   TouchableOpacity,
-  Image,
-  ImageBackground,
+  View,
 } from 'react-native';
-import {AppImages} from '@assets/Images';
-import {Theme} from '@assets/Theme';
-import {connect} from 'react-redux';
-import {translate} from '@translations';
-import {user_cashback_amount} from '@user_redux/Selectors';
-import {user_reward_amount} from '@user_redux/Selectors';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { connect } from 'react-redux';
 
-const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     user_cashback_data: params.user_dashboard_data
       ? user_cashback_amount(params.user_dashboard_data)
@@ -31,7 +26,7 @@ const mapStateToProps = ({params}) => {
   };
 };
 export const Carousel1 = props => {
-  const {user_cashback_data} = props;
+  const { user_cashback_data } = props;
   return (
     <View style={styles.cardContainer}>
       <View style={styles.balanceCard}>
@@ -40,16 +35,19 @@ export const Carousel1 = props => {
             {translate('total_cashback_earned')}
           </Text>
           <Text
-            style={[styles.TotalEarningText, {color: Theme.COLORS.secondary}]}>
+            style={[
+              styles.TotalEarningText,
+              { color: Theme.COLORS.secondary },
+            ]}>
             {user_cashback_data.total}
           </Text>
         </View>
         <View style={styles.cashbackCard}>
-          <View style={{marginHorizontal: 5}}>
+          <View style={{ marginHorizontal: 5 }}>
             <Text style={styles.pendingAmount}>{user_cashback_data.paid}</Text>
             <Text style={styles.cashbackTypeText}>{translate('paid_cb')}</Text>
           </View>
-          <View style={{marginHorizontal: 5}}>
+          <View style={{ marginHorizontal: 5 }}>
             <Text style={styles.pendingAmount}>
               {user_cashback_data.pending}
             </Text>
@@ -57,7 +55,7 @@ export const Carousel1 = props => {
               {translate('pending_cb')}
             </Text>
           </View>
-          <View style={{marginHorizontal: 5}}>
+          <View style={{ marginHorizontal: 5 }}>
             <Text style={styles.pendingAmount}>
               {user_cashback_data.confirmed}
             </Text>
@@ -71,7 +69,7 @@ export const Carousel1 = props => {
   );
 };
 export const Carousel2 = props => {
-  const {user_reward_data} = props;
+  const { user_reward_data } = props;
   return (
     <View style={styles.cardContainer}>
       <View style={styles.balanceCard}>
@@ -81,22 +79,25 @@ export const Carousel2 = props => {
             {translate('total_reward_earned')}
           </Text>
           <Text
-            style={[styles.TotalEarningText, {color: Theme.COLORS.secondary}]}>
+            style={[
+              styles.TotalEarningText,
+              { color: Theme.COLORS.secondary },
+            ]}>
             {user_reward_data.total}
           </Text>
         </View>
         <View style={styles.cashbackCard}>
-          <View style={{marginHorizontal: 5}}>
+          <View style={{ marginHorizontal: 5 }}>
             <Text style={styles.pendingAmount}>{user_reward_data.paid}</Text>
             <Text style={styles.cashbackTypeText}>{translate('paid_re')}</Text>
           </View>
-          <View style={{marginHorizontal: 5}}>
+          <View style={{ marginHorizontal: 5 }}>
             <Text style={styles.pendingAmount}>{user_reward_data.pending}</Text>
             <Text style={styles.cashbackTypeText}>
               {translate('pending_re')}
             </Text>
           </View>
-          <View style={{marginHorizontal: 5}}>
+          <View style={{ marginHorizontal: 5 }}>
             <Text style={styles.pendingAmount}>
               {user_reward_data.confirmed}
             </Text>
@@ -115,7 +116,6 @@ const ProfileCarousel = props => {
   const data = [
     {
       id: 1,
-      image: AppImages.profileCarousel1,
       renderItem: (
         <Carousel1
           navigation={props.navigation}
@@ -125,7 +125,6 @@ const ProfileCarousel = props => {
     },
     {
       id: 2,
-      image: AppImages.profileCarousel2,
       renderItem: (
         <Carousel2
           navigation={props.navigation}
@@ -152,22 +151,15 @@ const ProfileCarousel = props => {
         onSnapToItem={index => setactiveSlide(index)}
         lockScrollWhileSnapping={true}
         contentContainerCustomStyle={
-          activeSlide % 2 != 0 ? {marginLeft: 5} : {marginLeft: -10}
+          activeSlide % 2 != 0 ? { marginLeft: 5 } : { marginLeft: -10 }
         }
-        renderItem={({item, index}) => {
+        renderItem={({ item, index }) => {
           return (
             <TouchableOpacity
               activeOpacity={0.7}
               style={styles.topBrandCard}
               key={index.toString()}>
-              <View
-                style={styles.image}
-                // source={item.image}
-                borderRadius={10}
-                //   resizeMode={FastImage.resizeMode.stretch}
-              >
-                {item.renderItem}
-              </View>
+              <View style={styles.image}>{item.renderItem}</View>
             </TouchableOpacity>
           );
         }}

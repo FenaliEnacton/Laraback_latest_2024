@@ -1,14 +1,13 @@
+import { Theme } from '@/Assets/Theme';
 import React from 'react';
-import ContentLoader from 'react-content-loader/native';
-import {Rect} from 'react-native-svg';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import ContentLoader, { Rect } from 'react-content-loader/native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 const windowWidth = Dimensions.get('window').width;
 
 const TabLoader = props => {
   return (
     <View style={styles.container}>
-      <ContentLoader width={windowWidth - 60} height={50} duration={1000}>
+      <ContentLoader width={windowWidth - 60} height={50}>
         <Rect x="10" y="10" rx="4" ry="4" width="180" height="8" />
         <Rect x="280" y="10" rx="4" ry="4" width="60" height="8" />
         <Rect x="10" y="30" rx="4" ry="4" width="100" height="8" />

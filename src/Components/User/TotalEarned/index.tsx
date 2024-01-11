@@ -1,15 +1,16 @@
+import { Theme } from '@/Assets/Theme';
+import { payout_amount_selectors } from '@/Redux/USER_REDUX/Selectors';
+import { translate } from '@/translations';
 import React from 'react';
-import {StyleSheet, Text, View, Dimensions} from 'react-native';
-import {connect} from 'react-redux';
-import {translate} from '@translations';
-import {payout_amount_selectors} from '@user_redux/Selectors';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { connect } from 'react-redux';
+
 const windowWidth = Dimensions.get('window').width;
 
 const TotalEarned = props => {
-  const {user_cashback_data} = props;
+  const { user_cashback_data } = props;
   return (
-    <View style={styles.image} borderRadius={10}>
+    <View style={styles.image}>
       <View style={styles.cardContainer}>
         <View style={styles.balanceCard}>
           <View style={styles.headingText}>
@@ -17,13 +18,13 @@ const TotalEarned = props => {
             <Text
               style={[
                 styles.TotalEarningText,
-                {color: Theme.COLORS.secondary},
+                { color: Theme.COLORS.secondary },
               ]}>
               {user_cashback_data.available_for_payment}
             </Text>
           </View>
           <View style={styles.cashbackCard}>
-            <View style={{marginHorizontal: 5}}>
+            <View style={{ marginHorizontal: 5 }}>
               <Text style={styles.pendingAmount}>
                 {' '}
                 {user_cashback_data.available_for_payment}
@@ -32,7 +33,7 @@ const TotalEarned = props => {
                 {translate('total_available')}
               </Text>
             </View>
-            <View style={{marginHorizontal: 5}}>
+            <View style={{ marginHorizontal: 5 }}>
               <Text style={styles.pendingAmount}>
                 {' '}
                 {user_cashback_data.available_cashback}
@@ -41,7 +42,7 @@ const TotalEarned = props => {
                 {translate('cashback')}
               </Text>
             </View>
-            <View style={{marginHorizontal: 5}}>
+            <View style={{ marginHorizontal: 5 }}>
               <Text style={styles.pendingAmount}>
                 {user_cashback_data.available_reward}
               </Text>
@@ -88,7 +89,7 @@ const TotalEarned = props => {
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     user_cashback_data:
       payout_amount_selectors(params.user_payment_methods?.earning) || {},

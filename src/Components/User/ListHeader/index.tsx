@@ -1,14 +1,7 @@
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
-const windowWidth = Dimensions.get('window').width;
+import { StyleSheet, Text, TouchableOpacity, Platform } from 'react-native';
 
 const ListHeader = props => {
   return (
@@ -18,7 +11,7 @@ const ListHeader = props => {
       </Text>
       {props.month ? (
         <TouchableOpacity style={styles.month_btn}>
-          <Icon.EvilIcons
+          <Icons.EvilIcons
             name={'calendar'}
             color={Theme.COLORS.black}
             size={25}
