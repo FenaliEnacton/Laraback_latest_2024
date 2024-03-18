@@ -1,5 +1,5 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 
 const styles = StyleSheet.create({
@@ -137,10 +137,12 @@ const styles = StyleSheet.create({
     width: 200,
     resizeMode: 'contain',
   },
-  app_icon: {height: 60, width: 150, resizeMode: 'contain'},
+  app_icon: { height: 60, width: 150, resizeMode: 'contain' },
 });
 
-module.exports = {
-  ...styles,
+const _styles = {
   ...Theme.appStyle,
+  ...styles,
 };
+
+export default _styles;

@@ -1,50 +1,34 @@
-import {WebView} from 'react-native-webview';
-import React, {Component} from 'react';
-import {
-  Text,
-  View,
-  Image,
-  Dimensions,
-  BackHandler,
-  Platform,
-  Modal,
-} from 'react-native';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-  CashbackString,
-} from '@components/core';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { BackHandler, Dimensions, Platform, Text, View } from 'react-native';
+import { WebView } from 'react-native-webview';
+import { connect } from 'react-redux';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-import {AppImages} from '@assets/Images';
-import {Theme} from '@assets/Theme';
-import styles from './style';
-import {translate} from '@translations';
 
-class WebViewScreen extends Component {
+import Container from '@/Components/Core/Container';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import styles from './style';
+
+class WebViewScreen extends Component<any> {
   constructor(props) {
     super(props);
-    this.webView = {
-      canGoBack: false,
-      ref: null,
-    };
-    this.state = {
-      height: 120,
-      out_page_info: this.props.route?.params?.out_page_info || {},
-      showLoader: true,
-      loading: true,
-    };
   }
+  webView: any = {
+    canGoBack: false,
+    ref: null,
+  };
+  state: any = {
+    height: 120,
+    out_page_info: this.props.route?.params?.out_page_info || {},
+    showLoader: true,
+    loading: true,
+  };
 
   componentDidMount() {
     setTimeout(() => {
-      this.setState({showLoader: false});
+      this.setState({ showLoader: false });
     }, 5000);
     if (Platform.OS === 'android') {
       BackHandler.addEventListener(
@@ -56,45 +40,45 @@ class WebViewScreen extends Component {
 
   componentWillUnmount() {
     if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress');
+      BackHandler.removeEventListener('hardwareBackPress', () => false);
     }
   }
 
   onAndroidBackPress = () => {
     if (this.webView.canGoBack && this.webView.ref) {
-      this.webView.ref.goBack();
+      // this.webView.ref.goBack();
       return true;
     }
     return false;
   };
 
   render() {
-    const {out_page_info} = this.state;
+    const { out_page_info } = this.state;
     const web_url = out_page_info.web_url;
     // console.log('WebViewScreen -> render -> web_url', web_url);
     return (
       <Container>
         <Header>
-          <HeaderLeft
+          <Header.Left
             style={{
               flexDirection: 'row',
               alignItems: 'center',
             }}>
             <HeaderBackButton
-              btnStyle={{justifyContent: 'center'}}
+              btnStyle={{ justifyContent: 'center' }}
               onPress={() => this.props.navigation.goBack()}
             />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <View>
-              <View style={{flexDirection: 'column'}}>
+              <View style={{ flexDirection: 'column' }}>
                 <Text style={[styles.headerTitle]}>
                   {out_page_info.header_title}
                 </Text>
               </View>
             </View>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <ScrollContent>
           <WebView
@@ -114,7 +98,7 @@ class WebViewScreen extends Component {
             startInLoadingState={true}
             // onLoadStart={() => this.setState({ showLoader: true })}
             // onLoadEnd={() => this.setState({ showLoader: false })}
-            source={{uri: web_url}}
+            source={{ uri: web_url }}
           />
         </ScrollContent>
       </Container>

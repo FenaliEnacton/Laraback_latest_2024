@@ -1,36 +1,26 @@
-import React, {Component} from 'react';
-import {FlatList, View, Text} from 'react-native';
+import { get_nav_list } from '@/Assets/RouterList';
+import Container from '@/Components/Core/Container';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import DrawerMenu from '@/Components/Core/DrawerMenu';
+import LogoutModal from '@/Components/Core/LogoutModal';
+import NavigationList from '@/Components/User/NavigationList';
+import ProfileCarousel from '@/Components/User/ProfileCarousel';
+import UserHeader from '@/Components/User/UserHeader';
+import { request_user_dashboard } from '@/Redux/USER_REDUX/Actions/userDashboardActions';
 import {
-  Container,
-  Header,
-  ScrollContent,
-  DrawerMenu,
-  LogoutModal,
-} from '@components/core';
-import {connect} from 'react-redux';
-import {translate} from '@translations';
-import styles from './style';
-import {
-  CashbackEarned,
-  RewardEarned,
-  NavigationList,
-  UserHeader,
-  ProfileCarousel,
-} from '@components/user';
-import {Theme} from '@assets/Theme';
-import Icon from '@assets/icons';
-import {
-  request_user_dashboard,
+  request_user_bonus_summary,
+  request_user_cashback_summary,
   request_user_clicks_summary,
   request_user_payment_summary,
-  request_user_cashback_summary,
   request_user_referral_summary,
-  request_user_bonus_summary,
-} from '@user_redux/Actions';
-import {get_nav_list, NavList} from '@assets/RouterList';
-import {user_lifetime_earning} from '@user_redux/Selectors';
-import ComponentAnimation from '../../Components/Core/ComponentAnimation';
-import {SimpleAnimation} from 'react-native-simple-animations';
+} from '@/Redux/USER_REDUX/Actions/userSummaryActions';
+import { user_lifetime_earning } from '@/Redux/USER_REDUX/Selectors';
+import { translate } from '@/translations';
+import React, { Component } from 'react';
+import { View } from 'react-native';
+import { SimpleAnimation } from 'react-native-simple-animations';
+import { connect } from 'react-redux';
+import styles from './style';
 const NAV_LIST_1 = get_nav_list([111, 222, 333]);
 const NAV_LIST_2 = get_nav_list([444]);
 const NAV_LIST_3 = get_nav_list([555, 666]);
@@ -45,7 +35,7 @@ const mapDispatchToProps = {
   request_user_bonus_summary,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     total_earning: params?.user_dashboard_data
       ? user_lifetime_earning(params.user_dashboard_data)
@@ -53,7 +43,7 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class UserDashboard extends Component {
+class UserDashboard extends Component<any> {
   state = {
     show_drawer: false,
     logout_show: false,
@@ -68,12 +58,12 @@ class UserDashboard extends Component {
   }
 
   render() {
-    const {logout_show} = this.state;
+    const { logout_show } = this.state;
     return (
       <Container>
         {/* <Header headerStyle={styles.headerStyle} headerBox={styles.headerBox}> */}
         <UserHeader
-          headerOnPress={() => this.setState({show_drawer: true})}
+          headerOnPress={() => this.setState({ show_drawer: true })}
           title={translate('my_account')}
           editOnPress={() => this.props.navigation.navigate('AccountSettings')}
         />
@@ -94,7 +84,7 @@ class UserDashboard extends Component {
               />
             </SimpleAnimation>
           </View>
-          <View style={{marginTop: 10}}>
+          <View style={{ marginTop: 10 }}>
             <NavigationList
               list={NAV_LIST_1}
               navigation={this.props.navigation}
@@ -115,17 +105,17 @@ class UserDashboard extends Component {
               navigation={this.props.navigation}
               heading={'account_settings'}
             />
-            <View style={{height: 90}} />
+            <View style={{ height: 90 }} />
           </View>
         </ScrollContent>
         <DrawerMenu
           drawerShow={this.state.show_drawer}
           navigation={this.props.navigation}
-          setDrawerVisibleFalse={() => this.setState({show_drawer: false})}
-          show_log_out={() => this.setState({logout_show: true})}
+          setDrawerVisibleFalse={() => this.setState({ show_drawer: false })}
+          show_log_out={() => this.setState({ logout_show: true })}
         />
         <LogoutModal
-          onRequestClose={() => this.setState({logout_show: false})}
+          onRequestClose={() => this.setState({ logout_show: false })}
           visible={logout_show}
         />
       </Container>
