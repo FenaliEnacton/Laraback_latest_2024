@@ -1,29 +1,23 @@
-import React, {Component} from 'react';
-import {Text, TouchableOpacity, View, FlatList} from 'react-native';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-  BottomModal,
-  CloseButton,
-  LangSupportTxtInput,
-  LBButton,
-  TextBox,
-} from '@components/core';
-import {AppImages} from '@assets/Images';
-import {Formik, ErrorMessage} from 'formik';
-import {string, object} from 'yup';
-import {request_contact_us} from '@app_redux/Actions';
+import React, { Component } from 'react';
+import { Text, TouchableOpacity, View, FlatList } from 'react-native';
+import { connect } from 'react-redux';
+import { Formik, ErrorMessage } from 'formik';
+import { string, object } from 'yup';
+import { request_contact_us } from '@/Redux/Actions/publicDataActions';
+import { translate } from '@/translations';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
 import styles from './style';
-import {translate} from '@translations';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import { AppImages } from '@/Assets/Images';
 import LottieView from 'lottie-react-native';
+import InputText from '@/Components/Core/TextBox';
+import Icons from '@/Assets/icons';
+import { Theme } from '@/Assets/Theme';
+import LBButton from '@/Components/Core/LBButton';
+import BottomModal from '@/Components/Core/BottomModal';
+import CloseButton from '@/Components/Core/CloseButton';
 
 const mapDispatchToProps = {
   request_contact_us,
@@ -33,17 +27,17 @@ const mapStateToProps = state => {
   return {};
 };
 
-class ContactUs extends Component {
+class ContactUs extends Component<any> {
   state = {
     subjectModalShow: false,
     sel_reason_id: 0,
     sel_reason_val: '',
     subjects: [
-      {id: '111', value: 'partnership'},
-      {id: '112', value: 'report_an_issue'},
-      {id: '113', value: 'media'},
-      {id: '114', value: 'careers'},
-      {id: '115', value: 'other'},
+      { id: '111', value: 'partnership' },
+      { id: '112', value: 'report_an_issue' },
+      { id: '113', value: 'media' },
+      { id: '114', value: 'careers' },
+      { id: '115', value: 'other' },
     ],
   };
 
@@ -59,8 +53,8 @@ class ContactUs extends Component {
   };
 
   render() {
-    const subjectModal = React.createRef();
-    const {subjects, sel_reason_val} = this.state;
+    const subjectModal: any = React.createRef();
+    const { subjects, sel_reason_val } = this.state;
     const contactUsSchema = object().shape({
       name: string()
         .trim()
@@ -79,15 +73,15 @@ class ContactUs extends Component {
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle} numberOfLines={1}>
               {translate('contact_us')}
             </Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <ScrollContent style={styles.content}>
           <LottieView
@@ -114,11 +108,11 @@ class ContactUs extends Component {
             }) => {
               return (
                 <>
-                  <TextBox
+                  <InputText
                     placeholder={translate('name')}
                     value={values.name}
                     onChangeText={handleChange('name')}
-                    style={values.name ? {height: '40%'} : {height: '100%'}}
+                    style={values.name ? { height: '40%' } : { height: '100%' }}
                     content={
                       values.name ? (
                         <Text style={styles.inputHeaderText}>
@@ -126,18 +120,20 @@ class ContactUs extends Component {
                           {translate('name')}
                         </Text>
                       ) : null
-                    }></TextBox>
+                    }></InputText>
                   <ErrorMessage name="name">
                     {msg => (
                       <Text style={styles.errorMessage}>{translate(msg)}</Text>
                     )}
                   </ErrorMessage>
-                  <TextBox
+                  <InputText
                     placeholder={translate('email')}
                     value={values.email}
                     onChangeText={handleChange('email')}
                     onBlur={handleBlur('email')}
-                    style={values.email ? {height: '40%'} : {height: '100%'}}
+                    style={
+                      values.email ? { height: '40%' } : { height: '100%' }
+                    }
                     content={
                       values.email ? (
                         <Text style={styles.inputHeaderText}>
@@ -145,7 +141,7 @@ class ContactUs extends Component {
                           {translate('email')}
                         </Text>
                       ) : null
-                    }></TextBox>
+                    }></InputText>
                   <ErrorMessage name="email">
                     {msg => (
                       <Text style={styles.errorMessage}>{translate(msg)}</Text>
@@ -155,7 +151,7 @@ class ContactUs extends Component {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     style={[styles.touchableInput]}
-                    onPress={() => this.setState({subjectModalShow: true})}>
+                    onPress={() => this.setState({ subjectModalShow: true })}>
                     <View
                       style={{
                         justifyContent: 'center',
@@ -165,12 +161,12 @@ class ContactUs extends Component {
                         {translate('select_subject')}
                       </Text>
                       {values.subject ? (
-                        <Text style={[styles.text]}>
+                        <Text style={[]}>
                           {translate(this.state.sel_reason_val)}
                         </Text>
                       ) : null}
                     </View>
-                    <Icon.AntDesign
+                    <Icons.AntDesign
                       name="down"
                       size={15}
                       color={Theme.COLORS.black}
@@ -182,22 +178,25 @@ class ContactUs extends Component {
                     )}
                   </ErrorMessage>
 
-                  <TextBox
+                  <InputText
                     containerStyle={styles.textInputMessage}
                     placeholder={translate('message')}
                     multiline={true}
                     value={values.message}
                     onChangeText={handleChange('message')}
                     onBlur={handleBlur('message')}
-                    style={values.message ? {height: '90%'} : {height: '100%'}}
+                    style={
+                      values.message ? { height: '90%' } : { height: '100%' }
+                    }
                     content={
                       values.message ? (
-                        <Text style={[styles.inputHeaderText, {marginTop: -7}]}>
+                        <Text
+                          style={[styles.inputHeaderText, { marginTop: -7 }]}>
                           {' '}
                           {translate('message')}
                         </Text>
                       ) : null
-                    }></TextBox>
+                    }></InputText>
                   <ErrorMessage name="message">
                     {msg => (
                       <Text style={styles.errorMessage}>{translate(msg)}</Text>
@@ -207,16 +206,16 @@ class ContactUs extends Component {
                     label={translate('submit')}
                     btnStyle={[
                       styles.btnStyle,
-                      {backgroundColor: Theme.COLORS.secondary},
+                      { backgroundColor: Theme.COLORS.secondary },
                     ]}
-                    labelStyle={styles.btn_labelStyle}
+                    // labelStyle={styles.btn_labelStyle}
                     onPress={handleSubmit}
                   />
                   <BottomModal
                     ref={subjectModal}
                     bottomModalShow={this.state.subjectModalShow}
                     setBottomModalVisibleFalse={() =>
-                      this.setState({subjectModalShow: false})
+                      this.setState({ subjectModalShow: false })
                     }>
                     <>
                       {/* <View style={styles.modalHeader}> */}
@@ -230,7 +229,7 @@ class ContactUs extends Component {
                         data={subjects}
                         keyExtractor={(item, index) => index.toString()}
                         extraData={this.state}
-                        renderItem={({item, index}) => (
+                        renderItem={({ item, index }: any) => (
                           <TouchableOpacity
                             style={[
                               styles.subjectTab,
