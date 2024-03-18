@@ -1,55 +1,47 @@
-import {WebView} from 'react-native-webview';
-import React, {Component} from 'react';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import CashbackString from '@/Components/Core/CashbackString';
+import CloseButton from '@/Components/Core/CloseButton';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import { translate } from '@/translations';
+import React, { Component } from 'react';
 import {
-  Text,
-  View,
-  Image,
-  Dimensions,
-  Platform,
   BackHandler,
+  Linking,
   Modal,
+  Platform,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-  CashbackString,
-} from '@components/core';
-import {connect} from 'react-redux';
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-import CloseButton from '../../Components/Core/CloseButton';
-import {AppImages} from '@assets/Images';
-import {Theme} from '@assets/Theme';
-import styles from './style';
-import {translate} from '@translations';
 import FastImage from 'react-native-fast-image';
-import {InAppBrowser} from 'react-native-inappbrowser-reborn';
+import { InAppBrowser } from 'react-native-inappbrowser-reborn';
+import { connect } from 'react-redux';
+import styles from './style';
 
-class OutPage extends Component {
+class OutPage extends Component<any> {
+  webView: { canGoBack: boolean; ref: null };
   constructor(props) {
     super(props);
     this.webView = {
       canGoBack: false,
       ref: null,
     };
-    this.state = {
-      height: 120,
-      out_page_info: this.props.route?.params?.out_page_info || {},
-      showLoader: true,
-      loading: true,
-    };
   }
+  state: any = {
+    height: 120,
+    out_page_info: this.props.route?.params?.out_page_info || {},
+    showLoader: true,
+    loading: true,
+  };
 
   componentDidMount() {
     setTimeout(() => {
       InAppBrowser.close();
       this.openLink();
-      this.setState({showLoader: false});
+      this.setState({ showLoader: false });
     }, 5000);
     if (Platform.OS === 'android') {
       BackHandler.addEventListener(
@@ -110,13 +102,13 @@ class OutPage extends Component {
 
   componentWillUnmount() {
     if (Platform.OS === 'android') {
-      BackHandler.removeEventListener('hardwareBackPress');
+      BackHandler.removeEventListener('hardwareBackPress', () => false);
     }
   }
 
   onAndroidBackPress = () => {
     if (this.webView.ref) {
-      this.webView.ref.goBack();
+      // this.webView.ref.goBack();
       return true;
     } else {
       return false;
@@ -124,7 +116,7 @@ class OutPage extends Component {
   };
 
   render() {
-    const {out_page_info} = this.state;
+    const { out_page_info } = this.state;
     const web_url = out_page_info.web_url.replace(
       ':user_id',
       this.props.user_id,
@@ -132,25 +124,25 @@ class OutPage extends Component {
     return (
       <Container>
         <Header>
-          <HeaderLeft
+          <Header.Left
             style={{
               flexDirection: 'row',
               alignItems: 'center',
             }}>
             <HeaderBackButton
-              btnStyle={{justifyContent: 'center'}}
+              btnStyle={{ justifyContent: 'center' }}
               onPress={() => this.onAndroidBackPress()}
             />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <View>
-              <View style={{flexDirection: 'column'}}>
+              <View style={{ flexDirection: 'column' }}>
                 <Text style={[styles.headerTitle]}>
                   {out_page_info.header_title}
                 </Text>
                 {out_page_info.cb_text ? (
                   <CashbackString
-                    icon={{marginTop: 2, marginRight: 0}}
+                    icon={{ marginTop: 2, marginRight: 0 }}
                     cb_style={{
                       alignSelf: 'center',
                     }}
@@ -161,15 +153,15 @@ class OutPage extends Component {
                 ) : null}
               </View>
             </View>
-          </HeaderTitle>
-          <HeaderRight>
+          </Header.Title>
+          <Header.Right>
             <CloseButton
-              btnStyle={{height: 27, width: 27}}
+              btnStyle={{ height: 27, width: 27 }}
               onPress={() =>
                 this.props.navigation && this.props.navigation.goBack()
               }
             />
-          </HeaderRight>
+          </Header.Right>
         </Header>
         {/* <ScrollContent contentContainerStyle={{flexGrow: 1}}> */}
 
@@ -178,11 +170,11 @@ class OutPage extends Component {
         <Modal
           transparent
           animationType="fade"
-          onRequestClose={() => this.setState({showLoader: false})}
+          onRequestClose={() => this.setState({ showLoader: false })}
           visible={this.state.showLoader}>
-          <View
+          <TouchableOpacity
             activeOpacity={1}
-            onPress={() => this.setState({showLoader: false})}
+            onPress={() => this.setState({ showLoader: false })}
             style={styles.modalBackground}>
             <View style={styles.modalContent}>
               <FastImage
@@ -198,7 +190,8 @@ class OutPage extends Component {
               {out_page_info.cb_text ? (
                 <View style={styles.cb_circle}>
                   <Text style={styles.cb_text}>{out_page_info.cb_text}</Text>
-                  <Text style={[styles.cb_text, {color: Theme.COLORS.primary}]}>
+                  <Text
+                    style={[styles.cb_text, { color: Theme.COLORS.primary }]}>
                     {translate('activated')}
                   </Text>
                 </View>
@@ -212,7 +205,7 @@ class OutPage extends Component {
 
                     <View style={styles.img_box}>
                       <FastImage
-                        source={{uri: out_page_info.store_logo}}
+                        source={{ uri: out_page_info.store_logo }}
                         style={styles.store_logo}
                         resizeMode={FastImage.resizeMode.contain}
                       />
@@ -226,7 +219,7 @@ class OutPage extends Component {
                 ) : null}
               </View>
             </View>
-          </View>
+          </TouchableOpacity>
         </Modal>
       </Container>
     );
