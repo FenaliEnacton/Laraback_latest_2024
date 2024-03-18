@@ -1,45 +1,40 @@
-import React, {Component} from 'react';
-import {View, Text, I18nManager, StyleSheet} from 'react-native';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-  Loader,
-} from '@components/core';
-import {translate} from '@translations';
+import { Theme } from '@/Assets/Theme';
+import Container from '@/Components/Core/Container';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import Loader from '@/Components/Core/Loader';
+import { translate } from '@/translations';
+import React, { Component } from 'react';
+import { StyleSheet, Text } from 'react-native';
 import HTMLView from 'react-native-htmlview';
+import { connect } from 'react-redux';
 import styles from './style';
-import {Theme} from '@assets/Theme';
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     privacy_policy_data: params.app_info_data?.privacy || {},
     loading: params.loading,
   };
 };
 
-class PrivacyPolicy extends Component {
+class PrivacyPolicy extends Component<any> {
   render() {
-    const {privacy_policy_data, loading} = this.props;
+    const { privacy_policy_data, loading } = this.props;
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>
               {translate('privacy_policy')}
             </Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <ScrollContent>
           <HTMLView
