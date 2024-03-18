@@ -1,5 +1,6 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { Theme } from '@/Assets/Theme';
+import { StyleSheet, Dimensions } from 'react-native';
+
 const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   list: {
@@ -36,7 +37,9 @@ const styles = StyleSheet.create({
   // },
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;
