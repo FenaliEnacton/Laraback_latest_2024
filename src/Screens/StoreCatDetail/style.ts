@@ -1,5 +1,5 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   sectionTitle: {
@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   cloaseIconView: {
-    backgroundColor: Theme.COLORS.bg_transparent,
+    backgroundColor: 'transparent',
     borderRadius: 20,
     height: 25,
     width: 25,
@@ -124,7 +124,9 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;

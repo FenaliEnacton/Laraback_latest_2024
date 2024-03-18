@@ -1,46 +1,26 @@
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Animated,
-  Dimensions,
-  ImageBackground,
-  TouchableOpacity,
-} from 'react-native';
-import {Theme} from '@assets/Theme';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-  DrawerMenu,
-  SearchButton,
-  Loader,
-} from '@components/core';
-import Icon from '@assets/icons';
-import LinearGradient from 'react-native-linear-gradient';
-import {CatCard, AllStoreColumnList, EmptyListView} from '@components/generic';
-import AllStoresLoader from '../AllStores/AllStoresLoader';
-import {get_store_cat_detail_data, get_all_stores} from '@app_redux/Selectors';
-import Config from 'react-native-config';
-import {translate} from '@translations';
-import {AppImages} from '@assets/Images';
-import {SafeAreaInsetsContext} from 'react-native-safe-area-context';
-const {width: SCREEN_WIDTH} = Dimensions.get('screen');
-const HEADER_EXPANDED_HEIGHT = 160;
-const HEADER_COLLAPSED_HEIGHT = 70;
-import styles from './style';
-import {ScrollView} from 'react-native-gesture-handler';
+import { Theme } from '@/Assets/Theme';
+import Container from '@/Components/Core/Container';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import Loader from '@/Components/Core/Loader';
+import SearchButton from '@/Components/Core/SearchButton';
+import CatCard from '@/Components/Generic/CatCard';
+import EmptyListView from '@/Components/Generic/EmptyListView';
+import { get_all_stores } from '@/Redux/Selectors';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import React, { Component } from 'react';
+import { Animated, FlatList, ImageBackground, Text, View } from 'react-native';
+import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
+import { connect } from 'react-redux';
 import FeaturedStore from '../../Components/Generic/FeaturedStore';
+import AllStoresLoader from '../AllStores/AllStoresLoader';
+import styles from './style';
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     store_cat_data: params.store_cat_details || {},
     all_stores_keys: params.store_cat_details
@@ -53,16 +33,13 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class StoreCatDetail extends Component {
-  constructor() {
-    super();
-    this.state = {
-      scrollY: new Animated.Value(0),
-      show_drawer: false,
-    };
-  }
+class StoreCatDetail extends Component<any> {
+  state: any = {
+    scrollY: new Animated.Value(0),
+    show_drawer: false,
+  };
 
-  render_store_cat = ({item, index}) => {
+  render_store_cat = ({ item, index }) => {
     return (
       <CatCard
         cat={item}
@@ -75,45 +52,34 @@ class StoreCatDetail extends Component {
   };
 
   render() {
-    const {store_cat_data, all_stores_keys, loading, store_cat} = this.props;
+    const { all_stores_keys, loading, store_cat } = this.props;
 
-    const headerHeight = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-      outputRange: [HEADER_EXPANDED_HEIGHT, HEADER_COLLAPSED_HEIGHT],
-      extrapolate: 'clamp',
-    });
-
-    const heroTitleOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
     return (
-      <Container style={{backgroundColor: Theme.COLORS.white}}>
-        <Header headerStyle={{backgroundColor: 'white'}}>
-          <HeaderLeft>
+      <Container style={{ backgroundColor: Theme.COLORS.white }}>
+        <Header headerStyle={{ backgroundColor: 'white' }}>
+          <Header.Left>
             <HeaderBackButton
               // btnStyle={{width: '10%'}}
               onPress={() => this.props.navigation.goBack()}
             />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>
               {this.props.store_cat.name[Config.LANG]
                 ? this.props.store_cat.name[Config.LANG]
                 : this.props.store_cat.name}
             </Text>
-          </HeaderTitle>
+          </Header.Title>
 
-          <HeaderRight>
+          <Header.Right>
             <SearchButton navigation={this.props.navigation} />
-          </HeaderRight>
+          </Header.Right>
         </Header>
         <SafeAreaInsetsContext.Consumer>
-          {insets => (
-            <View style={[styles.imageCard, {marginTop: insets.top + 30}]}>
+          {(insets: any) => (
+            <View style={[styles.imageCard, { marginTop: insets.top + 30 }]}>
               <ImageBackground
-                source={{uri: store_cat.header_image}}
+                source={{ uri: store_cat.header_image }}
                 style={styles.header_image}
                 borderRadius={10}>
                 {/* <View style={styles.overlay}>
@@ -148,17 +114,15 @@ class StoreCatDetail extends Component {
                 <AllStoresLoader />
               ) : (
                 <FlatList
-                  listKey={(item, index) => index.toString()}
-                  // keyExtractor={(item, index) => {
-                  //   index.toString();
-                  // }}
+                  // listKey={(item, index) => index.toString()}
+                  keyExtractor={(item, index) => index.toString()}
                   data={all_stores_keys}
                   showsVerticalScrollIndicator={false}
                   numColumns={3}
-                  columnWrapperStyle={{justifyContent: 'space-between'}}
-                  renderItem={({item, index}) => {
+                  columnWrapperStyle={{ justifyContent: 'space-between' }}
+                  renderItem={({ item, index }) => {
                     return (
-                      <View style={styles.IconBox}>
+                      <View>
                         <FeaturedStore store={item} />
                       </View>
                     );
