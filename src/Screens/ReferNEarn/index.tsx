@@ -1,64 +1,53 @@
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  I18nManager,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-  BottomModal,
-  CloseButton,
-  KeyboardAwareContent,
-  LangSupportTxtInput,
-  Toast,
-  Loader,
-} from '@components/core';
-import Icon from '@assets/icons';
-import {GradientFooter} from '@components/generic';
-import {
-  ActivityNavigationList,
-  EmailVerification,
-  NavigationList,
-} from '@components/user';
-import Share from 'react-native-share';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
-import HTMLView from 'react-native-htmlview';
+import { AppImages } from '@/Assets/Images';
+import { get_user_internal_nav_list } from '@/Assets/RouterList';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import BottomModal from '@/Components/Core/BottomModal';
+import CloseButton from '@/Components/Core/CloseButton';
+import Container from '@/Components/Core/Container';
+import KeyboardAwareContent from '@/Components/Core/Content/keyboardAwareScrollContent';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import LangSupportTxtInput from '@/Components/Core/LangSupportTxtInput';
+import Loader from '@/Components/Core/Loader';
+import Toast from '@/Components/Core/Toast';
+import GradientFooter from '@/Components/Generic/GradientFooter';
+import NavigationList from '@/Components/User/NavigationList';
+import { request_refer_n_earn_info } from '@/Redux/Actions/publicDataActions';
+import { is_user_logged_in } from '@/Redux/Selectors';
+import { request_user_referral_invite } from '@/Redux/USER_REDUX/Actions/userReferralActions';
+import { get_referral_link } from '@/Redux/USER_REDUX/Selectors';
+import { get_currency_string } from '@/Utils';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
 import Clipboard from '@react-native-community/clipboard';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {get_referral_link} from '@user_redux/Selectors';
-import {AppImages} from '@assets/Images';
-import {request_refer_n_earn_info} from '@app_redux/Actions';
-import {request_user_referral_invite} from '@user_redux/Actions';
-import {get_user_internal_nav_list} from '@assets/RouterList';
-import Config from 'react-native-config';
-import styles from './style';
-import {Formik, ErrorMessage} from 'formik';
-import {string, object} from 'yup';
-import {get_currency_string} from '@user_redux/Utils';
-import FastImage from 'react-native-fast-image';
-import LinearGradient from 'react-native-linear-gradient';
+import { ErrorMessage, Formik } from 'formik';
 import LottieView from 'lottie-react-native';
+import React, { Component } from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import HTMLView from 'react-native-htmlview';
+import LinearGradient from 'react-native-linear-gradient';
+import Share from 'react-native-share';
+import { connect } from 'react-redux';
+import { object, string } from 'yup';
+import styles from './style';
 const NAV_LIST_1 = get_user_internal_nav_list([10003, 10004]);
-const bottom_modal = React.createRef();
+const bottom_modal = React.createRef() as any;
 
 const mapDispatchToProps = {
   request_refer_n_earn_info,
   request_user_referral_invite,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     refer_n_earn_info: params.refer_n_earn_info || {},
     is_member: is_user_logged_in(params) || false,
@@ -70,7 +59,7 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class ReferNEarn extends Component {
+class ReferNEarn extends Component<any> {
   state = {
     emails: '',
     show_bottom_modal: false,
@@ -137,7 +126,7 @@ class ReferNEarn extends Component {
     const refer_n_earn_list = refer_n_earn_info['procash/section']?.blocks
       ? refer_n_earn_info['procash/section']?.blocks
       : [];
-    const {modal_type} = this.state;
+    const { modal_type } = this.state;
     const email_schema = object().shape({
       email: string()
         .trim()
@@ -148,19 +137,19 @@ class ReferNEarn extends Component {
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>{translate('refer_n_earn')}</Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         {is_member ? (
           <KeyboardAwareContent>
             <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
               colors={['#f5e3e6', '#d9e4f5']}
               style={[styles.gradientCard]}>
               <LottieView
@@ -178,12 +167,12 @@ class ReferNEarn extends Component {
               % {translate('bonus_from_your_friend')}
             </Text> */}
             <View style={styles.bonus_types}>
-              <View style={{flexDirection: 'row'}}>
-                <Icon.MaterialCommunityIcons
+              <View style={{ flexDirection: 'row' }}>
+                <Icons.MaterialCommunityIcons
                   name={'account-cash'}
                   color={Theme.COLORS.secondary}
                   size={15}
-                  style={{marginRight: 5}}
+                  style={{ marginRight: 5 }}
                 />
                 <Text style={styles.bonus_text}>
                   {user_info.referral_percent
@@ -192,12 +181,12 @@ class ReferNEarn extends Component {
                   {translate('rewards_make')}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                <Icon.Ionicons
+              <View style={{ flexDirection: 'row' }}>
+                <Icons.Ionicons
                   name={'wallet'}
                   color={Theme.COLORS.secondary}
                   size={15}
-                  style={{marginRight: 5}}
+                  style={{ marginRight: 5 }}
                 />
                 <Text style={styles.bonus_text}>
                   {translate('joins_earn')}
@@ -205,12 +194,12 @@ class ReferNEarn extends Component {
                   {translate('referral_bonus')}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row'}}>
-                <Icon.FontAwesome5
+              <View style={{ flexDirection: 'row' }}>
+                <Icons.FontAwesome5
                   name={'user-friends'}
                   color={Theme.COLORS.secondary}
                   size={15}
-                  style={{marginRight: 5}}
+                  style={{ marginRight: 5 }}
                 />
                 <Text style={styles.bonus_text}>
                   {translate('will_earn')}{' '}
@@ -237,7 +226,7 @@ class ReferNEarn extends Component {
               {refer_n_earn_list.map((e, index) => {
                 return (
                   <>
-                    <View style={{flexDirection: 'column', width: 50}}>
+                    <View style={{ flexDirection: 'column', width: 50 }}>
                       <View style={styles.hiw_icon_card}>
                         <FastImage
                           source={{
@@ -268,7 +257,7 @@ class ReferNEarn extends Component {
                 {referral_link}
               </Text>
               <View style={styles.copy_btn}>
-                <Icon.FontAwesome
+                <Icons.FontAwesome
                   name={'copy'}
                   color={Theme.COLORS.primary}
                   size={18}
@@ -286,11 +275,10 @@ class ReferNEarn extends Component {
                 <TouchableOpacity
                   style={styles.socialBtn}
                   onPress={() => this.handle_social_share()}>
-                  <Icon.AntDesign
+                  <Icons.AntDesign
                     name={'sharealt'}
                     color={Theme.COLORS.secondary}
                     size={20}
-                    style={styles.socialIcon}
                   />
                 </TouchableOpacity>
               </View>
@@ -300,7 +288,7 @@ class ReferNEarn extends Component {
               <Text style={styles.OrText}>{translate('or')}</Text>
               <View style={styles.separator} />
             </View>
-            <Text style={[styles.input_title, {marginTop: 20}]}>
+            <Text style={[styles.input_title, { marginTop: 20 }]}>
               {translate('invite_by_email')}
             </Text>
             <Formik
@@ -309,7 +297,7 @@ class ReferNEarn extends Component {
               }}
               validationSchema={email_schema}
               onSubmit={values => this.send_invite_link(values)}>
-              {({handleBlur, handleChange, values, handleSubmit}) => {
+              {({ handleBlur, handleChange, values, handleSubmit }) => {
                 return (
                   <>
                     <View style={styles.email_input}>
@@ -325,10 +313,12 @@ class ReferNEarn extends Component {
                       <TouchableOpacity
                         style={[
                           styles.copy_btn,
-                          {backgroundColor: Theme.COLORS.cb_rates},
+                          { backgroundColor: Theme.COLORS.cb_rates },
                         ]}
-                        onPress={handleSubmit}>
-                        <Icon.Feather
+                        onPress={() => {
+                          handleSubmit();
+                        }}>
+                        <Icons.Feather
                           name={'send'}
                           color={Theme.COLORS.secondary}
                           size={18}
@@ -355,7 +345,7 @@ class ReferNEarn extends Component {
             <Text
               style={styles.hiw_text}
               onPress={() =>
-                this.setState({show_bottom_modal: true, modal_type: 'hiw'})
+                this.setState({ show_bottom_modal: true, modal_type: 'hiw' })
               }>
               {translate('how_it_works')}{' '}
             </Text>
@@ -383,7 +373,9 @@ class ReferNEarn extends Component {
                 return (
                   <View style={styles.refer_tab} key={index.toString()}>
                     <FastImage
-                      source={{uri: e.image ? e.image : Config.EMPTY_IMAGE_URL}}
+                      source={{
+                        uri: e.image ? e.image : Config.EMPTY_IMAGE_URL,
+                      }}
                       style={styles.refer_img}
                       resizeMode={FastImage.resizeMode.contain}
                     />
@@ -429,7 +421,7 @@ class ReferNEarn extends Component {
           ref={bottom_modal}
           bottomModalShow={this.state.show_bottom_modal}
           setBottomModalVisibleFalse={() =>
-            this.setState({show_bottom_modal: false})
+            this.setState({ show_bottom_modal: false })
           }>
           <>
             <View style={styles.modal_top_notch} />
@@ -443,9 +435,7 @@ class ReferNEarn extends Component {
                 {translate('how_it_works')}
               </Text>
             )}
-            <ScrollView
-              style={styles.popup_scroll}
-              showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false}>
               {modal_type === 'terms' ? (
                 <>
                   <HTMLView
@@ -489,7 +479,7 @@ class ReferNEarn extends Component {
             <View style={styles.btnBar}>
               <CloseButton
                 // btnStyle={styles.closeBtn}
-                onPress={() => bottom_modal.current.props.onRequestClose()}
+                onPress={() => bottom_modal?.current.props.onRequestClose()}
               />
             </View>
           </>

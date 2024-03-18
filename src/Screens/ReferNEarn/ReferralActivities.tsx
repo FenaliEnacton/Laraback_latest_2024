@@ -1,40 +1,30 @@
-import React, {Component} from 'react';
-import {View, Text, FlatList, TouchableOpacity} from 'react-native';
-import {connect} from 'react-redux';
-import Icon from '@assets/icons';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  HeaderBackButton,
-  BottomModal,
-  CloseButton,
-} from '@components/core';
-import Config from 'react-native-config';
-import {EmptyListView, BlurNavBar} from '@components/generic';
-import {
-  ListHeader,
-  ActivityNavigationList,
-  TabLoader,
-  NavigationList,
-} from '@components/user';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
-import {request_user_referral_list} from '@user_redux/Actions';
-import {get_currency_string} from '@user_redux/Utils';
-import {user_activity_months} from '@user_redux/Selectors';
+import React, { Component } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
 import dayjs from 'dayjs';
 import styles from './style';
-import {get_user_internal_nav_list} from '@assets/RouterList';
+import { get_user_internal_nav_list } from '@/Assets/RouterList';
+import { request_user_referral_list } from '@/Redux/USER_REDUX/Actions/userReferralActions';
+import Icons from '@/Assets/icons';
+import { Theme } from '@/Assets/Theme';
+import Config from '@/react-native-config';
+import { get_currency_string } from '@/Utils';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import { translate } from '@/translations';
+import TabLoader from '@/Components/User/TabLoader';
+import EmptyListView from '@/Components/Generic/EmptyListView';
+import BlurNavBar from '@/Components/Generic/BlurNavBar';
+import NavigationList from '@/Components/User/NavigationList';
+
 const NAV_LIST_1 = get_user_internal_nav_list([10004, 10005]);
-const monthModal = React.createRef();
+const monthModal = React.createRef() as any;
 const mapDispatchToProps = {
   request_user_referral_list,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     current_selected_month:
       params.user_activity_bonus_month || dayjs().format('YYYYMM'),
@@ -43,7 +33,7 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class ReferralActivities extends Component {
+class ReferralActivities extends Component<any> {
   state = {
     showMonthPicker: false,
   };
@@ -52,13 +42,10 @@ class ReferralActivities extends Component {
     this.props.request_user_referral_list();
   }
 
-  render_clicks = ({item, index}) => {
+  render_clicks = ({ item, index }) => {
     return (
-      <View
-        style={styles.tabCard}
-        key={index + index.toString()}
-        onPress={() => this.props.request_claim_info(item.id)}>
-        <View style={[styles.storeInfoCard, {alignItems: 'flex-start'}]}>
+      <View style={styles.tabCard} key={index + index.toString()}>
+        <View style={[styles.storeInfoCard, { alignItems: 'flex-start' }]}>
           <Text style={styles.storeName} numberOfLines={1}>
             {item.email}
           </Text>
@@ -66,9 +53,9 @@ class ReferralActivities extends Component {
             {item.first_name} {item.last_name}
           </Text>
         </View>
-        <View style={[styles.storeInfoCard, {alignItems: 'flex-end'}]}>
+        <View style={[styles.storeInfoCard, { alignItems: 'flex-end' }]}>
           <View style={styles.date_box}>
-            <Icon.AntDesign
+            <Icons.AntDesign
               name={'calendar'}
               color={Theme.COLORS.grey}
               size={14}
@@ -93,11 +80,11 @@ class ReferralActivities extends Component {
     monthModal.current.props.onRequestClose();
   };
 
-  renderMonths = ({item, index}) => {
+  renderMonths = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={[
-          styles.monthTab,
+          // styles.monthTab,
           {
             backgroundColor:
               this.props.current_selected_month === item.month_id
@@ -108,7 +95,7 @@ class ReferralActivities extends Component {
         onPress={() => this.handle_month_selection(item.month_id)}>
         <Text
           style={[
-            styles.monthText,
+            // styles.monthText,
             {
               color:
                 this.props.current_selected_month === item.month_id
@@ -122,28 +109,27 @@ class ReferralActivities extends Component {
     );
   };
   addEmptyCard = () => {
-    return <View style={{height: 80}} />;
+    return <View style={{ height: 80 }} />;
   };
   render() {
     const {
       user_referral_list,
-      current_selected_month,
-      user_activity_bonus,
+
       loading,
     } = this.props;
     const loader_arr = [1, 2, 3, 4];
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>
               {translate('referral_activities')}
             </Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <View style={styles.content}>
           {!loading ? (
