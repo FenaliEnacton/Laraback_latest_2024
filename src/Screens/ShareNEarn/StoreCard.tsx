@@ -4,30 +4,25 @@ import {
   TouchableOpacity,
   View,
   Text,
-  Image,
-  Dimensions,
+  Platform,
 } from 'react-native';
-import {connect} from 'react-redux';
-
+import { connect } from 'react-redux';
+import FastImage from 'react-native-fast-image';
+import Config from '@/react-native-config';
+import CashbackString from '@/Components/Core/CashbackString';
 import {
   request_store_cat_details,
   request_store_details,
-} from '@app_redux/Actions';
-import {CashbackString} from '@components/core';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {get_fav_stores_ids} from '@app_redux/Selectors';
-
+} from '@/Redux/Actions/publicDataActions';
 import {
-  request_user_remove_fav,
   request_user_add_fav,
-} from '@user_redux/Actions';
-import FastImage from 'react-native-fast-image';
-import Config from 'react-native-config';
-const windowWidth = Dimensions.get('window').width;
+  request_user_remove_fav,
+} from '@/Redux/USER_REDUX/Actions/userFavsActions';
+import { get_fav_stores_ids, is_user_logged_in } from '@/Redux/Selectors';
+import { Theme } from '@/Assets/Theme';
+
 function StoreCard(props) {
-  const {store} = props;
+  const { store } = props;
 
   return (
     <TouchableOpacity
@@ -35,7 +30,7 @@ function StoreCard(props) {
       onPress={() => props.request_store_details(store.id)}>
       <View style={[styles.img_container]}>
         <FastImage
-          source={{uri: store.logo ? store.logo : ''}}
+          source={{ uri: store.logo ? store.logo : '' }}
           style={[styles.logo_img]}
           resizeMode={'contain'}
         />
@@ -64,7 +59,7 @@ const mapDispatchToProps = {
   request_user_add_fav,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     fav_store_ids: get_fav_stores_ids(params) || [],
     is_member: is_user_logged_in(params) || false,
@@ -91,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: Theme.COLORS.white,
     borderRadius: 10,
   },
-  fav_icon: {alignSelf: 'center', marginTop: 5, marginRight: 5},
+  fav_icon: { alignSelf: 'center', marginTop: 5, marginRight: 5 },
   cb_style: {
     alignSelf: 'flex-start',
     width: '85%',

@@ -1,65 +1,54 @@
-import React, {Component} from 'react';
+import { AppImages } from '@/Assets/Images';
+import { get_user_internal_nav_list } from '@/Assets/RouterList';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import BottomModal from '@/Components/Core/BottomModal';
+import CloseButton from '@/Components/Core/CloseButton';
+import Container from '@/Components/Core/Container';
+import KeyboardAwareContent from '@/Components/Core/Content/keyboardAwareScrollContent';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Header from '@/Components/Core/Header/Header';
+import HeaderRight from '@/Components/Core/Header/HeaderRight';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import LBButton from '@/Components/Core/LBButton';
+import Loader from '@/Components/Core/Loader';
+import TextBox from '@/Components/Core/TextBox';
+import Toast from '@/Components/Core/Toast';
+import EmptyListView from '@/Components/Generic/EmptyListView';
+import GradientFooter from '@/Components/Generic/GradientFooter';
+import NavigationList from '@/Components/User/NavigationList';
+import { request_share_n_earn_info } from '@/Redux/Actions/publicDataActions';
+import { get_all_stores, is_user_logged_in } from '@/Redux/Selectors';
 import {
-  View,
-  Text,
-  I18nManager,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  FlatList,
-  ActivityIndicator,
-} from 'react-native';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-  BottomModal,
-  CloseButton,
-  KeyboardAwareContent,
-  LangSupportTxtInput,
-  Toast,
-  Loader,
-  LBButton,
-  TextBox,
-} from '@components/core';
-import Icon from '@assets/icons';
-import {GradientFooter, EmptyListView} from '@components/generic';
-import {
-  ActivityNavigationList,
-  EmailVerification,
-  NavigationList,
-} from '@components/user';
-import Share from 'react-native-share';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
-import HTMLView from 'react-native-htmlview';
-import Clipboard from '@react-native-community/clipboard';
-import {is_user_logged_in, get_all_stores} from '@app_redux/Selectors';
-import {AppImages} from '@assets/Images';
-import {
-  request_user_link_create,
   failed_user_link_create,
-} from '@user_redux/Actions';
-import {get_user_internal_nav_list} from '@assets/RouterList';
-import Config from 'react-native-config';
-import styles from './style';
-import {Formik, ErrorMessage} from 'formik';
-import {string, object} from 'yup';
-import {request_share_n_earn_info} from '@app_redux/Actions';
-import FastImage from 'react-native-fast-image';
-import LinearGradient from 'react-native-linear-gradient';
+  request_user_link_create,
+} from '@/Redux/USER_REDUX/Actions/userLinkActions';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import Clipboard from '@react-native-community/clipboard';
+import { ErrorMessage, Formik } from 'formik';
 import LottieView from 'lottie-react-native';
-import StoreCard from './StoreCard';
+import React, { Component } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import FastImage from 'react-native-fast-image';
+import HTMLView from 'react-native-htmlview';
+import LinearGradient from 'react-native-linear-gradient';
+import Share from 'react-native-share';
+import { connect } from 'react-redux';
+import { object, string } from 'yup';
 import FeaturedStore from '../../Components/Generic/FeaturedStore';
+import styles from './style';
 
 const NAV_LIST_1 = get_user_internal_nav_list([10006]);
-const bottom_modal = React.createRef();
+const bottom_modal = React.createRef() as any;
 
 const mapDispatchToProps = {
   request_share_n_earn_info,
@@ -67,7 +56,7 @@ const mapDispatchToProps = {
   failed_user_link_create,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     share_n_earn_info: params.share_n_earn_info || {},
     is_member: is_user_logged_in(params) || false,
@@ -77,8 +66,8 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class ShareNEarn extends Component {
-  state = {
+class ShareNEarn extends Component<any> {
+  state: any = {
     show_bottom_modal: false,
     modal_type: 'terms',
     highest_cashback_stores_list: {},
@@ -117,7 +106,7 @@ class ShareNEarn extends Component {
     Toast.successBottom(translate('copied'));
   };
 
-  renderStore = ({item, index}) => {
+  renderStore = ({ item, index }) => {
     return <FeaturedStore store={item} />;
   };
   handle_social_share = () => {
@@ -144,7 +133,7 @@ class ShareNEarn extends Component {
       failed_user_link_create,
     } = this.props;
 
-    const {modal_type, showLoader} = this.state;
+    const { modal_type, showLoader } = this.state;
 
     const share_n_earn_list = share_n_earn_info['procash/section']?.blocks
       ? share_n_earn_info['procash/section']?.blocks
@@ -158,19 +147,19 @@ class ShareNEarn extends Component {
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>{translate('share_n_earn')}</Text>
-          </HeaderTitle>
+          </Header.Title>
           <HeaderRight />
         </Header>
         {is_member ? (
           <KeyboardAwareContent>
             <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 0, y: 1}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
               colors={['#f5e3e6', '#d9e4f5']}
               style={[styles.gradientCard]}>
               <LottieView
@@ -189,7 +178,7 @@ class ShareNEarn extends Component {
               {share_n_earn_list.map((e, index) => {
                 return (
                   <>
-                    <View style={{flexDirection: 'column', width: 50}}>
+                    <View style={{ flexDirection: 'column', width: 50 }}>
                       <View style={styles.hiw_icon_card}>
                         <FastImage
                           source={{
@@ -223,7 +212,7 @@ class ShareNEarn extends Component {
                     {user_link_created_data.link}
                   </Text>
                   <View style={styles.copy_btn}>
-                    <Icon.FontAwesome
+                    <Icons.FontAwesome
                       name={'copy'}
                       color={Theme.COLORS.primary}
                       size={18}
@@ -239,7 +228,7 @@ class ShareNEarn extends Component {
                 }}
                 validationSchema={share_schema}
                 onSubmit={values => this.create_link(values)}>
-                {({handleBlur, handleChange, values, handleSubmit}) => {
+                {({ handleBlur, handleChange, values, handleSubmit }) => {
                   return (
                     <>
                       <TextBox
@@ -248,7 +237,7 @@ class ShareNEarn extends Component {
                         onChangeText={handleChange('title')}
                         onBlur={handleBlur('title')}
                         style={
-                          values.title ? {height: '40%'} : {height: '100%'}
+                          values.title ? { height: '40%' } : { height: '100%' }
                         }
                         content={
                           values.title ? (
@@ -270,7 +259,9 @@ class ShareNEarn extends Component {
                         value={values.link}
                         onChangeText={handleChange('link')}
                         onBlur={handleBlur('link')}
-                        style={values.link ? {height: '40%'} : {height: '100%'}}
+                        style={
+                          values.link ? { height: '40%' } : { height: '100%' }
+                        }
                         content={
                           values.link ? (
                             <Text style={styles.inputHeaderText}>
@@ -290,9 +281,8 @@ class ShareNEarn extends Component {
                         label={translate('create_link')}
                         btnStyle={[
                           styles.btnStyle,
-                          {backgroundColor: Theme.COLORS.secondary},
+                          { backgroundColor: Theme.COLORS.secondary },
                         ]}
-                        labelStyle={styles.btn_labelStyle}
                         onPress={handleSubmit}
                       />
                     </>
@@ -318,11 +308,10 @@ class ShareNEarn extends Component {
                     <TouchableOpacity
                       style={styles.socialBtn}
                       onPress={() => this.handle_social_share()}>
-                      <Icon.AntDesign
+                      <Icons.AntDesign
                         name={'sharealt'}
                         color={Theme.COLORS.secondary}
                         size={20}
-                        style={styles.socialIcon}
                       />
                     </TouchableOpacity>
                   </View>
@@ -331,9 +320,8 @@ class ShareNEarn extends Component {
                   label={translate('create_new_link')}
                   btnStyle={[
                     styles.btnStyle,
-                    {backgroundColor: Theme.COLORS.secondary},
+                    { backgroundColor: Theme.COLORS.secondary },
                   ]}
-                  labelStyle={styles.btn_labelStyle}
                   onPress={() => {
                     failed_user_link_create();
                   }}
@@ -341,7 +329,7 @@ class ShareNEarn extends Component {
               </>
             ) : null}
 
-            <Text style={[styles.referLinkTitle, {marginTop: 20}]}>
+            <Text style={[styles.referLinkTitle, { marginTop: 20 }]}>
               {translate('share_from_highest_cashback_store')}
             </Text>
             <FlatList
@@ -354,12 +342,12 @@ class ShareNEarn extends Component {
               initialNumToRender={10}
               ListFooterComponent={
                 showLoader &&
-                this.state.highest_cashback_stores_list.length > 0 ? (
+                this.state.highest_cashback_stores_list?.length > 0 ? (
                   <ActivityIndicator size={'small'} />
                 ) : null
               }
               onEndReached={() => {
-                this.setState({showLoader: false});
+                this.setState({ showLoader: false });
               }}
               showsHorizontalScrollIndicator={false}
               renderItem={this.renderStore}
@@ -378,11 +366,11 @@ class ShareNEarn extends Component {
               <Text
                 style={styles.hiw_text}
                 onPress={() =>
-                  this.setState({show_bottom_modal: true, modal_type: 'hiw'})
+                  this.setState({ show_bottom_modal: true, modal_type: 'hiw' })
                 }>
                 {translate('how_it_works')}{' '}
               </Text>
-              <Icon.Entypo
+              <Icons.Entypo
                 name={'chevron-down'}
                 color={Theme.COLORS.secondary}
                 size={18}
@@ -412,9 +400,9 @@ class ShareNEarn extends Component {
                   <View
                     style={[
                       styles.refer_tab,
-                      {flexDirection: index % 2 == 0 ? 'row' : 'row-reverse'},
+                      { flexDirection: index % 2 == 0 ? 'row' : 'row-reverse' },
                     ]}>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{ flexDirection: 'row' }}>
                       <Text style={styles.share_title_number}>
                         0{index + 1}
                       </Text>
@@ -423,14 +411,14 @@ class ShareNEarn extends Component {
                       <Text
                         style={[
                           styles.share_title,
-                          {textAlign: index % 2 == 0 ? 'left' : 'right'},
+                          { textAlign: index % 2 == 0 ? 'left' : 'right' },
                         ]}>
                         {e.title[Config.LANG]}
                       </Text>
                       <Text
                         style={[
                           styles.share_desc,
-                          {textAlign: index % 2 == 0 ? 'left' : 'right'},
+                          { textAlign: index % 2 == 0 ? 'left' : 'right' },
                         ]}>
                         {e.content[Config.LANG]}
                       </Text>
@@ -464,7 +452,7 @@ class ShareNEarn extends Component {
           ref={bottom_modal}
           bottomModalShow={this.state.show_bottom_modal}
           setBottomModalVisibleFalse={() =>
-            this.setState({show_bottom_modal: false})
+            this.setState({ show_bottom_modal: false })
           }>
           <>
             <View style={styles.modal_top_notch} />
@@ -478,9 +466,7 @@ class ShareNEarn extends Component {
                 {translate('how_it_works')}
               </Text>
             )}
-            <ScrollView
-              style={styles.popup_scroll}
-              showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false}>
               {modal_type === 'terms' ? (
                 <>
                   <HTMLView
@@ -507,7 +493,7 @@ class ShareNEarn extends Component {
                               index % 2 == 0 ? 'row' : 'row-reverse',
                           },
                         ]}>
-                        <View style={{flexDirection: 'row'}}>
+                        <View style={{ flexDirection: 'row' }}>
                           <Text style={styles.share_title_number}>
                             0{index + 1}
                           </Text>
@@ -516,7 +502,7 @@ class ShareNEarn extends Component {
                           <Text
                             style={[
                               styles.share_title,
-                              {textAlign: index % 2 == 0 ? 'left' : 'right'},
+                              { textAlign: index % 2 == 0 ? 'left' : 'right' },
                             ]}>
                             {e.title[Config.LANG]}
                           </Text>
@@ -524,7 +510,7 @@ class ShareNEarn extends Component {
                             numberOfLines={2}
                             style={[
                               styles.share_desc,
-                              {textAlign: index % 2 == 0 ? 'left' : 'right'},
+                              { textAlign: index % 2 == 0 ? 'left' : 'right' },
                             ]}>
                             {e.content[Config.LANG]}
                           </Text>

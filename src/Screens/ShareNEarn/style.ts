@@ -1,5 +1,5 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
@@ -8,13 +8,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     paddingBottom: 15,
   },
-  title: {
-    ...Theme.fontStyles.sectionTitle,
-    textTransform: 'capitalize',
-    width: windowWidth - 20,
-    alignSelf: 'center',
-    paddingTop: 0,
-  },
+
   how_to_refer_box: {
     width: windowWidth - 20,
     alignSelf: 'center',
@@ -46,13 +40,6 @@ const styles = StyleSheet.create({
     ...Theme.fontStyles.h2Regular,
     textAlign: 'left',
     width: windowWidth * 0.75,
-  },
-  screen_img: {
-    height: 150,
-    width: 150,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginVertical: 20,
   },
   email_input: {
     flexDirection: 'row',
@@ -355,21 +342,6 @@ const styles = StyleSheet.create({
     width: 55,
     marginTop: 5,
   },
-  linkCard: {
-    width: windowWidth - 30,
-    marginTop: 10,
-    backgroundColor: Theme.COLORS.copy_code_bg,
-    height: 45,
-    alignItems: 'center',
-    alignSelf: 'center',
-    borderRadius: 5,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-    borderStyle: 'dashed',
-    borderWidth: 1,
-    borderColor: Theme.COLORS.grey,
-  },
   screen_img: {
     height: 250,
     width: windowWidth,
@@ -478,7 +450,9 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;
