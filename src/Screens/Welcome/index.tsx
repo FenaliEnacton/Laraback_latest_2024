@@ -1,34 +1,26 @@
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  ImageBackground,
-  Image,
-  I18nManager,
-  TouchableOpacity as Button,
-  Platform,
-} from 'react-native';
-import SplashScreen from 'react-native-bootsplash';
-import {connect} from 'react-redux';
-import {Container, HeaderBackButton} from '@components/core';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import Container from '@/Components/Core/Container';
+import { request_welcome_screen_data } from '@/Redux/Actions/publicDataActions';
+import { is_user_logged_in } from '@/Redux/Selectors';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Icon from '@assets/icons';
-import {translate} from '@translations';
-import Config from 'react-native-config';
-import Swiper from 'react-native-swiper';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {Theme} from '@assets/Theme';
-import {AppImages} from '@assets/Images';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {request_welcome_screen_data} from '@app_redux/Actions';
-import styles from './style';
+import React, { Component } from 'react';
+import { I18nManager, Text, View } from 'react-native';
+import SplashScreen from 'react-native-bootsplash';
 import FastImage from 'react-native-fast-image';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import Swiper from 'react-native-swiper';
+import { connect } from 'react-redux';
+import styles from './style';
 
 const mapDispatchToProps = {
   request_welcome_screen_data,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     welcome_data_list: params.welcome_screen_data
       ? params.welcome_screen_data['procash/section']?.blocks
@@ -39,10 +31,11 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class Welcome extends Component {
+class Welcome extends Component<any> {
   state = {
     index: 0,
   };
+  swiper: any;
 
   componentDidMount() {
     this.props.request_welcome_screen_data();
@@ -52,7 +45,7 @@ class Welcome extends Component {
   set_flag = async () => {
     await AsyncStorage.setItem(
       'IS_FIRST_USE',
-      JSON.stringify({is_first_use: false}),
+      JSON.stringify({ is_first_use: false }),
     );
   };
 
@@ -60,7 +53,7 @@ class Welcome extends Component {
     if (index == this.props.welcome_data_list.length - 1) {
       this.set_flag();
     }
-    this.setState({index});
+    this.setState({ index });
   };
 
   swiper_swipe = index => {
@@ -78,12 +71,12 @@ class Welcome extends Component {
     if (this.props.is_member) {
       this.props.navigation.reset({
         index: 0,
-        routes: [{name: 'Home'}],
+        routes: [{ name: 'Home' }],
       });
     } else {
       this.props.navigation.reset({
         index: 1,
-        routes: [{name: 'Home'}, {name: 'Signup'}],
+        routes: [{ name: 'Home' }, { name: 'Signup' }],
       });
     }
   };
@@ -92,7 +85,7 @@ class Welcome extends Component {
     // By default, dots only show when `total` >= 2
     if (this.props.welcome_data_list.length <= 1) return null;
 
-    let dots = [];
+    let dots = [] as any;
     const ActiveDot = this.props.activeDot || (
       <View style={styles.activeDotStyle} />
     );
@@ -100,15 +93,15 @@ class Welcome extends Component {
     for (let i = 0; i < this.props.welcome_data_list.length; i++) {
       dots.push(
         i === this.state.index
-          ? React.cloneElement(ActiveDot, {key: i})
-          : React.cloneElement(Dot, {key: i}),
+          ? React.cloneElement(ActiveDot, { key: i })
+          : React.cloneElement(Dot, { key: i }),
       );
     }
     return dots;
   };
 
   render() {
-    const {welcome_data_list} = this.props;
+    const { welcome_data_list } = this.props;
     return (
       <Container>
         <View style={styles.logoContainer}>
@@ -162,7 +155,7 @@ class Welcome extends Component {
           onPress={() => {
             this.swiper_swipe(this.state.index);
           }}>
-          <Icon.AntDesign
+          <Icons.AntDesign
             name={I18nManager.isRTL ? 'left' : 'right'}
             color={Theme.COLORS.white}
             size={18}
