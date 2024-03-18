@@ -1,23 +1,22 @@
-import React, {Component} from 'react';
-import {View, Text, ImageBackground} from 'react-native';
-import {connect} from 'react-redux';
-import {Container} from '@components/core';
-import i18n from 'i18n-js';
-import {AppImages} from '@assets/Images';
-import {translationGetters} from '@translations';
-import {internalApi} from '@user_redux/Services/api';
-import {request_user_dashboard, request_user_favs} from '@user_redux/Actions';
-import {rootApi} from '@app_redux/Services/api';
-import NetInfo from '@react-native-community/netinfo';
-import RNBootSplash from 'react-native-bootsplash';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AppImages } from '@/Assets/Images';
+import { request_all_stores } from '@/Redux/Actions/metaDataActions';
 import {
-  request_welcome_screen_data,
-  request_privacy_terms,
   request_app_settings,
   request_bonus_types,
-  request_all_stores,
-} from '@app_redux/Actions';
+  request_privacy_terms,
+  request_welcome_screen_data,
+} from '@/Redux/Actions/publicDataActions';
+import { rootApi } from '@/Redux/Services/api';
+import { request_user_dashboard } from '@/Redux/USER_REDUX/Actions/userDashboardActions';
+import { request_user_favs } from '@/Redux/USER_REDUX/Actions/userFavsActions';
+import { internalApi } from '@/Redux/USER_REDUX/Services/api';
+import { i18n, translationGetters } from '@/translations';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import NetInfo from '@react-native-community/netinfo';
+import React, { Component } from 'react';
+import { ImageBackground } from 'react-native';
+import RNBootSplash from 'react-native-bootsplash';
+import { connect } from 'react-redux';
 
 const mapDispatchToProps = {
   request_welcome_screen_data,
@@ -33,9 +32,10 @@ const mapStateToProps = state => {
   return {};
 };
 
-class SplashScreen extends Component {
+class SplashScreen extends Component<any> {
+  unsubscribe: any;
   componentDidMount() {
-    i18n.translations = {en: translationGetters.en()};
+    i18n.store(translationGetters.en());
     i18n.locale = 'en';
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkConnectivity();
@@ -70,14 +70,16 @@ class SplashScreen extends Component {
   // }
 
   get_entry_data = async () => {
-    let UserLangAsyncData = await AsyncStorage.getItem('USER_LANG');
+    let UserLangAsyncData = (await AsyncStorage.getItem('USER_LANG')) as any;
     let parsedUserLang = JSON.parse(UserLangAsyncData);
     if (parsedUserLang || true) {
-      i18n.translations = {en: translationGetters.en()};
+      i18n.translations = { en: translationGetters.en() };
       i18n.locale = 'en';
       rootApi.setHeader('locale', 'en');
-      let isFirstUseAsyncData = await AsyncStorage.getItem('IS_FIRST_USE');
-      let UserTokenAsyncData = await AsyncStorage.getItem('USER_AUTH');
+      let isFirstUseAsyncData = (await AsyncStorage.getItem(
+        'IS_FIRST_USE',
+      )) as any;
+      let UserTokenAsyncData = (await AsyncStorage.getItem('USER_AUTH')) as any;
       let parsedUser = JSON.parse(isFirstUseAsyncData);
       let parsedUserToken = JSON.parse(UserTokenAsyncData);
       if (parsedUserToken && parsedUserToken.token) {
@@ -90,18 +92,18 @@ class SplashScreen extends Component {
       if (parsedUser && !parsedUser.is_first_use) {
         this.props.navigation.reset({
           index: 0,
-          routes: [{name: 'Home'}],
+          routes: [{ name: 'Home' }],
         });
       } else {
         this.props.navigation.reset({
           index: 0,
-          routes: [{name: 'Welcome'}],
+          routes: [{ name: 'Welcome' }],
         });
       }
     } else {
       this.props.navigation.reset({
         index: 0,
-        routes: [{name: 'LanguageSelect'}],
+        routes: [{ name: 'LanguageSelect' }],
       });
     }
   };
@@ -110,8 +112,9 @@ class SplashScreen extends Component {
     return (
       <>
         <ImageBackground
-          style={{width: '100%', height: '100%', resizeMode: 'contain'}}
+          style={{ width: '100%', height: '100%' }}
           source={AppImages.launch_screen}
+          resizeMode="contain"
         />
       </>
     );
