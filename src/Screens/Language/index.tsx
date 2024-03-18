@@ -1,31 +1,29 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-  I18nManager,
-  FlatList,
-} from 'react-native';
-import {connect} from 'react-redux';
-import {Container} from '@components/core';
-import {AppImages} from '@assets/Images';
-import {Theme} from '@assets/Theme';
-import Icon from '@assets/icons';
-import SplashScreen from 'react-native-bootsplash';
-import RNRestart from 'react-native-restart';
-import i18n from 'i18n-js';
-import Config from 'react-native-config';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import Container from '@/Components/Core/Container';
+import { rootApi } from '@/Services/api';
+import Config from '@/react-native-config';
+import { i18n, translationGetters } from '@/translations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {translationGetters} from '@translations';
-import {rootApi} from '@app_redux/Services/api';
-import styles from './style';
+import React, { useEffect, useState } from 'react';
+import {
+  FlatList,
+  I18nManager,
+  ImageBackground,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import SplashScreen from 'react-native-bootsplash';
 import FastImage from 'react-native-fast-image';
+import RNRestart from 'react-native-restart';
+import { connect } from 'react-redux';
+import styles from './style';
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {};
 };
 
@@ -41,7 +39,7 @@ function LanguageSelect(props) {
   }
 
   async function set_app_lang() {
-    i18n.translations = {en: translationGetters.en()};
+    i18n.store(translationGetters.en());
     i18n.locale = 'en';
     rootApi.setHeader('locale', 'en');
     await AsyncStorage.setItem('USER_LANG', JSON.stringify('en'));
@@ -51,12 +49,12 @@ function LanguageSelect(props) {
     }, 3000);
   }
 
-  function render_langs({item, index}) {
+  function render_langs({ item, index }) {
     return (
       <TouchableOpacity
         style={styles.lang_box}
         onPress={() => change_lang(item)}>
-        <Icon.Ionicons
+        <Icons.Ionicons
           name={lang === item ? 'radio-button-on' : 'radio-button-off-sharp'}
           style={styles.icon}
           color={Theme.COLORS.secondary}
@@ -79,14 +77,14 @@ function LanguageSelect(props) {
         style={styles.bg_image}>
         <Text style={styles.choose_lang_text}>
           Choose your{' '}
-          <Text style={{color: Theme.COLORS.secondary}}>Language</Text>
+          <Text style={{ color: Theme.COLORS.secondary }}>Language</Text>
         </Text>
         <View style={styles.lang_container}>
           <FlatList
             data={Config.LANGS.keys}
             renderItem={render_langs}
             numColumns={2}
-            keyExtractor={(index) => index.toString()}
+            keyExtractor={index => index.toString()}
             columnWrapperStyle={styles.row}
           />
           {/* <TouchableOpacity
@@ -110,7 +108,7 @@ function LanguageSelect(props) {
         <TouchableOpacity
           style={styles.apply_btn}
           onPress={() => set_app_lang()}>
-          <Icon.AntDesign
+          <Icons.AntDesign
             name={I18nManager.isRTL ? 'left' : 'right'}
             color={Theme.COLORS.white}
             size={22}

@@ -5,5 +5,5 @@ export const translationGetters = {
   en: () => require('@translations/en.json'),
 };
 
-const i18n = new I18n();
+export const i18n = new I18n();
 export const translate = (key: any, config?: any) => i18n.t(key, config);
