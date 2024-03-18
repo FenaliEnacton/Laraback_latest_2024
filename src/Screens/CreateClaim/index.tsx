@@ -1,63 +1,49 @@
-import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  FlatList,
-  Image,
-  Platform,
-} from 'react-native';
-import {connect} from 'react-redux';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  KeyboardAwareContent,
-  LangSupportTxtInput,
-  HeaderBackButton,
-  BottomModal,
-  CloseButton,
-  Loader,
-  LBButton,
-  TextBox,
-} from '@components/core';
-import {translate} from '@translations';
-import {ActivityNavigationList, NavigationList} from '@components/user';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {EmptyListView, BlurNavBar} from '@components/generic';
-import {Formik, ErrorMessage} from 'formik';
-import {string, object, number, date} from 'yup';
-import {get_user_internal_nav_list} from '@assets/RouterList';
-import {platform_list} from '@assets/AppDataConfig';
-import {
-  request_user_claim_stores,
-  request_user_claim_store_clicks,
-  request_user_claim_make,
-} from '@user_redux/Actions';
-import styles from './style';
 import dayjs from 'dayjs';
-import {AppImages} from '@assets/Images';
-import Config from 'react-native-config';
-import DocumentPicker from 'react-native-document-picker';
-import FastImage from 'react-native-fast-image';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scrollview';
+import { ErrorMessage, Formik } from 'formik';
 import LottieView from 'lottie-react-native';
+import React, { Component } from 'react';
+import { FlatList, Platform, Text, TouchableOpacity, View } from 'react-native';
+import DocumentPicker from 'react-native-document-picker';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview';
+import { connect } from 'react-redux';
+import { date, number, object, string } from 'yup';
+import styles from './style';
+import {
+  request_user_claim_make,
+  request_user_claim_store_clicks,
+  request_user_claim_stores,
+} from '@/Redux/USER_REDUX/Actions/userClaimActions';
+import { translate } from '@/translations';
+import { get_user_internal_nav_list } from '@/Assets/RouterList';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import InputText from '@/Components/Core/TextBox';
+import LangSupportTxtInput from '@/Components/Core/LangSupportTxtInput';
+import LBButton from '@/Components/Core/LBButton';
+import BottomModal from '@/Components/Core/BottomModal';
+import EmptyListView from '@/Components/Generic/EmptyListView';
+import { platform_list } from '@/Assets/AppDataConfig';
+import CloseButton from '@/Components/Core/CloseButton';
+import BlurNavBar from '@/Components/Generic/BlurNavBar';
+import NavigationList from '@/Components/User/NavigationList';
+import Loader from '@/Components/Core/Loader';
 
-const currencies = Config.CURRENCIES;
-const VersionIOS = parseInt(Platform.Version, 10);
-const merchantModal = React.createRef();
+// const currencies = Config.CURRENCIES;
+// const VersionIOS = parseInt(Platform.Version, 10);
+const merchantModal: any = React.createRef();
 
 const mapDispatchToProps = {
-  request_user_claim_stores,
-  request_user_claim_store_clicks,
-  request_user_claim_make,
+  request_user_claim_stores: request_user_claim_stores,
+  request_user_claim_store_clicks: request_user_claim_store_clicks,
+  request_user_claim_make: request_user_claim_make,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     user_clickable_stores: params.user_claim_stores || [],
     user_store_clicks: params.user_claim_store_clicks || [],
@@ -68,7 +54,7 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class CreateClaim extends Component {
+class CreateClaim extends Component<any> {
   state = {
     selectModalShow: false,
     showDatePicker: false,
@@ -88,31 +74,31 @@ class CreateClaim extends Component {
   handle_merchant_selection = (merchant, setFieldValue) => {
     merchantModal.current.props.onRequestClose();
     setFieldValue('Merchant', merchant.store_id);
-    this.setState({merchant: merchant.store.name});
+    this.setState({ merchant: merchant.store.name });
     this.props.request_user_claim_store_clicks(merchant.store_id);
   };
 
   handle_click_selection = (click, setFieldValue) => {
     merchantModal.current.props.onRequestClose();
     setFieldValue('Click', click.id);
-    this.setState({click: click.click_time});
+    this.setState({ click: click.click_time });
   };
 
   handle_platform_selection = (platform, setFieldValue) => {
     merchantModal.current.props.onRequestClose();
     setFieldValue('Platform', platform);
-    this.setState({platform});
+    this.setState({ platform });
   };
 
   handle_currency_selection = (currency, setFieldValue) => {
     merchantModal.current.props.onRequestClose();
     setFieldValue('Currency', currency);
-    this.setState({currency});
+    this.setState({ currency });
   };
 
   setDate = (selected_date, setFieldValue) => {
     setFieldValue('Date', selected_date);
-    this.setState({date: selected_date, showDatePicker: false});
+    this.setState({ date: selected_date, showDatePicker: false });
   };
 
   handle_submit = values => {
@@ -130,16 +116,17 @@ class CreateClaim extends Component {
   };
 
   render() {
-    const {select_value, merchant, click, showDatePicker} = this.state;
-    const {user_clickable_stores, user_store_clicks, app_settings} = this.props;
-    const min_date = dayjs().subtract(
+    const { select_value, showDatePicker } = this.state;
+    const { user_clickable_stores, user_store_clicks, app_settings } =
+      this.props;
+    const min_date: any = dayjs().subtract(
       app_settings?.cashback?.claim_min_days
         ? app_settings.cashback.claim_min_days
         : 4,
       'days',
     );
 
-    const max_date = dayjs().subtract(
+    const max_date: any = dayjs().subtract(
       app_settings?.cashback?.claim_max_days
         ? app_settings.cashback.claim_max_days
         : 15,
@@ -163,22 +150,22 @@ class CreateClaim extends Component {
         'Document Size can not be greater than 5 mb.',
       ),
     });
-    const {receipt} = this.state;
+    const { receipt } = this.state;
     const nav_list = get_user_internal_nav_list([10002]);
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text numberOfLines={1} style={styles.headerTitle}>
               {translate('create_claim')}
             </Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
-        <KeyboardAwareScrollView style={{marginTop: 60}}>
+        <KeyboardAwareScrollView style={{ marginTop: 60 }}>
           {/* <FastImage
             source={AppImages.missing_cb_header_img}
             style={styles.header_image}
@@ -241,7 +228,7 @@ class CreateClaim extends Component {
                           </Text>
                         ) : null}
                       </View>
-                      <Icon.AntDesign
+                      <Icons.AntDesign
                         name="down"
                         size={15}
                         color={Theme.COLORS.black}
@@ -276,7 +263,7 @@ class CreateClaim extends Component {
                           <Text style={[styles.text]}>{this.state.click}</Text>
                         ) : null}
                       </View>
-                      <Icon.AntDesign
+                      <Icons.AntDesign
                         name="down"
                         size={15}
                         color={Theme.COLORS.black}
@@ -313,7 +300,7 @@ class CreateClaim extends Component {
                           </Text>
                         ) : null}
                       </View>
-                      <Icon.AntDesign
+                      <Icons.AntDesign
                         name="down"
                         size={15}
                         color={Theme.COLORS.black}
@@ -323,16 +310,16 @@ class CreateClaim extends Component {
                       {msg => <Text style={styles.errorMessage}>{msg}</Text>}
                     </ErrorMessage>
 
-                    <TextBox
+                    <InputText
                       placeholder={'Order Id'}
                       keyboardType="numeric"
                       value={values.order_id}
                       onChangeText={handleChange('order_id')}
-                      placeholderTextColor={{color: Theme.COLORS.grey}}
+                      placeholderTextColor={{ color: Theme.COLORS.grey }}
                       style={
                         values.order_id
-                          ? [styles.h3Text, {height: '40%', marginTop: 5}]
-                          : [styles.h3Text, {height: '100%'}]
+                          ? [styles.h3Text, { height: '40%', marginTop: 5 }]
+                          : [styles.h3Text, { height: '100%' }]
                       }
                       content={
                         values.order_id ? (
@@ -340,13 +327,13 @@ class CreateClaim extends Component {
                             {translate('order_id')}
                           </Text>
                         ) : null
-                      }></TextBox>
+                      }></InputText>
                     <ErrorMessage name="order_id">
                       {msg => <Text style={styles.errorMessage}>{msg}</Text>}
                     </ErrorMessage>
 
                     <View style={styles.amountTab}>
-                      <TextBox
+                      <InputText
                         containerStyle={styles.containerStyle}
                         placeholder={translate('order_amount')}
                         keyboardType="numeric"
@@ -355,8 +342,8 @@ class CreateClaim extends Component {
                         // placeholderTextColor={styles.h3Text}
                         style={
                           values.order_amount
-                            ? [styles.h3Text, {height: '40%', marginTop: 5}]
-                            : [styles.h3Text, {height: '100%'}]
+                            ? [styles.h3Text, { height: '40%', marginTop: 5 }]
+                            : [styles.h3Text, { height: '100%' }]
                         }
                         content={
                           values.order_amount ? (
@@ -364,10 +351,10 @@ class CreateClaim extends Component {
                               {translate('order_amount')}
                             </Text>
                           ) : null
-                        }></TextBox>
+                        }></InputText>
                       <TouchableOpacity
                         activeOpacity={0.7}
-                        style={[styles.touchableInput, {width: '49%'}]}
+                        style={[styles.touchableInput, { width: '49%' }]}
                         onPress={() =>
                           this.setState({
                             selectModalShow: true,
@@ -394,7 +381,7 @@ class CreateClaim extends Component {
                             </Text>
                           ) : null}
                         </View>
-                        <Icon.AntDesign
+                        <Icons.AntDesign
                           name="down"
                           size={15}
                           color={Theme.COLORS.black}
@@ -434,7 +421,7 @@ class CreateClaim extends Component {
                           </Text>
                         ) : null}
                       </View>
-                      <Icon.AntDesign
+                      <Icons.AntDesign
                         name="down"
                         size={15}
                         color={Theme.COLORS.black}
@@ -469,7 +456,7 @@ class CreateClaim extends Component {
                             display="default"
                             onChange={(event, d) => {
                               if (d) {
-                                this.setState({showDatePicker: false});
+                                this.setState({ showDatePicker: false });
                                 this.setDate(d, setFieldValue);
                               }
                             }}
@@ -483,18 +470,20 @@ class CreateClaim extends Component {
                       style={[styles.touchableInput]}
                       onPress={async () => {
                         try {
-                          const res = await DocumentPicker.pick({
+                          const res: any = await DocumentPicker.pick({
                             type: [
                               DocumentPicker.types.images,
                               DocumentPicker.types.pdf,
                             ],
                           });
-                          this.setState({receipt: res[0].name});
+                          this.setState({ receipt: res[0].name });
                           console.log('receipt name:', res);
                           values.receipt = res[0];
                           // console.log(res.size)
                           if (res[0].size / 1024 <= 5 * 1024)
+                            // @ts-ignore
                             values.receiptSize = res[0].name;
+                          // @ts-ignore
                           else values.receiptSize = '';
                         } catch (err) {
                           if (DocumentPicker.isCancel(err)) {
@@ -520,7 +509,7 @@ class CreateClaim extends Component {
                           <Text style={[styles.text]}>{receipt}</Text>
                         ) : null}
                       </View>
-                      <Icon.AntDesign
+                      <Icons.AntDesign
                         name="down"
                         size={15}
                         color={Theme.COLORS.black}
@@ -565,7 +554,7 @@ class CreateClaim extends Component {
                       label={translate('submit')}
                       btnStyle={[
                         styles.btnStyle,
-                        {backgroundColor: Theme.COLORS.secondary},
+                        { backgroundColor: Theme.COLORS.secondary },
                       ]}
                       labelStyle={styles.btn_labelStyle}
                       onPress={handleSubmit}
@@ -574,7 +563,7 @@ class CreateClaim extends Component {
                       ref={merchantModal}
                       bottomModalShow={this.state.selectModalShow}
                       setBottomModalVisibleFalse={() =>
-                        this.setState({selectModalShow: false})
+                        this.setState({ selectModalShow: false })
                       }>
                       {select_value === 'merchant' ? (
                         <>
@@ -588,7 +577,7 @@ class CreateClaim extends Component {
                             ListEmptyComponent={EmptyListView}
                             keyExtractor={(item, index) => index.toString()}
                             extraData={this.props}
-                            renderItem={({item, index}) => {
+                            renderItem={({ item, index }) => {
                               return (
                                 <TouchableOpacity
                                   style={[
@@ -636,7 +625,7 @@ class CreateClaim extends Component {
                             ListEmptyComponent={EmptyListView}
                             keyExtractor={(item, index) => index.toString()}
                             extraData={this.props}
-                            renderItem={({item, index}) => {
+                            renderItem={({ item, index }) => {
                               return (
                                 <TouchableOpacity
                                   style={[
@@ -683,7 +672,7 @@ class CreateClaim extends Component {
                             data={platform_list}
                             keyExtractor={(item, index) => index.toString()}
                             extraData={this.props}
-                            renderItem={({item, index}) => {
+                            renderItem={({ item, index }) => {
                               return (
                                 <TouchableOpacity
                                   style={[
@@ -729,7 +718,7 @@ class CreateClaim extends Component {
                             data={this.props.currencies}
                             keyExtractor={(item, index) => index.toString()}
                             extraData={this.props}
-                            renderItem={({item, index}) => {
+                            renderItem={({ item, index }) => {
                               return (
                                 <TouchableOpacity
                                   style={[

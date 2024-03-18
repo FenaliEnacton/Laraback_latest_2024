@@ -1,12 +1,13 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { Theme } from '@/Assets/Theme';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+
 const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   content: {
     backgroundColor: Theme.COLORS.background,
   },
   page_title: {
-    ...Theme.appStyle.h3Bold,
+    ...Theme.fontStyles.h3Bold,
     textTransform: 'capitalize',
     width: windowWidth,
     marginVertical: 10,
@@ -134,11 +135,11 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     justifyContent: 'space-between',
   },
-  placeholder: {
-    ...Theme.fontStyles.h3Regular,
-    textTransform: 'capitalize',
-    color: Theme.COLORS.grey_underline,
-  },
+  // placeholder: {
+  //   ...Theme.fontStyles.h3Regular,
+  //   textTransform: 'capitalize',
+  //   color: Theme.COLORS.grey_underline,
+  // },
   submitBtn: {
     backgroundColor: Theme.COLORS.primary,
     height: 34,
@@ -281,9 +282,13 @@ const styles = StyleSheet.create({
     minWidth: '70%',
     alignItems: 'center',
   },
+  btn_labelStyle: {},
+  text: {},
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;
