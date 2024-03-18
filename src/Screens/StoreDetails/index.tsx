@@ -1,78 +1,46 @@
-import React, {Component} from 'react';
+import { get_constructed_cashback } from '@/Assets/AppDataConfig';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import BottomModal from '@/Components/Core/BottomModal';
+import CashbackString from '@/Components/Core/CashbackString';
+import CloseButton from '@/Components/Core/CloseButton';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import SearchButton from '@/Components/Core/SearchButton';
+import Toast from '@/Components/Core/Toast';
+import CouponModal from '@/Components/Generic/CouponModal';
+import DealCouponFilter from '@/Components/Generic/DealCouponFilter';
+import EmptyListView from '@/Components/Generic/EmptyListView';
+import StoreCouponCard from '@/Components/Generic/StoreCouponCard';
 import {
-  View,
-  Text,
-  FlatList,
-  Image,
-  ScrollView,
-  Animated,
-  Dimensions,
-  StyleSheet,
-} from 'react-native';
-import {connect} from 'react-redux';
-import Icon from '@assets/icons';
-import {is_user_logged_in} from '@app_redux/Selectors';
-import {AppImages} from '@assets/Images';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {Theme} from '@assets/Theme';
-import LinearGradient from 'react-native-linear-gradient';
-import {get_constructed_cashback} from '@assets/AppDataConfig';
-import HTMLView from 'react-native-htmlview';
-import Config from 'react-native-config';
-import {
-  Container,
-  Toast,
-  ScrollContent,
-  HeaderBackButton,
-  CloseButton,
-  BottomModal,
-  LBButton,
-  CashbackString,
-  FilterButton,
-  SearchButton,
-  HeaderRight,
-  HeaderTitle,
-  Header,
-  HeaderLeft,
-} from '@components/core';
-import {
-  request_filtered_coupons,
   failed_filtered_coupons,
-} from '@app_redux/Actions';
-import {get_fav_stores_ids} from '@app_redux/Selectors';
+  request_filtered_coupons,
+} from '@/Redux/Actions/publicDataActions';
+import { get_fav_stores_ids, is_user_logged_in } from '@/Redux/Selectors';
 import {
-  request_user_remove_fav,
   request_user_add_fav,
-} from '@user_redux/Actions';
+  request_user_remove_fav,
+} from '@/Redux/USER_REDUX/Actions/userFavsActions';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import React, { Component } from 'react';
 import {
-  GradientFooter,
-  DealCouponFilter,
-  StoreCouponCard,
-  CouponModal,
-  EmptyListView,
-} from '@components/generic';
-import {translate} from '@translations';
-import styles from './style';
-import FastImage from 'react-native-fast-image';
-import DeviceInfo from 'react-native-device-info';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-  renderers,
-} from 'react-native-popup-menu';
+  Animated,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import Collapsible from 'react-native-collapsible';
-const windowHeight = Dimensions.get('window').height;
+import FastImage from 'react-native-fast-image';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import HTMLView from 'react-native-htmlview';
+import { connect } from 'react-redux';
+import styles from './style';
 
-const Tab = createMaterialTopTabNavigator();
-
-const {width: SCREEN_WIDTH} = Dimensions.get('screen');
-const HEADER_EXPANDED_HEIGHT = 160;
-const HEADER_COLLAPSED_HEIGHT = 70;
-
-const termsModal = React.createRef();
+const termsModal = React.createRef() as any;
 
 const mapDispatchToProps = {
   request_filtered_coupons,
@@ -81,7 +49,7 @@ const mapDispatchToProps = {
   failed_filtered_coupons,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     store_details: params.store_details || {},
     coupons: params.filtered_coupons_data?.coupons || [],
@@ -100,27 +68,24 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class StoreDetails extends Component {
-  constructor() {
-    super();
-    this.state = {
-      scrollY: new Animated.Value(0),
-      modal_type: '',
-      showTermsModal: false,
-      showRatesModal: false,
-      showFilterModal: false,
-      cats: [],
-      stores: [],
-      sort_type: 'popular',
-      offerModalShow: false,
-      selectedCoupon: {},
-      coupons: [],
-      selectedTab: 'coupon',
-      headerHeight: '',
-      filter_show: false,
-      isActive: false,
-    };
-  }
+class StoreDetails extends Component<any> {
+  state: any = {
+    scrollY: new Animated.Value(0),
+    modal_type: '',
+    showTermsModal: false,
+    showRatesModal: false,
+    showFilterModal: false,
+    cats: [],
+    stores: [],
+    sort_type: 'popular',
+    offerModalShow: false,
+    selectedCoupon: {},
+    coupons: [],
+    selectedTab: 'coupon',
+    headerHeight: '',
+    filter_show: false,
+    isActive: false,
+  };
 
   componentDidMount() {
     if (this.props.store_details.store?.id) {
@@ -169,10 +134,10 @@ class StoreDetails extends Component {
     if (this.state.cats.includes(id)) {
       let cats = [...this.state.cats];
       cats = cats.filter(e => e !== id);
-      this.setState({cats});
+      this.setState({ cats });
     } else {
       let cats = [...this.state.cats, id];
-      this.setState({cats});
+      this.setState({ cats });
     }
   };
 
@@ -180,10 +145,10 @@ class StoreDetails extends Component {
     if (this.state.stores.includes(id)) {
       let stores = [...this.state.stores];
       stores = stores.filter(e => e !== id);
-      this.setState({stores});
+      this.setState({ stores });
     } else {
       let stores = [...this.state.stores, id];
-      this.setState({stores});
+      this.setState({ stores });
     }
   };
 
@@ -203,16 +168,16 @@ class StoreDetails extends Component {
       null,
       'StoreDetails',
     );
-    this.setState({showFilterModal: false});
+    this.setState({ showFilterModal: false });
   };
 
-  renderCouponList = ({item, index}) => (
-    <View style={index % 2 == 0 ? {marginRight: 2} : {marginLeft: -5}}>
+  renderCouponList = ({ item, index }) => (
+    <View style={index % 2 == 0 ? { marginRight: 2 } : { marginLeft: -5 }}>
       <StoreCouponCard
         offer={item}
         is_store_page={true}
         couponOnPress={() =>
-          this.setState({offerModalShow: true, selectedCoupon: item})
+          this.setState({ offerModalShow: true, selectedCoupon: item })
         }
       />
     </View>
@@ -227,7 +192,7 @@ class StoreDetails extends Component {
   };
 
   store_detail_out_page = () => {
-    const {store_details, is_member, navigation} = this.props;
+    const { store_details, is_member, navigation } = this.props;
     let navigation_options = {
       web_url: Config.APP_OUT_URL.replace(':type', 'store').replace(
         ':type_id',
@@ -242,9 +207,9 @@ class StoreDetails extends Component {
       coupon_code: null,
     };
     if (is_member) {
-      navigation.navigate('OutPage', {out_page_info: navigation_options});
+      navigation.navigate('OutPage', { out_page_info: navigation_options });
     } else {
-      navigation.navigate('Login', {out_page_info: navigation_options});
+      navigation.navigate('Login', { out_page_info: navigation_options });
     }
   };
 
@@ -272,14 +237,16 @@ class StoreDetails extends Component {
     return <EmptyListView message={translate('no_data_found')} />;
   };
   onBackdropPress = () => {
-    this.setState({filter_show: false});
+    this.setState({ filter_show: false });
   };
-  renderCashbackRate = ({item, index}) => {
+  renderCashbackRate = ({ item, index }) => {
     return (
       <View
         style={[
           styles.cbRateCard,
-          this.props.cb_rates.length - 1 == index ? {borderBottomWidth: 0} : {},
+          this.props.cb_rates.length - 1 == index
+            ? { borderBottomWidth: 0 }
+            : {},
         ]}
         key={index.toString()}>
         <View style={styles.offerTag}>
@@ -300,7 +267,7 @@ class StoreDetails extends Component {
       fav_store_ids,
       coupon_count,
     } = this.props;
-    const {coupons, modal_type} = this.state;
+    const { coupons, modal_type } = this.state;
     const is_fav = fav_store_ids.includes(store_details.store?.id);
     const hiw = store_details?.static_blocks?.store_hiw[0]?.attrs?.blocks
       ? store_details?.static_blocks?.store_hiw[0]?.attrs?.blocks
@@ -315,29 +282,28 @@ class StoreDetails extends Component {
       <Container style={styles.container}>
         <Header
           onLayout={event => {
-            this.setState({headerHeight: event.nativeEvent.layout});
+            this.setState({ headerHeight: event.nativeEvent.layout });
           }}>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton
               // btnStyle={{width: '10%'}}
               onPress={() => this.props.navigation.goBack()}
             />
-          </HeaderLeft>
-          <HeaderTitle style={styles.headerTitleCard}>
+          </Header.Left>
+          <Header.Title style={styles.headerTitleCard}>
             <TouchableOpacity
               style={styles.favBtn}
               onPress={() => this.fav_clicked()}>
-              <Icon.FontAwesome
-                style={styles.fav_icon}
+              <Icons.FontAwesome
                 name={is_fav ? 'heart' : 'heart-o'}
                 size={15}
                 color={Theme.COLORS.secondary}
               />
             </TouchableOpacity>
-          </HeaderTitle>
-          <HeaderRight>
+          </Header.Title>
+          <Header.Right>
             <SearchButton navigation={this.props.navigation} />
-          </HeaderRight>
+          </Header.Right>
         </Header>
         <ScrollView>
           <View style={styles.StoreDetailsContainer}>
@@ -360,7 +326,7 @@ class StoreDetails extends Component {
                   </Text>
                   {store_details.store?.cashback_enabled ? (
                     <CashbackString
-                      icon={{marginTop: 5}}
+                      icon={{ marginTop: 5 }}
                       cb_style={styles.cb_style}
                       cb_text={styles.cbText}
                       cashback_string={store_details.store?.cashback_string}
@@ -368,14 +334,13 @@ class StoreDetails extends Component {
                   ) : null}
                 </View>
               </View>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity
                   style={[styles.hiwCard]}
                   onPress={() =>
-                    this.setState({showTermsModal: true, modal_type: 'hiw'})
+                    this.setState({ showTermsModal: true, modal_type: 'hiw' })
                   }>
-                  <Icon.MaterialCommunityIcons
-                    style={styles.fav_icon}
+                  <Icons.MaterialCommunityIcons
                     name={'message-question'}
                     size={15}
                     color={Theme.COLORS.black}
@@ -392,10 +357,9 @@ class StoreDetails extends Component {
                 <TouchableOpacity
                   style={styles.hiwCard}
                   onPress={() =>
-                    this.setState({showTermsModal: true, modal_type: 'terms'})
+                    this.setState({ showTermsModal: true, modal_type: 'terms' })
                   }>
-                  <Icon.Ionicons
-                    style={styles.fav_icon}
+                  <Icons.Ionicons
                     name={'ios-document-text'}
                     size={15}
                     color={Theme.COLORS.black}
@@ -431,13 +395,14 @@ class StoreDetails extends Component {
                 <View
                   style={[
                     styles.cashbackRateContainer,
-                    {backgroundColor: Theme.COLORS.gradient_card_bg},
+                    { backgroundColor: Theme.COLORS.gradient_card_bg },
                   ]}>
                   <Text
-                    style={[styles.CbRateText, {color: Theme.COLORS.black}]}>
+                    style={[styles.CbRateText, { color: Theme.COLORS.black }]}>
                     {coupon_count}
                   </Text>
-                  <Text style={[styles.cashback, {color: Theme.COLORS.black}]}>
+                  <Text
+                    style={[styles.cashback, { color: Theme.COLORS.black }]}>
                     {translate('coupons')}
                   </Text>
                 </View>
@@ -449,7 +414,7 @@ class StoreDetails extends Component {
             <View style={styles.cashbackInfo}>
               <View style={styles.trackedCard}>
                 <View style={styles.iconCard}>
-                  <Icon.MaterialCommunityIcons
+                  <Icons.MaterialCommunityIcons
                     name={'clock-check-outline'}
                     color={Theme.COLORS.black}
                     size={20}
@@ -468,7 +433,7 @@ class StoreDetails extends Component {
               </View>
               <View style={styles.trackedCard}>
                 <View style={styles.iconCard}>
-                  <Icon.AntDesign
+                  <Icons.AntDesign
                     name={'calendar'}
                     color={Theme.COLORS.black}
                     size={20}
@@ -487,7 +452,7 @@ class StoreDetails extends Component {
               </View>
               <View style={styles.trackedCard}>
                 <View style={styles.iconCard}>
-                  <Icon.MaterialCommunityIcons
+                  <Icons.MaterialCommunityIcons
                     name={'ticket-percent-outline'}
                     size={20}
                     color={Theme.COLORS.black}
@@ -502,19 +467,19 @@ class StoreDetails extends Component {
                       flexDirection: 'row',
                       alignItems: 'center',
                     }}>
-                    <Text style={[styles.track_label, {marginRight: 5}]}>
+                    <Text style={[styles.track_label, { marginRight: 5 }]}>
                       {store_details?.store?.is_claimable
                         ? translate('allowed')
                         : translate('not_allowed')}
                     </Text>
                     {store_details?.store?.is_claimable ? (
-                      <Icon.FontAwesome
+                      <Icons.FontAwesome
                         name={'check-circle'}
                         size={16}
                         color={Theme.COLORS.green_approved}
                       />
                     ) : (
-                      <Icon.Entypo
+                      <Icons.Entypo
                         name={'circle-with-cross'}
                         size={16}
                         color={Theme.COLORS.error}
@@ -527,14 +492,13 @@ class StoreDetails extends Component {
           ) : null}
 
           {cb_rates.length > 0 ? (
-            <View style={{marginTop: 5}}>
+            <View style={{ marginTop: 5 }}>
               <Text
-                style={[styles.sectionTitle, {marginBottom: 10, width: 130}]}>
+                style={[styles.sectionTitle, { marginBottom: 10, width: 130 }]}>
                 {translate('cashback_rates')}
               </Text>
               <FlatList
-                style={{flexGrow: 0}}
-                key={(item, index) => index.toString()}
+                style={{ flexGrow: 0 }}
                 keyExtractor={(item, index) => index.toString()}
                 data={cb_rates?.slice(0, 2)}
                 showsVerticalScrollIndicator={false}
@@ -545,23 +509,22 @@ class StoreDetails extends Component {
                 <TouchableOpacity
                   style={styles.loadMoreBtn}
                   onPress={() => {
-                    this.setState({isActive: true});
+                    this.setState({ isActive: true });
                   }}>
                   <Text style={styles.loadMoreText}>
                     {translate('show_more')}
                   </Text>
-                  <Icon.FontAwesome5
+                  <Icons.FontAwesome5
                     name={'chevron-down'}
                     size={15}
-                    style={{marginTop: 2, marginLeft: 5}}
+                    style={{ marginTop: 2, marginLeft: 5 }}
                     color="white"
                   />
                 </TouchableOpacity>
               ) : null}
               <Collapsible collapsed={!this.state.isActive} duration={250}>
                 <FlatList
-                  style={{flexGrow: 0}}
-                  key={(item, index) => index.toString()}
+                  style={{ flexGrow: 0 }}
                   keyExtractor={(item, index) => index.toString()}
                   data={cb_rates?.slice(3, cb_rates?.length)}
                   showsVerticalScrollIndicator={false}
@@ -571,15 +534,15 @@ class StoreDetails extends Component {
                   <TouchableOpacity
                     style={styles.loadMoreBtn}
                     onPress={() => {
-                      this.setState({isActive: false});
+                      this.setState({ isActive: false });
                     }}>
                     <Text style={styles.loadMoreText}>
                       {translate('show_less')}
                     </Text>
-                    <Icon.FontAwesome5
+                    <Icons.FontAwesome5
                       name={'chevron-up'}
                       size={15}
-                      style={{marginTop: 2, marginLeft: 5}}
+                      style={{ marginTop: 2, marginLeft: 5 }}
                       color="white"
                     />
                   </TouchableOpacity>
@@ -598,7 +561,7 @@ class StoreDetails extends Component {
                       showFilterModal: !this.state.showFilterModal,
                     });
                   }}>
-                  <Icon.AntDesign
+                  <Icons.AntDesign
                     name={'filter'}
                     size={20}
                     color={Theme.COLORS.black}
@@ -628,9 +591,9 @@ class StoreDetails extends Component {
         <BottomModal
           ref={termsModal}
           bottomModalShow={this.state.showTermsModal}
-          style={{justifyContent: 'flex-start', alignItems: 'flex-start'}}
+          style={{ justifyContent: 'flex-start', alignItems: 'flex-start' }}
           setBottomModalVisibleFalse={() =>
-            this.setState({showTermsModal: false})
+            this.setState({ showTermsModal: false })
           }>
           <>
             {/* <View style={styles.hiw_modal_content}> */}
@@ -672,7 +635,7 @@ class StoreDetails extends Component {
                 <Text
                   style={[
                     styles.sectionTitle,
-                    {fontSize: 24, paddingTop: 0, marginTop: 10},
+                    { fontSize: 24, paddingTop: 0, marginTop: 10 },
                   ]}>
                   {translate('terms_n_condition')}
                 </Text>
@@ -697,10 +660,10 @@ class StoreDetails extends Component {
         </BottomModal>
         <CouponModal
           setCouponModalVisibleFalse={() =>
-            this.setState({offerModalShow: false})
+            this.setState({ offerModalShow: false })
           }
           setCouponModalVisibleTrue={() =>
-            this.setState({offerModalShow: true})
+            this.setState({ offerModalShow: true })
           }
           offerModalShow={this.state.offerModalShow}
           navigation={this.props.navigation}
@@ -711,7 +674,7 @@ class StoreDetails extends Component {
           filter_data={store_details.filter}
           filterModalVisible={this.state.showFilterModal}
           sort_type={this.state.sort_type}
-          handle_sort_type_change={value => this.setState({sort_type: value})}
+          handle_sort_type_change={value => this.setState({ sort_type: value })}
           selected_ids={{
             cats: this.state.cats,
             stores: this.state.stores,
@@ -719,7 +682,7 @@ class StoreDetails extends Component {
           handle_cat_change={id => this.handle_cat_change(id)}
           handle_store_change={id => this.handle_store_change(id)}
           setFilterModalVisibleFalse={() =>
-            this.setState({showFilterModal: false})
+            this.setState({ showFilterModal: false })
           }
           resetFilter={() => {
             this.setState({

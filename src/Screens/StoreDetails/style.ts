@@ -1,9 +1,6 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {color} from 'react-native-reanimated';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 // const insets = useSafeAreaInsets();
 
@@ -73,7 +70,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
     zIndex: 1,
   },
-  shop_now_btn: {width: 200, height: 30, borderRadius: 15, zIndex: 999999},
+  shop_now_btn: { width: 200, height: 30, borderRadius: 15, zIndex: 999999 },
   fav_icon_wrapper: {
     height: 50,
     width: 50,
@@ -187,7 +184,7 @@ const styles = StyleSheet.create({
   cb_text: {
     ...Theme.fontStyles.h4Regular,
     color: Theme.COLORS.white,
-    transform: [{rotate: '180deg'}],
+    transform: [{ rotate: '180deg' }],
     marginLeft: 30,
   },
   down_arrow: {
@@ -353,7 +350,6 @@ const styles = StyleSheet.create({
     width: windowWidth,
     alignSelf: 'center',
     justifyContent: 'center',
-    width: windowWidth,
     backgroundColor: 'green',
   },
   about_us_text: {
@@ -579,7 +575,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Theme.COLORS.secondary,
-    transform: [{rotate: '130deg'}],
+    transform: [{ rotate: '130deg' }],
     alignSelf: 'center',
     position: 'absolute',
     left: -45,
@@ -663,7 +659,9 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;
