@@ -1,35 +1,29 @@
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, FlatList, Image} from 'react-native';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  ScrollContent,
-  HeaderBackButton,
-  LangSupportTxtInput,
-  Loader,
-} from '@components/core';
-import {
-  TopStoreCard,
-  TopCouponCard,
-  ChildCatCard,
-  CouponModal,
-  CatCard,
-  DealCard,
-  DealModal,
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import Container from '@/Components/Core/Container';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import LangSupportTxtInput from '@/Components/Core/LangSupportTxtInput';
+import CatCard from '@/Components/Generic/CatCard';
+import ChildCatCard from '@/Components/Generic/ChildCatCard';
+import CouponModal from '@/Components/Generic/CouponModal';
+import DealCard from '@/Components/Generic/DealCard';
+import DealModal from '@/Components/Generic/DealModal';
+import TopCouponCard from '@/Components/Generic/TopCouponCard';
+import TopStoreCard, {
   EmptyStoreCard,
-} from '@components/generic';
-import Icon from '@assets/icons';
-import {Theme} from '@assets/Theme';
-import Config from 'react-native-config';
-import {translate} from '@translations';
-import {request_coupon_cat_info, request_deal_info} from '@app_redux/Actions';
-import styles from './style';
+} from '@/Components/Generic/TopStoreCard';
+import { request_deal_info } from '@/Redux/Actions/publicDataActions';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { Component } from 'react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { connect } from 'react-redux';
+import styles from './style';
 
 const mapDispatchToProps = {
-  request_coupon_cat_info,
   request_deal_info,
 };
 
@@ -37,23 +31,30 @@ const mapStateToProps = state => {
   return {};
 };
 
-class Search extends Component {
+class Search extends Component<any> {
   state = {
     showClose: false,
     search_txt: '',
-    searchRecords: {},
+    searchRecords: {
+      stores: [],
+      coupons: [],
+      deals: [],
+      coupon_categories: [],
+      store_categories: [],
+    },
     offerModalShow: false,
     selectedCoupon: {},
     dealModalShow: false,
     noResult: false,
     search_history: [],
+    search_loading: false,
   };
 
   edit_search = text => {
-    this.setState({search_txt: text, showClose: true});
+    this.setState({ search_txt: text, showClose: true });
   };
 
-  renderStores = ({item, index}) => {
+  renderStores = ({ item, index }) => {
     return (
       <TopStoreCard
         store={item}
@@ -63,7 +64,7 @@ class Search extends Component {
     );
   };
 
-  renderCategories = ({item, index}) => {
+  renderCategories = ({ item, index }) => {
     return (
       <CatCard
         cat={item}
@@ -75,25 +76,25 @@ class Search extends Component {
     );
   };
 
-  render_empty_stores = ({item, index}) => {
+  render_empty_stores = ({ item, index }) => {
     return <EmptyStoreCard />;
   };
 
-  render_deals = ({item, index}) => {
+  render_deals = ({ item, index }) => {
     return (
       <DealCard
         deal={item}
         bg_color={Theme.get_bg_color(index, 8)}
-        style={{marginRight: 10}}
+        style={{ marginRight: 10 }}
         deal_onPress={() => {
           this.props.request_deal_info(item.id);
-          this.setState({dealModalShow: true});
+          this.setState({ dealModalShow: true });
         }}
       />
     );
   };
 
-  render_store_cat = ({item, index}) => {
+  render_store_cat = ({ item, index }) => {
     return (
       <ChildCatCard
         index={index}
@@ -103,6 +104,8 @@ class Search extends Component {
       />
     );
   };
+  _unsubscribe: any;
+  search_input: any;
   componentDidMount() {
     this._unsubscribe = this.props.navigation.addListener('focus', () => {
       this.search_input.focus();
@@ -131,17 +134,17 @@ class Search extends Component {
 
   get_search_history = () => {
     AsyncStorage.getItem('search_result')
-      .then(result => {
-        this.setState({search_history: JSON.parse(result)});
+      .then((result: any) => {
+        this.setState({ search_history: JSON.parse(result) });
       })
       .catch(e => console.log(e));
   };
   search_result = text => {
     let search_string = text ? text : this.state.search_txt;
     if (search_string.length > 0) {
-      this.setState({showClose: true, search_loading: true});
+      this.setState({ showClose: true, search_loading: true });
       AsyncStorage.getItem('search_result')
-        .then(result => {
+        .then((result: any) => {
           JSON.parse(result);
           if (result != null) {
             AsyncStorage.setItem(
@@ -162,7 +165,7 @@ class Search extends Component {
             Config.PUBLIC_PREFIX +
             '/app/search?keyword=' +
             search_string,
-          {method: 'GET'},
+          { method: 'GET' },
         )
           .then(res => res.json())
           .then(response => {
@@ -176,7 +179,7 @@ class Search extends Component {
             if (response.success) {
               let searchRecords = response.data ? response.data : {};
               let routes = [];
-              this.setState({searchRecords});
+              this.setState({ searchRecords });
 
               if (
                 !searchRecords.stores &&
@@ -222,11 +225,11 @@ class Search extends Component {
   };
 
   render() {
-    const {showClose, search_txt, searchRecords} = this.state;
+    const { showClose, search_txt, searchRecords } = this.state;
     return (
       <Container>
         <Header>
-          <HeaderLeft style={{width: '90%'}}>
+          <Header.Left style={{ width: '90%' }}>
             <HeaderBackButton
               // btnStyle={styles.btnStyle}
               onPress={() => this.props.navigation.goBack()}
@@ -242,8 +245,8 @@ class Search extends Component {
                 autoCapitalize={'none'}
                 onChangeText={text => this.edit_search(text)}
                 returnKeyType="search"
-                onSubmitEditing={() => {
-                  this.search_result();
+                onSubmitEditing={val => {
+                  this.search_result(val);
                 }}
                 placeholder={translate('search_cat_store')}
                 value={search_txt}
@@ -258,21 +261,21 @@ class Search extends Component {
                       searchRecords: {},
                     })
                   }>
-                  <Icon.AntDesign
+                  <Icons.AntDesign
                     name="close"
                     color={Theme.COLORS.black}
                     size={20}
                   />
                 </TouchableOpacity>
               ) : (
-                <Icon.Entypo
+                <Icons.Entypo
                   name="magnifying-glass"
-                  color={Theme.COLORS.subText}
+                  color={Theme.COLORS.grey}
                   size={20}
                 />
               )}
             </View>
-          </HeaderLeft>
+          </Header.Left>
         </Header>
         <ScrollContent style={styles.content}>
           {this.state.search_history?.length > 0 ? (
@@ -282,13 +285,13 @@ class Search extends Component {
               </Text>
               <FlatList
                 data={this.state.search_history}
-                renderItem={({item}) => {
+                renderItem={({ item }) => {
                   return (
                     <View style={styles.recentSearchResultWrapper}>
                       <TouchableOpacity
-                        style={{width: '80%'}}
+                        style={{ width: '80%' }}
                         onPress={() => {
-                          this.setState({search_txt: item});
+                          this.setState({ search_txt: item });
                           this.search_result(item);
                         }}>
                         <Text
@@ -301,11 +304,11 @@ class Search extends Component {
                         onPress={() => {
                           this.removeSearchTextFromHistory(item);
                         }}>
-                        <Icon.AntDesign
+                        <Icons.AntDesign
                           name="close"
                           color="#808089"
                           size={20}
-                          style={{textAlign: 'center'}}
+                          style={{ textAlign: 'center' }}
                         />
                       </TouchableOpacity>
                     </View>
@@ -314,7 +317,7 @@ class Search extends Component {
               />
             </View>
           ) : null}
-          {searchRecords.stores && searchRecords.stores.length > 0 ? (
+          {searchRecords?.stores && searchRecords?.stores?.length > 0 ? (
             <View style={styles.listHeader}>
               <Text style={styles.listTitle}>{`${translate(
                 'stores',
@@ -345,12 +348,12 @@ class Search extends Component {
             style={styles.store_list}
             data={searchRecords.coupons ? searchRecords.coupons : []}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({item, index}) => (
+            renderItem={({ item, index }) => (
               <TopCouponCard
                 offer={item}
                 bg_color={Theme.get_bg_color(index, 4)}
                 couponOnPress={() =>
-                  this.setState({selectedCoupon: item, offerModalShow: true})
+                  this.setState({ selectedCoupon: item, offerModalShow: true })
                 }
               />
             )}
@@ -385,7 +388,7 @@ class Search extends Component {
               <Text
                 style={[
                   styles.listTitle,
-                  {width: '100%'},
+                  { width: '100%' },
                 ]}>{`Searched coupon categories for "${this.state.search_txt}"`}</Text>
             </View>
           ) : null}
@@ -408,7 +411,7 @@ class Search extends Component {
               <Text
                 style={[
                   styles.listTitle,
-                  {width: '100%'},
+                  { width: '100%' },
                 ]}>{`Searched deals categories for "${this.state.search_txt}"`}</Text>
             </View>
           ) : null}
@@ -439,7 +442,7 @@ class Search extends Component {
             <FlatList
               keyExtractor={(item, index) => index.toString()}
               data={[1, 2, 3, 4]}
-              style={{marginLeft: 10}}
+              style={{ marginLeft: 10 }}
               extraData={this.props}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
@@ -450,18 +453,20 @@ class Search extends Component {
 
         <CouponModal
           setCouponModalVisibleFalse={() =>
-            this.setState({offerModalShow: false})
+            this.setState({ offerModalShow: false })
           }
           setCouponModalVisibleTrue={() =>
-            this.setState({offerModalShow: true})
+            this.setState({ offerModalShow: true })
           }
           offerModalShow={this.state.offerModalShow}
           navigation={this.props.navigation}
           coupon={this.state.selectedCoupon}
         />
         <DealModal
-          setDealModalVisibleFalse={() => this.setState({dealModalShow: false})}
-          setDealModalVisibleTrue={() => this.setState({dealModalShow: true})}
+          setDealModalVisibleFalse={() =>
+            this.setState({ dealModalShow: false })
+          }
+          setDealModalVisibleTrue={() => this.setState({ dealModalShow: true })}
           dealModalShow={this.state.dealModalShow}
           navigation={this.props.navigation}
         />

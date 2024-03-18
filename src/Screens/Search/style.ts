@@ -1,5 +1,5 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   searchBar: {
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
   },
   list: {
     width: windowWidth,
-    backgroundColor: Theme.COLORS.appBackground,
+    backgroundColor: Theme.COLORS.background,
   },
   cat_flatlist: {
     width: windowWidth,
@@ -151,7 +151,9 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;
