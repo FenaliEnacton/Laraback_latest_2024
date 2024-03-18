@@ -1,35 +1,30 @@
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  ScrollContent,
-  HeaderBackButton,
-} from '@components/core';
-import {GradientFooter} from '@components/generic';
-import {translate} from '@translations';
-import {AppImages} from '@assets/Images';
-import {request_faqs} from '@app_redux/Actions';
-import {Theme} from '@assets/Theme';
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
 import HTMLView from 'react-native-htmlview';
-import Icon from '@assets/icons';
 import styles from './style';
+import { request_faqs } from '@/Redux/Actions/publicDataActions';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import { translate } from '@/translations';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Icons from '@/Assets/icons';
+import { Theme } from '@/Assets/Theme';
+import GradientFooter from '@/Components/Generic/GradientFooter';
+import { AppImages } from '@/Assets/Images';
 
 const mapDispatchToProps = {
-  request_faqs,
+  request_faqs: request_faqs,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     faqs_info: params.faqs_info || [],
   };
 };
 
-class FAQs extends Component {
+class FAQs extends Component<any> {
   state = {
     par_index: null,
     que_index: null,
@@ -44,25 +39,25 @@ class FAQs extends Component {
       this.state.par_index === par_index &&
       this.state.que_index === child_index
     ) {
-      this.setState({par_index: null, que_index: null});
+      this.setState({ par_index: null, que_index: null });
     } else {
-      this.setState({par_index, que_index: child_index});
+      this.setState({ par_index, que_index: child_index });
     }
   };
 
   render() {
-    const {faqs_info} = this.props;
-    const {par_index, que_index} = this.state;
+    const { faqs_info } = this.props;
+    const { par_index, que_index } = this.state;
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>{translate('faqs')}</Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <ScrollContent>
           {faqs_info.map((e, index) => {
@@ -76,7 +71,7 @@ class FAQs extends Component {
                         style={styles.faq_card_head}
                         onPress={() => this.toggle(index, i)}>
                         <Text style={styles.faq_title}>{q.title}</Text>
-                        <Icon.AntDesign
+                        <Icons.AntDesign
                           name={
                             par_index === index && que_index === i
                               ? 'up'
