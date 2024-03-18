@@ -1,30 +1,25 @@
-import React, {Component} from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  KeyboardAwareContent,
-  HeaderBackButton,
-  LangSupportTxtInput,
-  LBButton,
-} from '@components/core';
-import Icon from '@assets/icons';
-import {get_user_internal_nav_list} from '@assets/RouterList';
-import {ActivityNavigationList} from '@components/user';
-import {Formik, ErrorMessage} from 'formik';
-import {string, object} from 'yup';
-import {
-  request_user_claim_post_comment,
-  request_user_claim_close,
-} from '@user_redux/Actions';
-import {Theme} from '@assets/Theme';
-import {ClaimInfo} from '@components/user';
-import {translate} from '@translations';
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import { Formik, ErrorMessage } from 'formik';
+import { string, object } from 'yup';
 import styles from './style';
+import { get_user_internal_nav_list } from '@/Assets/RouterList';
+import {
+  request_user_claim_close,
+  request_user_claim_post_comment,
+} from '@/Redux/USER_REDUX/Actions/userClaimActions';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import KeyboardAwareContent from '@/Components/Core/Content/keyboardAwareScrollContent';
+import { translate } from '@/translations';
+import ClaimInfo from '@/Components/User/ClaimInfo';
+import ActivityNavigationList from '@/Components/User/ActivityNavigationList';
+import LangSupportTxtInput from '@/Components/Core/LangSupportTxtInput';
+import Icons from '@/Assets/icons';
+import { Theme } from '@/Assets/Theme';
+import LBButton from '@/Components/Core/LBButton';
 const NAV_LIST = get_user_internal_nav_list([10008]);
 
 const mapDispatchToProps = {
@@ -32,18 +27,18 @@ const mapDispatchToProps = {
   request_user_claim_close,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     user_claim_info: params.user_claim_info || {},
   };
 };
 
-class ViewMissingClaim extends Component {
+class ViewMissingClaim extends Component<any> {
   state = {
     comment: '',
   };
 
-  send_message = (values) => {
+  send_message = values => {
     if (values.comment) {
       this.props.request_user_claim_post_comment(
         this.props.user_claim_info.id,
@@ -53,7 +48,7 @@ class ViewMissingClaim extends Component {
   };
 
   render() {
-    const {user_claim_info} = this.props;
+    const { user_claim_info } = this.props;
 
     const commentSchema = object().shape({
       comment: string().trim().required('required_field'),
@@ -62,15 +57,15 @@ class ViewMissingClaim extends Component {
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>
               {translate('view_missing_claim')}
             </Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <KeyboardAwareContent>
           <ClaimInfo />
@@ -88,7 +83,7 @@ class ViewMissingClaim extends Component {
                   comment: '',
                 }}
                 validationSchema={commentSchema}
-                onSubmit={(values) => this.send_message(values)}>
+                onSubmit={values => this.send_message(values)}>
                 {({
                   handleBlur,
                   handleChange,
@@ -109,7 +104,7 @@ class ViewMissingClaim extends Component {
                           name="comment"
                         />
                         <ErrorMessage name="comment">
-                          {(msg) => (
+                          {msg => (
                             <Text style={styles.errorMessage}>
                               {translate(msg)}
                             </Text>
@@ -117,8 +112,10 @@ class ViewMissingClaim extends Component {
                         </ErrorMessage>
                         <TouchableOpacity
                           style={styles.send_btn}
-                          onPress={handleSubmit}>
-                          <Icon.Feather
+                          onPress={() => {
+                            handleSubmit();
+                          }}>
+                          <Icons.Feather
                             name={'send'}
                             color={Theme.COLORS.secondary}
                             size={18}
@@ -133,9 +130,8 @@ class ViewMissingClaim extends Component {
                 label={translate('close_this_claim')}
                 btnStyle={[
                   styles.btnStyle,
-                  {backgroundColor: Theme.COLORS.secondary},
+                  { backgroundColor: Theme.COLORS.secondary },
                 ]}
-                labelStyle={styles.btn_labelStyle}
                 onPress={() => {
                   this.props.request_user_claim_close(
                     this.props.user_claim_info.id,

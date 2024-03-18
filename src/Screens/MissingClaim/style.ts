@@ -1,5 +1,5 @@
-import {StyleSheet, Dimensions, Platform} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, Dimensions, Platform } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
@@ -149,17 +149,6 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     marginTop: 20,
   },
-  navListStyle: {
-    width: 75,
-    height: 70,
-    marginRight: 0,
-    alignSelf: 'center',
-    // backgroundColor: 'red',
-  },
-  routeText: {
-    ...Theme.fontStyles.h4Bold,
-    marginTop: 5,
-  },
   tab_root_view: {
     flexDirection: 'row',
     marginTop: 10,
@@ -241,7 +230,9 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;
