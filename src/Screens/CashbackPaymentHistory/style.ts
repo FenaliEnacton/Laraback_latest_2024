@@ -1,5 +1,5 @@
-import {StyleSheet, Platform, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { StyleSheet, Platform, Dimensions } from 'react-native';
+import { Theme } from '@/Assets/Theme';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
@@ -28,9 +28,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 5,
   },
-  list: {
-    maxHeight: windowHeight - 200,
-  },
+
   bottomTab: {
     flexDirection: 'row',
     width: '100%',
@@ -185,7 +183,9 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = {
+const _styles = {
   ...Theme.appStyle,
   ...styles,
 };
+
+export default _styles;

@@ -1,44 +1,38 @@
-import React, {Component} from 'react';
-import {View, Text, FlatList, TouchableOpacity} from 'react-native';
-import {connect} from 'react-redux';
-import Icon from '@assets/icons';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  HeaderBackButton,
-  BottomModal,
-  CloseButton,
-} from '@components/core';
-import {EmptyListView, BlurNavBar} from '@components/generic';
-import {
-  ListHeader,
-  ActivityNavigationList,
-  TabLoader,
-  NavigationList,
-} from '@components/user';
-import {get_currency_string} from '@user_redux/Utils';
-import Config from 'react-native-config';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
-import {
-  request_user_payment_list,
-  request_user_payment_email_verify,
-} from '@user_redux/Actions';
-import {user_activity_months} from '@user_redux/Selectors';
+import React, { Component } from 'react';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { connect } from 'react-redux';
+import Icon from '@/Assets/icons';
+import Config from '@/react-native-config';
+import { translate } from '@/translations';
+import { Theme } from '@/Assets/Theme';
 import dayjs from 'dayjs';
+import { get_user_internal_nav_list } from '@/Assets/RouterList';
+import {
+  request_user_payment_email_verify,
+  request_user_payment_list,
+} from '@/Redux/USER_REDUX/Actions/userPaymentActions';
+import { user_activity_months } from '@/Redux/USER_REDUX/Selectors';
 import styles from './style';
-import {get_user_internal_nav_list} from '@assets/RouterList';
+import { get_currency_string } from '@/Utils';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import ListHeader from '@/Components/User/ListHeader';
+import TabLoader from '@/Components/User/TabLoader';
+import EmptyListView from '@/Components/Generic/EmptyListView';
+import BlurNavBar from '@/Components/Generic/BlurNavBar';
+import NavigationList from '@/Components/User/NavigationList';
+import BottomModal from '@/Components/Core/BottomModal';
+import CloseButton from '@/Components/Core/CloseButton';
+
 const NAV_LIST_1 = get_user_internal_nav_list([6666]);
-const monthModal = React.createRef();
+const monthModal: any = React.createRef();
 const mapDispatchToProps = {
   request_user_payment_list,
   request_user_payment_email_verify,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     user_payment_list: params.user_payment_list || [],
     current_selected_month:
@@ -52,7 +46,7 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class CashbackPaymentHistory extends Component {
+class CashbackPaymentHistory extends Component<any> {
   state = {
     showMonthPicker: false,
   };
@@ -65,7 +59,7 @@ class CashbackPaymentHistory extends Component {
     }
   }
 
-  render_clicks = ({item, index}) => {
+  render_clicks = ({ item, index }) => {
     return (
       <View style={styles.tabCard} key={index + item.id.toString()}>
         <View style={styles.storeInfoCard}>
@@ -98,7 +92,7 @@ class CashbackPaymentHistory extends Component {
           <View
             style={[
               styles.statusBox,
-              {backgroundColor: Theme.get_status_light_color(item.status)},
+              { backgroundColor: Theme.get_status_light_color(item.status) },
             ]}>
             <Text style={[styles.status]}>
               {''}
@@ -127,9 +121,9 @@ class CashbackPaymentHistory extends Component {
     monthModal.current.props.onRequestClose();
   };
   addEmptyCard = () => {
-    return <View style={{height: 80}} />;
+    return <View style={{ height: 80 }} />;
   };
-  renderMonths = ({item, index}) => {
+  renderMonths = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={[
@@ -169,15 +163,15 @@ class CashbackPaymentHistory extends Component {
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle} numberOfLines={1}>
               {translate('cashback_payment_history')}
             </Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <View style={styles.content}>
           {/* <Text style={styles.screen_title}>
@@ -192,10 +186,10 @@ class CashbackPaymentHistory extends Component {
                   : null
               }
               title={translate('cashback_payment_history')}
-              onPress={() => this.setState({showMonthPicker: true})}
+              onPress={() => this.setState({ showMonthPicker: true })}
             />
           </View>
-          <View style={{marginTop: 5}}>
+          <View style={{ marginTop: 5 }}>
             <FlatList
               data={user_payment_list}
               extraData={this.props}
@@ -234,7 +228,7 @@ class CashbackPaymentHistory extends Component {
           ref={monthModal}
           bottomModalShow={this.state.showMonthPicker}
           setBottomModalVisibleFalse={() =>
-            this.setState({showMonthPicker: false})
+            this.setState({ showMonthPicker: false })
           }>
           <>
             <View style={styles.modal_top_notch} />
