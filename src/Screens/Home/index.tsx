@@ -1,70 +1,40 @@
-import React, {Component} from 'react';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import Icons from '@/Assets/icons';
+import Container from '@/Components/Core/Container';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import DrawerMenu from '@/Components/Core/DrawerMenu';
+import Loader from '@/Components/Core/Loader';
+import LogoutModal from '@/Components/Core/LogoutModal';
+import CouponModal from '@/Components/Generic/CouponModal';
+import DealModal from '@/Components/Generic/DealModal';
+import GradientFooter from '@/Components/Generic/GradientFooter';
+import HomeCarousel from '@/Components/Generic/HomeCarousel';
+import HomeCategoryCard from '@/Components/Generic/HomeListComponents/HomeCategoryCard';
+import HomeCouponCard from '@/Components/Generic/HomeListComponents/HomeCouponCard';
+import HomeDealCard from '@/Components/Generic/HomeListComponents/HomeDealCard';
+import HomeImageCard from '@/Components/Generic/HomeListComponents/HomeImageCard';
+import HomeLoader from '@/Components/Generic/HomeListComponents/HomeLoader';
+import HomeTopStore from '@/Components/Generic/HomeListComponents/HomeTopStore';
+import { EmptyStoreCard } from '@/Components/Generic/TopStoreCard';
 import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  Dimensions,
-  Animated,
-} from 'react-native';
-import Icon from '@assets/icons';
-import {translate} from '@translations';
-import {
-  Container,
-  Header,
-  ScrollContent,
-  DrawerMenu,
-  LogoutModal,
-  Loader,
-  HeaderMenuButton,
-} from '@components/core';
-import {connect} from 'react-redux';
-import {Theme} from '@assets/Theme';
-import Config from 'react-native-config';
-import styles from './style';
-import {AppImages} from '@assets/Images';
-import {user_lifetime_earning} from '@user_redux/Selectors';
-import {
-  HomeCarousel,
-  HomeListHeader,
-  TopStoreCard,
-  CatCard,
-  GradientFooter,
-  TopCouponCard,
-  DealCard,
-  ChildCatCard,
-  TopStoreHomeFooter,
-  TopCouponHomeFooter,
-  TopDealHomeFooter,
-  CouponModal,
-  DealModal,
-  EmptyStoreCard,
-  HomeCategoryCard,
-  HomeCouponCard,
-  HomeDealCard,
-  HomeImageCard,
-  HomeLoader,
-  HomeTopStore,
-} from '@components/generic';
-
-import {SimpleAnimation} from 'react-native-simple-animations';
-import SplashScreen from 'react-native-bootsplash';
-import {
-  request_home_screen_data,
-  request_deal_info,
   request_app_home_screen_data,
-} from '@app_redux/Actions';
+  request_deal_info,
+  request_home_screen_data,
+} from '@/Redux/Actions/publicDataActions';
 import {
   get_home_top_categories,
   get_sorted_carousel_by_seq,
-} from '@app_redux/Selectors';
-import {DrawerActions} from '@react-navigation/native';
+} from '@/Redux/Selectors';
+import { user_lifetime_earning } from '@/Redux/USER_REDUX/Selectors';
+import { translate } from '@/translations';
+import { DrawerActions } from '@react-navigation/native';
+import React, { Component } from 'react';
+import { Animated, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import SplashScreen from 'react-native-bootsplash';
+import { connect } from 'react-redux';
 import ComponentAnimation from '../../Components/Core/ComponentAnimation';
-const width = Dimensions.get('window').width;
-const HEADER_EXPANDED_HEIGHT = 300;
-const HEADER_COLLAPSED_HEIGHT = 100;
+import styles from './style';
 
 const mapDispatchToProps = {
   request_home_screen_data,
@@ -72,7 +42,7 @@ const mapDispatchToProps = {
   request_app_home_screen_data,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     home_screen_data: params.home_screen_data,
     top_stores: params.home_screen_data
@@ -105,33 +75,30 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      scrollY: new Animated.Value(0),
-      show_drawer: false,
-      offerModalShow: false,
-      dealModalShow: false,
-      selectedCoupon: {},
-      top_stores_selected_index: 0,
-      top_offers_selected_index: 0,
-      top_deals_selected_index: 0,
-      top_cate_type_selected_index: 0,
-      logout_show: false,
-    };
-  }
+class Home extends Component<any> {
+  state: any = {
+    scrollY: new Animated.Value(0),
+    show_drawer: false,
+    offerModalShow: false,
+    dealModalShow: false,
+    selectedCoupon: {},
+    top_stores_selected_index: 0,
+    top_offers_selected_index: 0,
+    top_deals_selected_index: 0,
+    top_cate_type_selected_index: 0,
+    logout_show: false,
+  };
 
   componentDidMount() {
     this.props.request_app_home_screen_data();
     SplashScreen.hide();
   }
 
-  render_empty_stores = ({item, index}) => {
+  render_empty_stores = ({ item, index }) => {
     return <EmptyStoreCard />;
   };
-  getSectionType = ({item, index}) => {
-    let data = Object.values(item);
+  getSectionType = ({ item, index }): any => {
+    let data = Object.values(item) as object;
 
     switch (data[0].blockName) {
       case 'procash/slider':
@@ -196,19 +163,9 @@ class Home extends Component {
     }
   };
   render() {
-    const {total_earning, app_settings, loading} = this.props;
-    const {logout_show} = this.state;
+    const { total_earning, app_settings, loading } = this.props;
+    const { logout_show } = this.state;
 
-    const heroTitleOpacity = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-      outputRange: [0, 1],
-      extrapolate: 'clamp',
-    });
-    const app_title_opacity = this.state.scrollY.interpolate({
-      inputRange: [0, HEADER_EXPANDED_HEIGHT - HEADER_COLLAPSED_HEIGHT],
-      outputRange: [1, 0],
-      extrapolate: 'clamp',
-    });
     return (
       <Container style={styles.container}>
         <ComponentAnimation index={2}>
@@ -219,7 +176,7 @@ class Home extends Component {
               onPress={() =>
                 this.props.navigation.dispatch(DrawerActions.openDrawer())
               }>
-              <Icon.Entypo
+              <Icons.Entypo
                 name={'menu'}
                 color={Theme.COLORS.secondary}
                 size={20}
@@ -236,7 +193,7 @@ class Home extends Component {
               <Text style={styles.app_name}>{translate('app_name')}</Text>
             </View>
             <View style={styles.moneyView}>
-              <Icon.Entypo
+              <Icons.Entypo
                 name={'wallet'}
                 color={Theme.COLORS.secondary}
                 size={20}
@@ -256,7 +213,7 @@ class Home extends Component {
                 {translate('search_cat_store')}
               </Text>
             </View>
-            <Icon.AntDesign
+            <Icons.AntDesign
               name={'search1'}
               color={Theme.COLORS.primary}
               size={16}
@@ -279,7 +236,7 @@ class Home extends Component {
                 },
               },
             ],
-            {useNativeDriver: false},
+            { useNativeDriver: false },
           )}>
           {this.props.app_home_screen_data.length > 1 && !loading ? (
             <>
@@ -289,7 +246,7 @@ class Home extends Component {
                 renderItem={this.getSectionType}
               />
               <GradientFooter
-                style={{marginBottom: 80}}
+                style={{ marginBottom: 80 }}
                 button_title={translate('refer_n_earn_now')}
                 main_title={translate('home_gr_title')}
                 sub_title={translate('home_gr_sub_title').replace(
@@ -309,27 +266,29 @@ class Home extends Component {
         <DrawerMenu
           drawerShow={this.state.show_drawer}
           navigation={this.props.navigation}
-          setDrawerVisibleFalse={() => this.setState({show_drawer: false})}
-          show_log_out={() => this.setState({logout_show: true})}
+          setDrawerVisibleFalse={() => this.setState({ show_drawer: false })}
+          show_log_out={() => this.setState({ logout_show: true })}
         />
         <LogoutModal
-          onRequestClose={() => this.setState({logout_show: false})}
+          onRequestClose={() => this.setState({ logout_show: false })}
           visible={logout_show}
         />
         <CouponModal
           setCouponModalVisibleFalse={() =>
-            this.setState({offerModalShow: false})
+            this.setState({ offerModalShow: false })
           }
           setCouponModalVisibleTrue={() =>
-            this.setState({offerModalShow: true})
+            this.setState({ offerModalShow: true })
           }
           offerModalShow={this.state.offerModalShow}
           navigation={this.props.navigation}
           coupon={this.state.selectedCoupon}
         />
         <DealModal
-          setDealModalVisibleFalse={() => this.setState({dealModalShow: false})}
-          setDealModalVisibleTrue={() => this.setState({dealModalShow: true})}
+          setDealModalVisibleFalse={() =>
+            this.setState({ dealModalShow: false })
+          }
+          setDealModalVisibleTrue={() => this.setState({ dealModalShow: true })}
           dealModalShow={this.state.dealModalShow}
           navigation={this.props.navigation}
         />
