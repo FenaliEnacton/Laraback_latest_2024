@@ -1,32 +1,29 @@
-import React, {Component} from 'react';
-import {View, Text, FlatList} from 'react-native';
-import {connect} from 'react-redux';
-import {
-  Container,
-  Header,
-  HeaderLeft,
-  HeaderRight,
-  HeaderTitle,
-  HeaderBackButton,
-} from '@components/core';
-import {TopStoreCard} from '@components/generic';
-import {get_fav_stores} from '@user_redux/Selectors';
-import {translate} from '@translations';
-import {Theme} from '@assets/Theme';
-import {EmptyListView} from '@components/generic';
-
+import React, { Component } from 'react';
+import { View, Text, FlatList } from 'react-native';
+import { connect } from 'react-redux';
+import { translate } from '@/translations';
+import TopStoreCard from '@/Components/Generic/TopStoreCard';
+import Container from '@/Components/Core/Container';
+import Header from '@/Components/Core/Header/Header';
+import HeaderLeft from '@/Components/Core/Header/HeaderLeft';
+import HeaderRight from '@/Components/Core/Header/HeaderRight';
+import HeaderTitle from '@/Components/Core/Header/HeaderTitle';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import EmptyListView from '@/Components/Generic/EmptyListView';
 import styles from './style';
+import { get_fav_stores } from '@/Redux/USER_REDUX/Selectors';
+import { Theme } from '@/Assets/Theme';
 
 const mapDispatchToProps = {};
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     fav_stores: get_fav_stores(params.user_fav_data) || [],
   };
 };
 
-class Favorites extends Component {
-  renderStores = ({item, index}) => {
+class Favorites extends Component<any> {
+  renderStores = ({ item, index }) => {
     return (
       <TopStoreCard store={item} bg_color={Theme.get_bg_color(index, 2)} />
     );
@@ -45,7 +42,7 @@ class Favorites extends Component {
     );
   };
   render() {
-    const {fav_stores} = this.props;
+    const { fav_stores } = this.props;
     return (
       <Container>
         <Header>
