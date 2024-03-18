@@ -1,28 +1,16 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {
-  ScrollContent,
-  Header,
-  HeaderLeft,
-  Container,
-  Loader,
-  HeaderTitle,
-  LBButton,
-  HeaderBackButton,
-  HeaderRight,
-} from '@components/core';
-import {
-  Text,
-  View,
-  BackHandler,
-  Image,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
-import {Theme} from '@assets/Theme';
-import {AppImages} from '@assets/Images';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import Container from '@/Components/Core/Container';
+import ScrollContent from '@/Components/Core/Content/scrollContent';
+import Header from '@/Components/Core/Header/Header';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import LBButton from '@/Components/Core/LBButton';
+import Loader from '@/Components/Core/Loader';
+import { translate } from '@/translations';
 import NetInfo from '@react-native-community/netinfo';
-import {translate} from '@translations';
+import { BackHandler, Dimensions, StyleSheet, Text, View } from 'react-native';
 import FastImage from 'react-native-fast-image';
 const windowWidth = Dimensions.get('window').width;
 // import {requestInit} from '@actions';
@@ -68,7 +56,7 @@ const styles = StyleSheet.create({
     height: 300,
     resizeMode: 'contain',
   },
-  app_icon: {height: 60, width: 150, resizeMode: 'contain'},
+  app_icon: { height: 60, width: 150, resizeMode: 'contain' },
   btnStyle: {
     width: windowWidth - 100,
     backgroundColor: Theme.COLORS.secondary,
@@ -76,17 +64,19 @@ const styles = StyleSheet.create({
   },
 });
 
-class NoInternet extends Component {
+class NoInternet extends Component<any> {
   handleBackPress = () => {
     return true;
   };
+  backHandler: any;
+  unsubscribe: any;
 
   componentDidMount() {
     this.backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       this.handleBackPress,
     );
-    this.unsubscribe = NetInfo.addEventListener((state) => {
+    this.unsubscribe = NetInfo.addEventListener(state => {
       this.handleConnectivityChange(state);
     });
   }
@@ -95,24 +85,24 @@ class NoInternet extends Component {
     this.unsubscribe();
   }
 
-  handleConnectivityChange = ({isConnected}) => {
+  handleConnectivityChange = ({ isConnected }) => {
     if (isConnected && this.props.navigation.canGoBack()) {
       this.props.navigation.goBack();
     }
   };
 
   render() {
-    const {loading} = this.props;
+    const { loading } = this.props;
     return (
       <Container>
         <Header>
-          <HeaderLeft>
+          <Header.Left>
             <HeaderBackButton onPress={() => {}} />
-          </HeaderLeft>
-          <HeaderTitle>
+          </Header.Left>
+          <Header.Title>
             <Text style={styles.headerTitle}>{translate('app_name')}</Text>
-          </HeaderTitle>
-          <HeaderRight />
+          </Header.Title>
+          <Header.Right />
         </Header>
         <ScrollContent style={styles.cBackground}>
           <View style={styles.textContainer}>
@@ -145,7 +135,7 @@ class NoInternet extends Component {
   }
 }
 
-function mapStateToProps({params}) {
+function mapStateToProps({ params }) {
   return {
     loading: params.loading || false,
   };
