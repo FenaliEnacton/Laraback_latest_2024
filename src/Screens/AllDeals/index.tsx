@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import ListLoader from './ListLoader';
@@ -34,180 +34,165 @@ const mapStateToProps = ({ params }) => {
   };
 };
 
-class AllDeals extends Component<any> {
-  state = {
-    cats: this.props.route?.params?.cats || [],
-    stores: this.props.route?.params?.stores || [],
-    title: this.props.route?.params?.title || '',
-    showFilterModal: false,
-    sort_type: 'popular',
-    dealModalShow: false,
-    min_price: 0,
-    max_price: 0,
-    page_no: 1,
-  };
+const AllDeals = props => {
+  const [cats, setCats] = useState<any>(props.route?.params?.cats || []);
+  const [stores, setStores] = useState<any>(props.route?.params?.stores || []);
+  const [title, setTitle] = useState<any>(props.route?.params?.title || '');
+  const [showFilterModal, setShowFilterModal] = useState<any>(false);
+  const [sort_type, setSortType] = useState<any>('popular');
+  const [dealModalShow, setDealModalShow] = useState<any>(false);
+  const [min_price, setMinPrice] = useState<any>(0);
+  const [max_price, setMaxPrice] = useState<any>(0);
 
-  componentDidMount() {
-    this.props.request_deals_filter_info(this.state.cats, this.state.stores);
-    this.props.request_filtered_deals(this.state.cats, this.state.stores);
-  }
+  useEffect(() => {
+    props.request_deals_filter_info(cats, stores);
+    props.request_filtered_deals(cats, stores);
+  }, []);
 
-  render_deals = ({ item, index }) => {
+  const render_deals = ({ item, index }) => {
     return (
       <DealCard
         deal={item}
         bg_color={Theme.get_bg_color(index, 4)}
         deal_onPress={() => {
-          this.props.request_deal_info(item.id);
-          this.setState({ dealModalShow: true });
+          props.request_deal_info(item.id);
+          setDealModalShow(true);
         }}
       />
     );
   };
 
-  update_list = () => {
-    let page_no = this.props.filtered_deals_data.current_page;
+  const update_list = () => {
+    let page_no = props.filtered_deals_data.current_page;
     page_no = page_no + 1;
-    if (page_no <= this.props.filtered_deals_data.total_pages) {
-      this.apply_filter(page_no);
+    if (page_no <= props.filtered_deals_data.total_pages) {
+      apply_filter(page_no);
     }
   };
 
-  handle_cat_change = id => {
-    if (this.state.cats.includes(id)) {
-      let cats = [...this.state.cats];
-      cats = cats.filter(e => e !== id);
-      this.setState({ cats });
+  const handle_cat_change = id => {
+    if (cats.includes(id)) {
+      let _cats = [...cats];
+      _cats = _cats.filter(e => e !== id);
+      setCats(cats);
     } else {
-      let cats = [...this.state.cats, id];
-      this.setState({ cats });
+      let _cats = [...cats, id];
+      setCats(_cats);
     }
   };
 
-  handle_store_change = id => {
-    if (this.state.stores.includes(id)) {
-      let stores = [...this.state.stores];
-      stores = stores.filter(e => e !== id);
-      this.setState({ stores });
+  const handle_store_change = id => {
+    if (stores.includes(id)) {
+      let _stores = [...stores];
+      _stores = _stores.filter(e => e !== id);
+      setStores(_stores);
     } else {
-      let stores = [...this.state.stores, id];
-      this.setState({ stores });
+      let _stores = [...stores, id];
+      setStores(_stores);
     }
   };
 
-  apply_filter = (page_no = 1) => {
-    this.setState({
-      last_selected_cat: this.state.cats,
-      last_selected_stores: this.state.stores,
-    });
-    let cats = [...this.state.cats];
-    let stores = [...this.state.stores];
-    this.props.request_filtered_deals(
+  const apply_filter = (page_no = 1) => {
+    // setLast_selected_cat(cats);
+    // setLast_selected_stores(stores);
+
+    props.request_filtered_deals(
       cats,
       stores,
-      this.state.sort_type,
+      sort_type,
       page_no,
       30,
-      this.state.min_price,
-      this.state.max_price,
+      min_price,
+      max_price,
     );
-    this.setState({ showFilterModal: false });
+    setShowFilterModal(false);
   };
 
-  render() {
-    const filter_icon_opacity = 1;
-    const { filtered_deals_data, deals_filter_info } = this.props;
-    return (
-      <Container>
-        <Header>
-          <Header.Left>
-            <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </Header.Left>
-          <Header.Title style={{ width: '70%', height: 42 }}>
-            <Text style={[styles.headerTitle, {}]}>
-              {this.state.title
-                ? translate('deals_from') + this.state.title
-                : translate('daily_deals')}
-            </Text>
-          </Header.Title>
-          <Header.Right>
-            <SearchButton navigation={this.props.navigation} />
-          </Header.Right>
-        </Header>
-        <View style={styles.content}>
-          {!filtered_deals_data.deals?.length && this.props.loading ? (
-            <ListLoader />
-          ) : null}
-          {!this.props.loading && !filtered_deals_data?.deals?.length ? (
-            <EmptyListView message={translate('no_deals_found')} />
-          ) : null}
-          {/* <Text style={styles.top_text}>{translate('deals from')}</Text> */}
-          <FlatList
-            keyExtractor={(item, index) => index.toString()}
-            data={filtered_deals_data.deals}
-            columnWrapperStyle={styles.row}
-            style={styles.list}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-            extraData={this.props}
-            renderItem={this.render_deals}
-            onEndReached={() => {
-              this.update_list();
-            }}
+  const filter_icon_opacity = 1;
+  const { filtered_deals_data, deals_filter_info } = props;
+  return (
+    <Container>
+      <Header>
+        <Header.Left>
+          <HeaderBackButton onPress={() => props.navigation.goBack()} />
+        </Header.Left>
+        <Header.Title style={{ width: '70%', height: 42 }}>
+          <Text style={[styles.headerTitle, {}]}>
+            {title ? translate('deals_from') + title : translate('daily_deals')}
+          </Text>
+        </Header.Title>
+        <Header.Right>
+          <SearchButton navigation={props.navigation} />
+        </Header.Right>
+      </Header>
+      <View style={styles.content}>
+        {!filtered_deals_data.deals?.length && props.loading ? (
+          <ListLoader />
+        ) : null}
+        {!props.loading && !filtered_deals_data?.deals?.length ? (
+          <EmptyListView message={translate('no_deals_found')} />
+        ) : null}
+        {/* <Text style={styles.top_text}>{translate('deals from')}</Text> */}
+        <FlatList
+          keyExtractor={(item, index) => index.toString()}
+          data={filtered_deals_data.deals}
+          columnWrapperStyle={styles.row}
+          style={styles.list}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          extraData={props}
+          renderItem={render_deals}
+          onEndReached={() => {
+            update_list();
+          }}
+        />
+        {deals_filter_info.count ? (
+          <FilterButton
+            opacity={filter_icon_opacity}
+            filter_applied={cats.length > 0 || stores.length > 0}
+            onPress={() => setShowFilterModal(true)}
           />
-          {deals_filter_info.count ? (
-            <FilterButton
-              opacity={filter_icon_opacity}
-              filter_applied={
-                this.state.cats.length > 0 || this.state.stores.length > 0
-              }
-              onPress={() => this.setState({ showFilterModal: true })}
-            />
-          ) : null}
-        </View>
-        <DealModal
-          setDealModalVisibleFalse={() =>
-            this.setState({ dealModalShow: false })
-          }
-          setDealModalVisibleTrue={() => this.setState({ dealModalShow: true })}
-          dealModalShow={this.state.dealModalShow}
-          navigation={this.props.navigation}
-        />
-        <DealCouponFilter
-          filter_data={deals_filter_info}
-          filterModalVisible={this.state.showFilterModal}
-          sort_type={this.state.sort_type}
-          min_price={this.state.min_price}
-          max_price={this.state.max_price}
-          onPriceValueChanged={(low, high) =>
-            this.setState({ min_price: low, max_price: high })
-          }
-          handle_sort_type_change={value => this.setState({ sort_type: value })}
-          selected_ids={{
-            cats: this.state.cats,
-            stores: this.state.stores,
-          }}
-          handle_cat_change={id => this.handle_cat_change(id)}
-          handle_store_change={id => this.handle_store_change(id)}
-          setFilterModalVisibleFalse={() =>
-            this.setState({ showFilterModal: false })
-          }
-          resetFilter={() => {
-            this.setState({
-              min_price: null,
-              max_price: null,
-              cats: [],
-              stores: [],
-              sort_type: 'popular',
-              title: '',
-            });
-            this.props.request_deals_filter_info([], []);
-          }}
-          getSelectedFilterIds={() => this.apply_filter()}
-        />
-      </Container>
-    );
-  }
-}
+        ) : null}
+      </View>
+      <DealModal
+        setDealModalVisibleFalse={() => setDealModalShow(false)}
+        setDealModalVisibleTrue={() => setDealModalShow(true)}
+        dealModalShow={dealModalShow}
+        navigation={props.navigation}
+      />
+      <DealCouponFilter
+        filter_data={deals_filter_info}
+        filterModalVisible={showFilterModal}
+        sort_type={sort_type}
+        min_price={min_price}
+        max_price={max_price}
+        onPriceValueChanged={(low, high) => {
+          setMinPrice(low);
+          setMaxPrice(high);
+        }}
+        handle_sort_type_change={value => setSortType(value)}
+        selected_ids={{
+          cats: cats,
+          stores: stores,
+        }}
+        handle_cat_change={id => handle_cat_change(id)}
+        handle_store_change={id => handle_store_change(id)}
+        setFilterModalVisibleFalse={() => {
+          setShowFilterModal(false);
+        }}
+        resetFilter={() => {
+          setMaxPrice(null);
+          setMinPrice(null);
+          setCats([]);
+          setStores([]);
+          setSortType('popular');
+          setTitle('');
+          props.request_deals_filter_info([], []);
+        }}
+        getSelectedFilterIds={() => apply_filter()}
+      />
+    </Container>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(AllDeals);
