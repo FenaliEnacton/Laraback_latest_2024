@@ -19,9 +19,9 @@ import {
 } from '../../Utils';
 import useUserDashboard from './use-user-dashboard';
 import useUserFav from './use-user-fav';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 import { translate } from '@/translations';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 
 const useUserAuth = () => {
   const [loadingLogin, setLoadingLogin] = useRecoilState(

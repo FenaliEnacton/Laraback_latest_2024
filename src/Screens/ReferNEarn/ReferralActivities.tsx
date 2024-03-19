@@ -7,7 +7,7 @@ import { get_user_internal_nav_list } from '@/Assets/RouterList';
 import { request_user_referral_list } from '@/Redux/USER_REDUX/Actions/userReferralActions';
 import Icons from '@/Assets/icons';
 import { Theme } from '@/Assets/Theme';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { get_currency_string } from '@/Utils';
 import Container from '@/Components/Core/Container';
 import Header from '@/Components/Core/Header/Header';

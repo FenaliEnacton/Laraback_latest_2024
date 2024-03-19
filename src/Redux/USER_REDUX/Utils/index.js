@@ -1,6 +1,6 @@
+import { translate } from '@/translations';
 import React from 'react';
-import Config from 'react-native-config';
-import {translate} from '@translations';
+import { Config } from '@/react-native-config';
 // import InAppReview from 'react-native-in-app-review';
 const error_data = {
   'user.password.wrong': 'User password is wrong!',

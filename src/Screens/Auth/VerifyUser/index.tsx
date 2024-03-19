@@ -1,29 +1,29 @@
-import React, {Component} from 'react';
-import {Image, Text, View, TouchableOpacity} from 'react-native';
-import {connect} from 'react-redux';
-import {Toast} from '@components/core';
-import AuthContainer from '../AuthContainer';
-import {LBButton} from '@components/core';
-import {Theme} from '@assets/Theme';
-import {translate} from '@translations';
 import {
-  request_user_register_verification,
   failed_user_register_verification,
-  request_user_registration,
   request_social_login,
-} from '@app_redux/Actions';
-import OTPInputView from '@twotalltotems/react-native-otp-input';
-import {AppImages} from '@assets/Images';
+  request_user_register_verification,
+  request_user_registration,
+} from '@/Redux/Actions/userAuthActions';
 import styles from '../style';
+import { Component } from 'react';
+import { Toast } from '@/Components/Core/Toast';
+import { translate } from '@/translations';
+import AuthContainer from '../AuthContainer';
+import { AppImages } from '@/Assets/Images';
+import { Text, View } from 'react-native';
+import OTPInputView from '@twotalltotems/react-native-otp-input';
+import LBButton from '@/Components/Core/LBButton';
+import { Theme } from '@/Assets/Theme';
+import { connect } from 'react-redux';
 
 const mapDispatchToProps = {
-  request_user_register_verification,
-  failed_user_register_verification,
-  request_user_registration,
-  request_social_login,
+  request_user_register_verification: request_user_register_verification,
+  failed_user_register_verification: failed_user_register_verification,
+  request_user_registration: request_user_registration,
+  request_social_login: request_social_login,
 };
 
-const mapStateToProps = ({params}) => {
+const mapStateToProps = ({ params }) => {
   return {
     loading: params.loading,
     forgot_pass_email_sent: params.forgot_pass_email_res,
@@ -33,8 +33,8 @@ const mapStateToProps = ({params}) => {
   };
 };
 
-class VerifyUser extends Component {
-  state = {
+class VerifyUser extends Component<any> {
+  state: any = {
     user_entered_otp: '',
     show_resend: false,
     mobile: this.props.route.params?.mobile,
@@ -61,12 +61,12 @@ class VerifyUser extends Component {
   }
 
   hide_resend = () => {
-    this.setState({show_resend: false});
+    this.setState({ show_resend: false });
   };
 
   show_resend_after_some_time = () => {
     setTimeout(() => {
-      this.setState({show_resend: true});
+      this.setState({ show_resend: true });
     }, 50000);
   };
 
@@ -122,7 +122,7 @@ class VerifyUser extends Component {
 
   render() {
     // console.log(this.state.referrer_code);
-    const {forgot_pass_email_sent} = this.props;
+    // const {forgot_pass_email_sent} = this.props;
     return (
       <AuthContainer
         close_click={() => this.props.navigation.goBack()}
@@ -139,7 +139,7 @@ class VerifyUser extends Component {
             codeInputFieldStyle={styles.underlineStyleBase}
             codeInputHighlightStyle={styles.underlineStyleHighLighted}
             onCodeFilled={user_entered_otp => {
-              this.setState({user_entered_otp});
+              this.setState({ user_entered_otp });
             }}
           />
           {this.state.show_resend ? (
@@ -159,7 +159,7 @@ class VerifyUser extends Component {
             codeInputFieldStyle={styles.underlineStyleBase}
             codeInputHighlightStyle={styles.underlineStyleHighLighted}
             onCodeFilled={user_entered_m_otp => {
-              this.setState({user_entered_m_otp});
+              this.setState({ user_entered_m_otp });
             }}
           />
           {this.state.show_resend ? (
@@ -179,7 +179,7 @@ class VerifyUser extends Component {
             <Text style={styles.footer_text}>
               {translate('already_have_an_account')}{' '}
               <Text
-                style={{color: Theme.COLORS.secondary}}
+                style={{ color: Theme.COLORS.secondary }}
                 onPress={() => this.props.navigation.navigate('Login')}>
                 {translate('sign_in')}
               </Text>

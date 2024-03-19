@@ -2,7 +2,7 @@ import { useRecoilState } from 'recoil';
 import { booleanAtomFamily, objectAtomFamily } from '../../Recoil/atom';
 import { atomKeys } from '../../Recoil/atom-keys';
 import api from '../../Services/api';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 
 const useMetaData = () => {
   const [allStores, setAllStores] = useRecoilState(

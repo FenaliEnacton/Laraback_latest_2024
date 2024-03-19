@@ -1,7 +1,7 @@
 import { Theme } from '@/Assets/Theme';
 import Icons from '@/Assets/icons';
 import { get_currency_string } from '@/Utils';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import React from 'react';
 import {

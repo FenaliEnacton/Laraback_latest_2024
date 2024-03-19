@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, { Component } from 'react';
 import { BackHandler, Linking } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import OneSignal from 'react-native-onesignal';
+import { OneSignal } from 'react-native-onesignal';
 import { connect } from 'react-redux';
 import AboutUs from '../Screens/AboutUs';
 import AccountSettings from '../Screens/AccountSettings';
@@ -52,13 +52,14 @@ import TermsOfUse from '../Screens/TermsOfUse';
 import UserDashboard from '../Screens/UserDashboard';
 import WebViewScreen from '../Screens/WebViewScreen';
 import Welcome from '../Screens/Welcome';
-import { is_user_logged_in } from '@/Redux/Selectors';
-import BottomTab from '@/Components/Core/BottomTab';
-import CustomDrawerMenu from '@/Components/Core/CustomDrawerMenu';
-import Toast from '@/Components/Core/Toast';
-import Config from '@/react-native-config';
+import { is_user_logged_in } from '../Redux/Selectors';
+import BottomTab from '@/Components/Core/BottomTab/index';
+// import CustomDrawerMenu from '@/Components/Core/CustomDrawerMenu';
+import { Toast } from '@/Components/Core/Toast';
+import { Config } from '../react-native-config';
 import { translate } from '@/translations';
-import { request_get_id_by_url } from '@/Redux/Actions/publicDataActions';
+import { request_get_id_by_url } from '../Redux/Actions/publicDataActions';
+import { CustomDrawerMenu } from '@/Components/Core/CustomDrawerMenu';
 
 // import Config from 'react-native-config';
 // import CustomDrawerMenu from '../Components/Core/CustomDrawerMenu';
@@ -99,17 +100,17 @@ const mapStateToProps = state => {
   };
 };
 
-function MyTabs() {
-  return (
-    <Tab.Navigator
-      screenOptions={{ headerShown: false }}
-      tabBar={props => <BottomTab {...props} />}>
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="AllStores" component={AllStores} />
-      <Tab.Screen name="UserDashboard" component={UserDashboard} />
-    </Tab.Navigator>
-  );
-}
+// function MyTabs() {
+//   return (
+//     <Tab.Navigator
+//       screenOptions={{ headerShown: false }}
+//       tabBar={props => <BottomTab {...props} />}>
+//       <Tab.Screen name="Home" component={Home} />
+//       <Tab.Screen name="AllStores" component={AllStores} />
+//       <Tab.Screen name="UserDashboard" component={UserDashboard} />
+//     </Tab.Navigator>
+//   );
+// }
 
 function MyDrawer() {
   return (
@@ -121,7 +122,7 @@ function MyDrawer() {
         // drawerStyle: {backgroundColor: 'transparent'},
       }}
       initialRouteName="Home">
-      <Drawer.Screen name="Home" component={MyTabs} />
+      <Drawer.Screen name="Home" component={Home} />
       {/* <Drawer.Screen name="Notifications" component={NotificationsScreen} /> */}
     </Drawer.Navigator>
     // </NavigationContainer>
@@ -172,8 +173,8 @@ class AppNavigator extends Component<any> {
   }
 
   oneSignalInit = () => {
-    OneSignal.OneSignal.initialize(Config.ONE_SIGNAL);
-    OneSignal.OneSignal.Notifications.requestPermission(true);
+    OneSignal.initialize(Config.ONE_SIGNAL);
+    OneSignal.Notifications.requestPermission(true);
     // OneSignal.setLogLevel(6, 0);
     // OneSignal.setAppId(Config.ONE_SIGNAL);
     //END OneSignal Init Code

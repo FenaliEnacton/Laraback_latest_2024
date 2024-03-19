@@ -1,14 +1,14 @@
 import { AppImages } from '@/Assets/Images';
 import { Theme } from '@/Assets/Theme';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 // import api, { userFbLogin } from '@/Services/api';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 // import { appleAuth } from '@invertase/react-native-apple-authentication';
-import {
-  GoogleSignin,
-  statusCodes,
-} from '@react-native-community/google-signin';
+// import {
+//   GoogleSignin,
+//   statusCodes,
+// } from '@react-native-google-signin/google-signin';
 import React, { useEffect } from 'react';
 import {
   Dimensions,
@@ -25,12 +25,12 @@ const VersionIOS = parseInt(Platform.Version.toString(), 10);
 const windowWidth = Dimensions.get('window').width;
 
 function SocialSignIns(props) {
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: Config.GOOGLE_ID,
-      offlineAccess: true,
-    });
-  }, []);
+  // useEffect(() => {
+  //   GoogleSignin.configure({
+  //     webClientId: Config.GOOGLE_ID,
+  //     offlineAccess: true,
+  //   });
+  // }, []);
   // async function fbsignin() {
   //   LoginManager.logOut();
   //   props.set_loading(true);
@@ -95,38 +95,38 @@ function SocialSignIns(props) {
   //   props.set_loading(false);
   // }
 
-  async function google_sign_in() {
-    try {
-      props.set_loading(true);
-      let hasPermission = await GoogleSignin.hasPlayServices();
-      if (hasPermission) {
-        const userInfo = await GoogleSignin.signIn();
-        if (userInfo.user) {
-          props.social_login({
-            email: userInfo.user.email,
-            social_id: userInfo.user.id,
-            social_type: 'google',
-          });
-          props.set_loading(false);
-        }
-        props.set_loading(false);
-      } else {
-        props.set_loading(false);
-      }
-    } catch (error: any) {
-      props.set_loading(false);
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        Toast.showBottom(translate('SIGN_IN_CANCELLED'));
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        Toast.showBottom(translate('PLAY_SERVICES_NOT_AVAILABLE'));
-      } else {
-        Toast.errorBottom(translate('login_request_failed'));
-        console.log(error);
-      }
-    }
-    props.set_loading(false);
-  }
+  // async function google_sign_in() {
+  //   try {
+  //     props.set_loading(true);
+  //     let hasPermission = await GoogleSignin.hasPlayServices();
+  //     if (hasPermission) {
+  //       const userInfo = await GoogleSignin.signIn();
+  //       if (userInfo.user) {
+  //         props.social_login({
+  //           email: userInfo.user.email,
+  //           social_id: userInfo.user.id,
+  //           social_type: 'google',
+  //         });
+  //         props.set_loading(false);
+  //       }
+  //       props.set_loading(false);
+  //     } else {
+  //       props.set_loading(false);
+  //     }
+  //   } catch (error: any) {
+  //     props.set_loading(false);
+  //     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+  //       Toast.showBottom(translate('SIGN_IN_CANCELLED'));
+  //     } else if (error.code === statusCodes.IN_PROGRESS) {
+  //     } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+  //       Toast.showBottom(translate('PLAY_SERVICES_NOT_AVAILABLE'));
+  //     } else {
+  //       Toast.errorBottom(translate('login_request_failed'));
+  //       console.log(error);
+  //     }
+  //   }
+  //   props.set_loading(false);
+  // }
 
   const show_toast_message = () => {
     Toast.showBottom('Please login with Test user');
@@ -155,8 +155,8 @@ function SocialSignIns(props) {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.social_btn}
-          // onPress={() => show_toast_message()}>
-          onPress={() => google_sign_in()}>
+          onPress={() => show_toast_message()}>
+          {/* onPress={() => google_sign_in()}> */}
           <FastImage
             source={AppImages.google_sign_in_icon}
             style={styles.social_icons}

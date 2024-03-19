@@ -12,7 +12,7 @@ import {
   request_claim_info,
   request_user_claim_list,
 } from '@/Redux/USER_REDUX/Actions/userClaimActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import dayjs from 'dayjs';
 import React, { Component } from 'react';

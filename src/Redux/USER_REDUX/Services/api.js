@@ -1,17 +1,17 @@
-import apisauce from "apisauce";
-import { is_app } from "../Utils";
-import Config from "react-native-config";
-import get_url_value from "./api_routes";
+import apisauce from 'apisauce';
+import { is_app } from '../Utils';
+import get_url_value from './api_routes';
+import { Config } from '@/react-native-config';
 export const internalApi = apisauce.create({
   baseURL: Config.API_URL,
   headers: {
-    "Cache-Control": "no-cache",
+    'Cache-Control': 'no-cache',
   },
   withCredentials: true,
   // timeout: 10000,
 });
 
-const publicAPI = (dataType) => {
+const publicAPI = dataType => {
   return internalApi.get(dataType);
 };
 
@@ -26,7 +26,7 @@ const user_post_app_api = (
   route_name,
   body = {},
   append_url = null,
-  header
+  header,
 ) => {
   let url = Config.API_URL + get_url_value(route_name);
   if (append_url) {
@@ -47,7 +47,7 @@ const user_post_web_api = (
   route_name,
   body = {},
   append_url = null,
-  header
+  header,
 ) => {
   let url = Config.API_URL + get_url_value(route_name);
   if (append_url) {
@@ -58,7 +58,7 @@ const user_post_web_api = (
 
 const user_auth_api = (url, body, header) => {
   return new Promise((resolve, reject) => {
-    internalApi.get(Config.API_URL + "/auth/csrf-token").then((res) => {
+    internalApi.get(Config.API_URL + '/auth/csrf-token').then(res => {
       // console.log(res);
       if (res.ok) {
         let request_body = {
@@ -69,8 +69,8 @@ const user_auth_api = (url, body, header) => {
           internalApi.post(
             Config.API_URL + get_url_value(url),
             request_body,
-            {}
-          )
+            {},
+          ),
         );
       } else {
         reject();

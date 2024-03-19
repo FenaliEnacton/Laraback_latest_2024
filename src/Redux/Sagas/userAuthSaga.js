@@ -1,18 +1,22 @@
 import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../Actions/actionTypes';
 import api from '../Services/api';
-import { translate } from '@translations';
-import * as auth_actions from '@app_redux/Actions/userAuthActions';
-import * as public_actions from '@app_redux/Actions/publicDataActions';
-import { request_user_dashboard, request_user_favs } from '@user_redux/Actions';
-import { get_exception_string, get_api_error_string } from '@user_redux/Utils';
-import { internalApi } from '@user_redux/Services/api';
+import * as public_actions from '../Actions/publicDataActions';
+import * as auth_actions from '../Actions/userAuthActions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Toast } from '@components/core';
+import { Toast } from '@/Components/Core/Toast';
 import OneSignal from 'react-native-onesignal';
-import Config from 'react-native-config';
+import { Config } from '@/react-native-config';
 import { navigate, reset, go_back } from '../../Navigation/appNavigator';
 import { getUniqueId } from 'react-native-device-info';
+import { translate } from '@/translations';
+import {
+  get_api_error_string,
+  get_exception_string,
+} from '../USER_REDUX/Utils';
+import { internalApi } from '../USER_REDUX/Services/api';
+import { request_user_dashboard } from '../USER_REDUX/Actions/userDashboardActions';
+import { request_user_favs } from '../USER_REDUX/Actions/userFavsActions';
 
 export function* watch_user_auth_request() {
   yield takeEvery(types.REQUEST_USER_LOGIN, request_user_login);
@@ -47,7 +51,7 @@ function* request_user_login(action) {
       internalApi.setHeader('Authorization', 'Bearer ' + response.data.data);
       yield put(auth_actions.success_user_login(response.data.data));
       // ////////////////////////
-      OneSignal.setExternalUserId(action.payload.email, (results) => {
+      OneSignal.setExternalUserId(action.payload.email, results => {
         // The results will contain push and email success statuses
         console.log('Results of setting external user id');
         console.log(results);
@@ -126,7 +130,7 @@ function* request_social_login(action) {
         internalApi.setHeader('Authorization', 'Bearer ' + response.data.data);
         yield put(auth_actions.success_user_login(response.data.data));
         // ////////////////////////
-        OneSignal.setExternalUserId(action.payload.email, (results) => {
+        OneSignal.setExternalUserId(action.payload.email, results => {
           // The results will contain push and email success statuses
           console.log('Results of setting external user id');
           console.log(results);
@@ -206,7 +210,7 @@ function* request_user_registration(action) {
       internalApi.setHeader('Authorization', 'Bearer ' + response.data.data);
       yield put(auth_actions.success_user_registration(response.data.data));
       // ////////////////////////
-      OneSignal.setExternalUserId(action.payload.email, (results) => {
+      OneSignal.setExternalUserId(action.payload.email, results => {
         // The results will contain push and email success statuses
         console.log('Results of setting external user id');
         console.log(results);
@@ -270,8 +274,8 @@ function* request_forgot_pass_email(action) {
         response.data.data?.error
           ? get_exception_string(response.data.data)
           : response.data.msg
-            ? get_api_error_string(response.data.msg)
-            : translate('email_request_failed'),
+          ? get_api_error_string(response.data.msg)
+          : translate('email_request_failed'),
       );
     }
   } catch (error) {
@@ -290,12 +294,12 @@ function* request_log_out() {
       yield put(auth_actions.success_log_out());
       Toast.showBottom(translate('log_out_successfully'));
       ///////////
-      OneSignal.removeExternalUserId((results) => {
+      OneSignal.removeExternalUserId(results => {
         // The results will contain push and email success statuses
         console.log('Results of removing external user id');
         console.log(results);
       });
-      OneSignal.logoutEmail((error) => {
+      OneSignal.logoutEmail(error => {
         //handle error if it occurred
         console.log(error);
       });
@@ -353,13 +357,13 @@ function* request_user_register_verification(action) {
         (e_response.data.data?.error
           ? get_exception_string(e_response.data.data)
           : e_response.data.msg
-            ? e_response.data.msg
-            : '') +
+          ? e_response.data.msg
+          : '') +
         (m_response.data.data?.error
           ? get_exception_string(m_response.data.data)
           : m_response.data.msg
-            ? m_response.data.msg
-            : '');
+          ? m_response.data.msg
+          : '');
       yield put(auth_actions.failed_user_register_verification());
       Toast.errorBottom(message ? message : translate('otp_request_failed'));
     }
@@ -394,8 +398,8 @@ function* request_forgot_change_password(action) {
         response.data.data?.error
           ? get_exception_string(response.data.data)
           : response.data.msg
-            ? get_api_error_string(response.data.msg)
-            : translate('password_change_failed'),
+          ? get_api_error_string(response.data.msg)
+          : translate('password_change_failed'),
       );
     }
   } catch (error) {

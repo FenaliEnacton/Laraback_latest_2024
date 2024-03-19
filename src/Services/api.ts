@@ -1,4 +1,4 @@
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import apisauce from 'apisauce';
 
 export const rootApi = apisauce.create({

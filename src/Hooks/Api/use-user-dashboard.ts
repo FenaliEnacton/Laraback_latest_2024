@@ -1,4 +1,4 @@
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 import { translate } from '@/translations';
 import { useRecoilState } from 'recoil';
 import { booleanAtomFamily, objectAtomFamily } from '../../Recoil/atom';

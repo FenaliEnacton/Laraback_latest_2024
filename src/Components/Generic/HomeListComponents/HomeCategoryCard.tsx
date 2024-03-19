@@ -1,7 +1,7 @@
 import React from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { Theme } from '@/Assets/Theme';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { connect } from 'react-redux';
 import CatCard from '../CatCard';
 import HomeListHeader from '../HomeListHeader';

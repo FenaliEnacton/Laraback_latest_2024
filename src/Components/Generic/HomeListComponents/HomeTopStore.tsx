@@ -1,5 +1,5 @@
 import { Theme } from '@/Assets/Theme';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import React, { useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';

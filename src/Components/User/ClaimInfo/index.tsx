@@ -1,5 +1,5 @@
 import { Theme } from '@/Assets/Theme';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import dayjs from 'dayjs';
 import React from 'react';

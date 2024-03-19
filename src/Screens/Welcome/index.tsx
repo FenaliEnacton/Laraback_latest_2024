@@ -4,7 +4,7 @@ import Icons from '@/Assets/icons';
 import Container from '@/Components/Core/Container';
 import { request_welcome_screen_data } from '@/Redux/Actions/publicDataActions';
 import { is_user_logged_in } from '@/Redux/Selectors';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';

@@ -1,8 +1,8 @@
 import { I18n } from 'i18n-js';
 
 export const translationGetters = {
-  ar: () => require('@translations/ar.json'),
-  en: () => require('@translations/en.json'),
+  ar: () => require('./ar.json'),
+  en: () => require('./en.json'),
 };
 
 export const i18n = new I18n();

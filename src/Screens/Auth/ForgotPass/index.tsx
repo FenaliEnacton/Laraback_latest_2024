@@ -10,7 +10,7 @@ import {
   request_forgot_pass_email,
 } from '@/Redux/Actions/userAuthActions';
 import { translate } from '@/translations';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 import { AppImages } from '@/Assets/Images';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import LBButton from '@/Components/Core/LBButton';

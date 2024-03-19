@@ -1,6 +1,6 @@
-import {createSelector} from 'reselect';
-import {translate} from '@translations';
+import { createSelector } from 'reselect';
 import _ from 'lodash';
+import { translate } from '@/translations';
 
 const get_cat_name = type => {
   switch (type) {
@@ -40,7 +40,7 @@ const store_category_data = store_cat_details => {
   for (let store = 0; store < store_cat_details.length; store++) {
     data_obj[store.alpha] = store_cat_details[store];
   }
-  return {store_keys, data_obj};
+  return { store_keys, data_obj };
 };
 const all_stores_chunks = all_stores => {
   let new_all_stores = all_stores;

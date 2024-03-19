@@ -2,7 +2,7 @@ import { Theme } from '@/Assets/Theme';
 import CashbackString from '@/Components/Core/CashbackString';
 import { request_store_details } from '@/Redux/Actions/publicDataActions';
 import { get_fav_stores_ids, is_user_logged_in } from '@/Redux/Selectors';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import React from 'react';
 import {
   Dimensions,

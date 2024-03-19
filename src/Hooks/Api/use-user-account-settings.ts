@@ -11,7 +11,7 @@ import {
   show_fail_message,
   show_success_message,
 } from '../../Utils';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 
 const useUserAccountSettings = () => {
   const [loadingUserProfileDetails, setLoadingUserProfileDetails] =

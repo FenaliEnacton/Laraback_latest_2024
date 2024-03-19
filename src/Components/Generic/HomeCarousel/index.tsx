@@ -13,7 +13,7 @@ import { Theme } from '@/Assets/Theme';
 import { navigate } from '@/Navigation/appNavigator';
 import { request_get_id_by_url } from '@/Redux/Actions/publicDataActions';
 import { is_user_logged_in } from '@/Redux/Selectors';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 export let _carousel = React.createRef();

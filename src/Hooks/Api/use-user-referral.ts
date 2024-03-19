@@ -16,7 +16,7 @@ import {
   show_success_message,
 } from '../../Utils';
 import { navigate } from '@/Navigation/appNavigator';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 
 const useUserReferral = () => {
   const [loadingUserReferralList, setLoadingUserReferralList] = useRecoilState(

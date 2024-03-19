@@ -17,7 +17,7 @@ import {
   show_success_message,
 } from '../../Utils';
 import useUserSummary from './use-user-summary';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 
 const useUserPayment = () => {
   const [loadingUserPaymentList, setLoadingUserPaymentList] = useRecoilState(

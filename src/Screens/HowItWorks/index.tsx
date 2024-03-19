@@ -4,7 +4,7 @@ import ScrollContent from '@/Components/Core/Content/scrollContent';
 import Header from '@/Components/Core/Header/Header';
 import HeaderBackButton from '@/Components/Core/HeaderBackButton';
 import GradientFooter from '@/Components/Generic/GradientFooter';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import React, { Component } from 'react';
 import { Text, View } from 'react-native';

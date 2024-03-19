@@ -12,7 +12,7 @@ import {
   request_coupon_cat_details,
   request_store_cat_details,
 } from '@/Redux/Actions/publicDataActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import FastImage from 'react-native-fast-image';
 import LinearGradient from 'react-native-linear-gradient';
 

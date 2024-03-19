@@ -3,7 +3,7 @@ import { Theme } from '@/Assets/Theme';
 import Icons from '@/Assets/icons';
 import Container from '@/Components/Core/Container';
 import { rootApi } from '@/Services/api';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { i18n, translationGetters } from '@/translations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useState } from 'react';

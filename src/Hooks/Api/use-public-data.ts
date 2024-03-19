@@ -12,9 +12,9 @@ import {
   get_exception_string,
 } from '../../Redux/USER_REDUX/Utils';
 import api from '../../Services/api';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 
 const usePublicData = () => {
   const [welcomeScreenData, setWelcomeScreenData] = useRecoilState(

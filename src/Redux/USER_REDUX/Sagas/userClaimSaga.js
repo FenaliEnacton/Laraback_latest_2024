@@ -1,4 +1,4 @@
-import {takeEvery, call, put} from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../Actions/actionTypes';
 import {
   handle_api_error,
@@ -10,17 +10,23 @@ import {
   is_app,
 } from '../Utils';
 import api from '../Services/api';
-import {Toast} from '@components/core';
-import {navigate} from '../../../Navigation/appNavigator';
+import { Toast } from '@/Components/Core/Toast';
+import { navigate } from '../../../Navigation/appNavigator';
 import * as claim_actions from '../Actions/userClaimActions';
 
 export function* watch_user_claim_request() {
   yield takeEvery(types.REQUEST_USER_CLAIM_LIST, request_user_claim_list);
   yield takeEvery(types.REQUEST_CLAIM_INFO, request_claim_info);
   yield takeEvery(types.REQUEST_USER_CLAIM_CLOSE, request_user_claim_close);
-  yield takeEvery(types.REQUEST_USER_CLAIM_POST_COMMENT, request_user_claim_post_comment);
+  yield takeEvery(
+    types.REQUEST_USER_CLAIM_POST_COMMENT,
+    request_user_claim_post_comment,
+  );
   yield takeEvery(types.REQUEST_USER_CLAIM_STORES, request_user_claim_stores);
-  yield takeEvery(types.REQUEST_USER_CLAIM_STORE_CLICKS, request_user_claim_store_clicks);
+  yield takeEvery(
+    types.REQUEST_USER_CLAIM_STORE_CLICKS,
+    request_user_claim_store_clicks,
+  );
   yield takeEvery(types.REQUEST_CLAIM_MAKE, request_user_claim_make);
 }
 
@@ -32,8 +38,18 @@ function* request_user_claim_list(action) {
       '?page=' + action.payload.page_no + '&perPage=' + action.payload.per_page,
     );
     console.log('response', response.data.data.current_page);
-    if (response.ok && response.data.success && response.data.data && !response.data.error) {
-      yield put(claim_actions.success_user_claim_list(response.data.data, response.data.user));
+    if (
+      response.ok &&
+      response.data.success &&
+      response.data.data &&
+      !response.data.error
+    ) {
+      yield put(
+        claim_actions.success_user_claim_list(
+          response.data.data,
+          response.data.user,
+        ),
+      );
     } else {
       yield put(claim_actions.failed_user_claim_list());
       // handle_api_error(
@@ -49,9 +65,23 @@ function* request_user_claim_list(action) {
 
 function* request_claim_info(action) {
   try {
-    const response = yield call(api.user_dashboard_api, 'user.claim.info', action.payload.user_claim_id);
-    if (response.ok && response.data.success && response.data.data && !response.data.data.error) {
-      yield put(claim_actions.success_claim_info(response.data.data, response.data.user));
+    const response = yield call(
+      api.user_dashboard_api,
+      'user.claim.info',
+      action.payload.user_claim_id,
+    );
+    if (
+      response.ok &&
+      response.data.success &&
+      response.data.data &&
+      !response.data.data.error
+    ) {
+      yield put(
+        claim_actions.success_claim_info(
+          response.data.data,
+          response.data.user,
+        ),
+      );
       navigate('ViewMissingClaim');
     } else {
       yield put(claim_actions.failed_claim_info());
@@ -65,9 +95,18 @@ function* request_claim_info(action) {
 
 function* request_user_claim_close(action) {
   try {
-    const response = yield call(api.user_dashboard_api, 'user.claim.close', action.payload.user_claim_close_id);
+    const response = yield call(
+      api.user_dashboard_api,
+      'user.claim.close',
+      action.payload.user_claim_close_id,
+    );
     if (response.ok && response.data.success && response.data.data) {
-      yield put(claim_actions.success_user_claim_close(response.data.data, response.data.user));
+      yield put(
+        claim_actions.success_user_claim_close(
+          response.data.data,
+          response.data.user,
+        ),
+      );
       yield put(claim_actions.request_user_claim_list());
     } else {
       yield put(claim_actions.failed_user_claim_close());
@@ -81,12 +120,26 @@ function* request_user_claim_close(action) {
 
 function* request_user_claim_post_comment(action) {
   try {
-    const response = yield call(api.user_dashboard_post_api, 'user.claim.comment', {
-      id: action.payload.user_claim_post_comment_id,
-      comment: action.payload.user_claim_comment,
-    });
-    if (response.ok && response.data.success && response.data.data && !response.data.error) {
-      yield put(claim_actions.success_user_claim_post_comment(response.data.data, response.data.user));
+    const response = yield call(
+      api.user_dashboard_post_api,
+      'user.claim.comment',
+      {
+        id: action.payload.user_claim_post_comment_id,
+        comment: action.payload.user_claim_comment,
+      },
+    );
+    if (
+      response.ok &&
+      response.data.success &&
+      response.data.data &&
+      !response.data.error
+    ) {
+      yield put(
+        claim_actions.success_user_claim_post_comment(
+          response.data.data,
+          response.data.user,
+        ),
+      );
       yield put(claim_actions.request_user_claim_list());
     } else {
       yield put(claim_actions.failed_user_claim_post_comment());
@@ -101,11 +154,23 @@ function* request_user_claim_post_comment(action) {
 function* request_user_claim_stores(action) {
   try {
     const response = yield call(api.user_dashboard_api, 'user.claim.stores');
-    if (response.ok && response.data.success && response.data.data && !response.data.error) {
-      yield put(claim_actions.success_user_claim_stores(response.data.data, response.data.user));
+    if (
+      response.ok &&
+      response.data.success &&
+      response.data.data &&
+      !response.data.error
+    ) {
+      yield put(
+        claim_actions.success_user_claim_stores(
+          response.data.data,
+          response.data.user,
+        ),
+      );
       let default_store_id = response.data.data[0]?.store_id;
       if (default_store_id) {
-        yield put(claim_actions.request_user_claim_store_clicks(default_store_id));
+        yield put(
+          claim_actions.request_user_claim_store_clicks(default_store_id),
+        );
       }
     } else {
       yield put(claim_actions.failed_user_claim_stores());
@@ -124,8 +189,18 @@ function* request_user_claim_store_clicks(action) {
       'user.claim.store.clicks',
       action.payload.user_claims_store_clicks_store_id,
     );
-    if (response.ok && response.data.success && response.data.data && !response.data.error) {
-      yield put(claim_actions.success_user_claim_store_clicks(response.data.data, response.data.user));
+    if (
+      response.ok &&
+      response.data.success &&
+      response.data.data &&
+      !response.data.error
+    ) {
+      yield put(
+        claim_actions.success_user_claim_store_clicks(
+          response.data.data,
+          response.data.user,
+        ),
+      );
     } else {
       yield put(claim_actions.failed_user_claim_store_clicks());
       handle_api_error(response.problem + response.data?.error, '');
@@ -160,13 +235,31 @@ function* request_user_claim_make(action) {
       uri: action.payload.claim_receipt.uri,
     });
 
-    const response = yield call(api.user_dashboard_post_api, 'user.claim.make', form_body, '', {
-      'Content-Type': 'multipart/form-data',
-    });
-    if (response.ok && response.data.success && response.data.data && !response.data.error) {
-      yield put(claim_actions.success_user_claim_make(response.data.data, response.data.user));
+    const response = yield call(
+      api.user_dashboard_post_api,
+      'user.claim.make',
+      form_body,
+      '',
+      {
+        'Content-Type': 'multipart/form-data',
+      },
+    );
+    if (
+      response.ok &&
+      response.data.success &&
+      response.data.data &&
+      !response.data.error
+    ) {
+      yield put(
+        claim_actions.success_user_claim_make(
+          response.data.data,
+          response.data.user,
+        ),
+      );
       if (is_app()) {
-        Toast.successBottom(get_translation('user_dashboard.claim.create_claim_success'));
+        Toast.successBottom(
+          get_translation('user_dashboard.claim.create_claim_success'),
+        );
         navigate('MissingClaims');
       } else {
         yield show_success_message_with_reload({
@@ -178,7 +271,9 @@ function* request_user_claim_make(action) {
     } else {
       yield put(
         claim_actions.failed_user_claim_make(
-          response.data.data?.error ? response.data.data.message : response.problem + response.data?.error,
+          response.data.data?.error
+            ? response.data.data.message
+            : response.problem + response.data?.error,
           '',
         ),
       );
@@ -193,11 +288,13 @@ function* request_user_claim_make(action) {
       } else {
         show_fail_message(
           response.data.data?.error
-            ? {html: get_exception_string(response.data.data)}
+            ? { html: get_exception_string(response.data.data) }
             : {
                 text: response.data.msg
                   ? get_api_error_string(response.data.msg)
-                  : get_translation('user_dashboard.claim.claim_request_failed'),
+                  : get_translation(
+                      'user_dashboard.claim.claim_request_failed',
+                    ),
               },
         );
       }
@@ -205,7 +302,9 @@ function* request_user_claim_make(action) {
   } catch (error) {
     yield put(claim_actions.failed_user_claim_make(''));
     if (is_app()) {
-      Toast.errorBottom(get_translation('user_dashboard.claim.claim_request_failed'));
+      Toast.errorBottom(
+        get_translation('user_dashboard.claim.claim_request_failed'),
+      );
     } else {
       show_fail_message({
         text: get_translation('user_dashboard.claim.claim_request_failed'),

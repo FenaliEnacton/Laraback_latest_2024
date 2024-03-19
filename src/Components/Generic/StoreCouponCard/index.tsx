@@ -1,7 +1,7 @@
 import { Theme } from '@/Assets/Theme';
 import Icons from '@/Assets/icons';
 import { request_store_details } from '@/Redux/Actions/publicDataActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import dayjs from 'dayjs';
 import React from 'react';

@@ -6,7 +6,7 @@ import Header from '@/Components/Core/Header/Header';
 import { request_user_activity_bonus } from '@/Redux/USER_REDUX/Actions/userActivityActions';
 import { user_activity_months } from '@/Redux/USER_REDUX/Selectors';
 import { get_currency_string } from '@/Utils';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import dayjs from 'dayjs';
 import React, { Component } from 'react';

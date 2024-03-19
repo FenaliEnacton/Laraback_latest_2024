@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { Theme } from '@/Assets/Theme';
 import { request_deal_info } from '@/Redux/Actions/publicDataActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { SimpleAnimation } from 'react-native-simple-animations';
 import { connect } from 'react-redux';
 import DealCard, { TopDealHomeFooter } from '../DealCard';

@@ -3,13 +3,13 @@ import { Theme } from '@/Assets/Theme';
 import Icons from '@/Assets/icons';
 import CashbackString from '@/Components/Core/CashbackString';
 import CloseButton from '@/Components/Core/CloseButton';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 import { navigate } from '@/Navigation/appNavigator';
 import { request_store_details } from '@/Redux/Actions/publicDataActions';
 import { is_user_logged_in } from '@/Redux/Selectors';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
-import Clipboard from '@react-native-community/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 import dayjs from 'dayjs';
 import React from 'react';
 import {

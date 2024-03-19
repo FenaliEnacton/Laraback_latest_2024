@@ -16,7 +16,7 @@ import {
   show_success_message_with_reload,
 } from '../../Utils';
 import { navigate } from '../../Navigation/appNavigator';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 
 const useUserClaim = () => {
   const [loadingUserClaimList, setLoadingUserClaimList] = useRecoilState(

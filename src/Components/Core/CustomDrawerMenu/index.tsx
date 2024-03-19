@@ -211,7 +211,13 @@ const mapStateToProps = ({ params }) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CustomDrawerMenu);
+const ConnectedCustomDrawerMenu = connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(CustomDrawerMenu);
+
+export { ConnectedCustomDrawerMenu as CustomDrawerMenu };
+// export default connect(mapStateToProps, mapDispatchToProps)(CustomDrawerMenu);
 
 const styles = StyleSheet.create({
   container: {

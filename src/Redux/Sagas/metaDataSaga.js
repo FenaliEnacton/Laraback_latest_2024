@@ -1,9 +1,9 @@
-import {takeEvery, call, put} from 'redux-saga/effects';
-import * as types from '@app_redux/Actions/actionTypes';
+import { takeEvery, call, put } from 'redux-saga/effects';
+import * as types from '../Actions/actionTypes';
 // import {API} from '../Services/Api';
 import api from '../Services/api';
-import * as meta_actions from '@app_redux/Actions/metaDataActions';
-import Config from 'react-native-config';
+import * as meta_actions from '../Actions/metaDataActions';
+import Config from '../../react-native-config';
 // import {successContactUs} from '@actions';
 
 export function* watch_meta_data_request() {

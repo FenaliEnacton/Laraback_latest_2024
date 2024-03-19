@@ -1,4 +1,4 @@
-const Config = {
+export const Config = {
   APP_NAME: 'LarabackPro',
   IS_PLUS: false,
   API_URL: 'https://api-laraback.enactweb.com',
@@ -43,4 +43,3 @@ const Config = {
     '1031532029612-2n05bigcvcmn7i9vutnct7r4taje5ue2.apps.googleusercontent.com',
   ...global.Config,
 };
-export default Config;

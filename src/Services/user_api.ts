@@ -1,7 +1,7 @@
 import apisauce from 'apisauce';
 import { is_app } from '../Utils';
 import get_url_value from './api_routes';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 
 export const internalApi = apisauce.create({
   baseURL: Config.API_URL,

@@ -1,4 +1,4 @@
-import {takeEvery, call, put} from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../Actions/actionTypes';
 import api from '../Services/api';
 import * as payment_actions from '../Actions/userPaymentActions';
@@ -12,8 +12,8 @@ import {
   get_translation,
   is_app,
 } from '../Utils';
-import {navigate} from '../../../Navigation/appNavigator';
-import {Toast} from '@components/core';
+import { navigate } from '../../../Navigation/appNavigator';
+import { Toast } from '@/Components/Core/Toast';
 // import {In_app_review} from '../Utils';
 
 export function* watch_user_payment_request() {
@@ -164,7 +164,7 @@ function* request_user_payment_add_method(action) {
       } else {
         show_fail_message(
           response.data.data?.error
-            ? {html: get_exception_string(response.data.data)}
+            ? { html: get_exception_string(response.data.data) }
             : {
                 text: response.data.msg
                   ? get_api_error_string(response.data.msg)
@@ -256,7 +256,7 @@ function* request_user_payment_request(action) {
       } else {
         show_fail_message(
           response.data.data?.error
-            ? {html: get_exception_string(response.data.data)}
+            ? { html: get_exception_string(response.data.data) }
             : {
                 text: response.data.msg
                   ? get_api_error_string(response.data.msg)
@@ -335,7 +335,7 @@ function* request_user_payment_email_verify(action) {
       } else {
         show_fail_message(
           response.data.data?.error
-            ? {html: get_exception_string(response.data.data)}
+            ? { html: get_exception_string(response.data.data) }
             : {
                 text: response.data.msg
                   ? get_api_error_string(response.data.msg)

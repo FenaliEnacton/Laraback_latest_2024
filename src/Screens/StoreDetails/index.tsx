@@ -8,7 +8,7 @@ import Container from '@/Components/Core/Container';
 import Header from '@/Components/Core/Header/Header';
 import HeaderBackButton from '@/Components/Core/HeaderBackButton';
 import SearchButton from '@/Components/Core/SearchButton';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 import CouponModal from '@/Components/Generic/CouponModal';
 import DealCouponFilter from '@/Components/Generic/DealCouponFilter';
 import EmptyListView from '@/Components/Generic/EmptyListView';
@@ -22,7 +22,7 @@ import {
   request_user_add_fav,
   request_user_remove_fav,
 } from '@/Redux/USER_REDUX/Actions/userFavsActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import React, { Component } from 'react';
 import {

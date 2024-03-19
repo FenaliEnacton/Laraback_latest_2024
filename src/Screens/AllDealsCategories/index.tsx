@@ -13,7 +13,7 @@ import HeaderBackButton from '@/Components/Core/HeaderBackButton';
 import { translate } from '@/translations';
 import SearchButton from '@/Components/Core/SearchButton';
 import ScrollContent from '@/Components/Core/Content/scrollContent';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 
 const mapDispatchToProps = {
   request_all_categories,

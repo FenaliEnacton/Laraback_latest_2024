@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import Icon from '@/Assets/icons';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import { Theme } from '@/Assets/Theme';
 import dayjs from 'dayjs';

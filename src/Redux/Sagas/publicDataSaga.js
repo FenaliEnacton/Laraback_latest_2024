@@ -1,15 +1,18 @@
-import {takeEvery, call, put} from 'redux-saga/effects';
+import { takeEvery, call, put } from 'redux-saga/effects';
 import * as types from '../Actions/actionTypes';
 // import {API} from '../Services/Api';
 import api from '../Services/api';
-import * as public_actions from '@app_redux/Actions/publicDataActions';
-import {navigate} from '../../Navigation/appNavigator';
-import Config from 'react-native-config';
-import {Toast} from '@components/core';
-import {translate} from '@translations';
-import {get_exception_string} from '@user_redux/Utils';
-import {get_route_name} from '@assets/RouterList';
-import {get_default_country_code} from '../USER_REDUX/Utils/index';
+import * as public_actions from '../Actions/publicDataActions';
+import { navigate } from '../../Navigation/appNavigator';
+import Config from '../../react-native-config';
+// import { get_route_name } from '@assets/RouterList';
+import {
+  get_default_country_code,
+  get_exception_string,
+} from '../USER_REDUX/Utils/index';
+import { translate } from '@/translations';
+import { Toast } from '@/Components/Core/Toast';
+import { get_route_name } from '@/Assets/RouterList';
 export function* watch_public_data_request() {
   yield takeEvery(types.REQUEST_HOME_SCREEN_DATA, request_home_screen_data);
   yield takeEvery(

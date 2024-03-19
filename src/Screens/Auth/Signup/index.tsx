@@ -20,7 +20,7 @@ import {
   request_social_login,
   request_user_register_verification,
 } from '@/Redux/Actions/userAuthActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { Theme } from '@/Assets/Theme';
 import { translate } from '@/translations';
 import { AppImages } from '@/Assets/Images';

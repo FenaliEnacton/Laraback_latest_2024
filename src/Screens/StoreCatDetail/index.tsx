@@ -8,7 +8,7 @@ import SearchButton from '@/Components/Core/SearchButton';
 import CatCard from '@/Components/Generic/CatCard';
 import EmptyListView from '@/Components/Generic/EmptyListView';
 import { get_all_stores } from '@/Redux/Selectors';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import React, { Component } from 'react';
 import { Animated, FlatList, ImageBackground, Text, View } from 'react-native';

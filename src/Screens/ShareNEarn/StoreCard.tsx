@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import FastImage from 'react-native-fast-image';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import CashbackString from '@/Components/Core/CashbackString';
 import {
   request_store_cat_details,

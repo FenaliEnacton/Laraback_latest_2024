@@ -1,4 +1,5 @@
-import * as types from '@app_redux/Actions/actionTypes';
+import * as types from '../Actions/actionTypes';
+// import * as types from '@app_redux/Actions/actionTypes';
 import _ from 'lodash';
 const initial_state = {
   home_sliders: [],
@@ -15,7 +16,7 @@ const params = (state = initial_state, action) => {
         );
         action.payload.filtered_deals_data.deals = deals;
       }
-      return {...state, ...(action.payload || {})};
+      return { ...state, ...(action.payload || {}) };
     case types.SUCCESS_FILTERED_COUPONS:
       if (action.payload.filtered_coupons_data?.current_page != 1) {
         let coupons = _.concat(
@@ -26,10 +27,10 @@ const params = (state = initial_state, action) => {
         );
         action.payload.filtered_coupons_data.coupons = coupons;
       }
-      return {...state, ...(action.payload || {})};
+      return { ...state, ...(action.payload || {}) };
 
     default:
-      return {...state, ...(action.payload || {})};
+      return { ...state, ...(action.payload || {}) };
   }
 };
 

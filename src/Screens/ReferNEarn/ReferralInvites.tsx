@@ -9,7 +9,7 @@ import EmptyListView from '@/Components/Generic/EmptyListView';
 import NavigationList from '@/Components/User/NavigationList';
 import TabLoader from '@/Components/User/TabLoader';
 import { request_user_referral_invites } from '@/Redux/USER_REDUX/Actions/userReferralActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import dayjs from 'dayjs';
 import React, { Component } from 'react';

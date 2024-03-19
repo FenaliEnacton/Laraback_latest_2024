@@ -13,7 +13,7 @@ import HeaderBackButton from '@/Components/Core/HeaderBackButton';
 import LBButton from '@/Components/Core/LBButton';
 import Loader from '@/Components/Core/Loader';
 import TextBox from '@/Components/Core/TextBox';
-import Toast from '@/Components/Core/Toast';
+import { Toast } from '@/Components/Core/Toast';
 import EmptyListView from '@/Components/Generic/EmptyListView';
 import GradientFooter from '@/Components/Generic/GradientFooter';
 import NavigationList from '@/Components/User/NavigationList';
@@ -23,9 +23,9 @@ import {
   failed_user_link_create,
   request_user_link_create,
 } from '@/Redux/USER_REDUX/Actions/userLinkActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
-import Clipboard from '@react-native-community/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 import { ErrorMessage, Formik } from 'formik';
 import LottieView from 'lottie-react-native';
 import React, { Component } from 'react';

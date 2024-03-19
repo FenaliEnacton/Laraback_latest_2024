@@ -15,7 +15,7 @@ import TopStoreCard, {
   EmptyStoreCard,
 } from '@/Components/Generic/TopStoreCard';
 import { request_deal_info } from '@/Redux/Actions/publicDataActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { Component } from 'react';

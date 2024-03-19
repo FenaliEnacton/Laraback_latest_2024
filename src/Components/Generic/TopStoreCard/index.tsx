@@ -9,7 +9,7 @@ import {
   request_user_add_fav,
   request_user_remove_fav,
 } from '@/Redux/USER_REDUX/Actions/userFavsActions';
-import Config from '@/react-native-config';
+import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import React from 'react';
 import ContentLoader, { Rect } from 'react-content-loader/native';

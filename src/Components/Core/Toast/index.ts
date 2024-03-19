@@ -1,6 +1,6 @@
 import ToastComponent from 'react-native-toast-message';
 
-const Toast = {
+export const Toast = {
   errorTop: msg => {
     ToastComponent.show({
       type: 'error',
@@ -158,5 +158,3 @@ const Toast = {
     });
   },
 };
-
-export default Toast;

@@ -1,8 +1,10 @@
 import React from 'react';
 import ContentLoader from 'react-content-loader/native';
-import {Rect} from 'react-native-svg';
-import {View, StyleSheet, Dimensions} from 'react-native';
-import {Theme} from '@assets/Theme';
+import { Rect } from 'react-native-svg';
+import { View, StyleSheet, Dimensions } from 'react-native';
+import { Theme } from '@/Assets/Theme';
+// import {Theme} from '@assets/Theme';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -17,7 +19,9 @@ const ListLoader = props => {
             key={index.toString() + Date.now()}
             width={windowWidth - 20}
             height={200}
-            duration={1000}>
+
+            // duration={1000}
+          >
             <Rect
               x="10"
               y="10"

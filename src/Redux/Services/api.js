@@ -1,5 +1,5 @@
 import apisauce from 'apisauce';
-import Config from 'react-native-config';
+import { Config } from '@/react-native-config';
 export const rootApi = apisauce.create({
   baseURL: Config.API_URL,
   headers: {
