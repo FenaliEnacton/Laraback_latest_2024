@@ -1,20 +1,20 @@
+import { AppImages } from '@/Assets/Images';
+import { Theme } from '@/Assets/Theme';
+import LBButton from '@/Components/Core/LBButton';
+import { Toast } from '@/Components/Core/Toast';
 import {
   failed_user_register_verification,
   request_social_login,
   request_user_register_verification,
   request_user_registration,
 } from '@/Redux/Actions/userAuthActions';
-import styles from '../style';
-import { Component } from 'react';
-import { Toast } from '@/Components/Core/Toast';
 import { translate } from '@/translations';
-import AuthContainer from '../AuthContainer';
-import { AppImages } from '@/Assets/Images';
-import { Text, View } from 'react-native';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
-import LBButton from '@/Components/Core/LBButton';
-import { Theme } from '@/Assets/Theme';
+import { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 import { connect } from 'react-redux';
+import AuthContainer from '../AuthContainer';
+import styles from '../style';
 
 const mapDispatchToProps = {
   request_user_register_verification: request_user_register_verification,
@@ -33,162 +33,146 @@ const mapStateToProps = ({ params }) => {
   };
 };
 
-class VerifyUser extends Component<any> {
-  state: any = {
-    user_entered_otp: '',
-    show_resend: false,
-    mobile: this.props.route.params?.mobile,
-    email: this.props.route.params?.email,
-    password: this.props.route.params?.password,
-    is_social: this.props.route.params?.is_social,
-    social_id: this.props.route.params?.social_id,
-    referrer_code: this.props.route.params?.referrer_code,
-    social_type: this.props.route.params?.social_type,
-  };
+const VerifyUser = props => {
+  const [userEnteredOtp, setUserEnteredOtp] = useState('');
+  const [showResend, setShowResend] = useState(false);
+  const [userEnteredMOtp, setUserEnteredMOtp] = useState('');
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.otp_resend_show !== this.props.otp_resend_show) {
-      if (this.props.otp_resend_show) {
-        this.show_resend_after_some_time();
-      } else {
-        this.hide_resend();
-      }
+  useEffect(() => {
+    props.failed_user_register_verification();
+  }, []);
+
+  useEffect(() => {
+    if (props.otp_resend_show) {
+      show_resend_after_some_time();
+    } else {
+      hide_resend();
     }
-  }
+  }, [props.otp_resend_show]);
 
-  componentWillUnmount() {
-    this.props.failed_user_register_verification();
-  }
-
-  hide_resend = () => {
-    this.setState({ show_resend: false });
+  const hide_resend = () => {
+    setShowResend(false);
   };
 
-  show_resend_after_some_time = () => {
+  const show_resend_after_some_time = () => {
     setTimeout(() => {
-      this.setState({ show_resend: true });
+      setShowResend(true);
     }, 50000);
   };
 
-  send_mail_request = () => {
+  const send_mail_request = () => {
     let min = Math.ceil(1000);
     let max = Math.floor(9999);
     let otp = Math.floor(Math.random() * (max - min + 1)) + min;
     let mobile_otp = Math.floor(Math.random() * (max - min + 1)) + min;
-    this.props.request_user_register_verification(
-      this.state.email,
+    props.request_user_register_verification(
+      props.route.params?.email,
       otp,
-      this.state.mobile,
+      props.route.params?.mobile,
       mobile_otp,
-      this.state.password,
-      this.state.referrer_code,
-      this.state.is_social,
+      props.route.params?.password,
+      props.route.params?.referrer_code,
+      props.route.params?.is_social,
     );
   };
 
-  handle_otp_check = () => {
-    if (this.state.user_entered_m_otp != this.props.register_mobile_otp) {
+  const handle_otp_check = () => {
+    if (userEnteredMOtp != props.register_mobile_otp) {
       Toast.errorBottom(translate('phone_otp_is_not_correct'));
       return false;
     }
-    if (this.state.user_entered_otp != this.props.register_email_otp) {
+    if (userEnteredOtp != props.register_email_otp) {
       Toast.errorBottom(translate('email_otp_is_not_correct'));
       return false;
     }
     if (
-      this.state.user_entered_otp == this.props.register_email_otp &&
-      this.state.user_entered_m_otp == this.props.register_mobile_otp
+      userEnteredOtp == props.register_email_otp &&
+      userEnteredMOtp == props.register_mobile_otp
     ) {
       Toast.successBottom(translate('OTP_verified'));
-      if (this.state.is_social) {
-        this.props.request_social_login(
-          this.state.email,
-          this.state.social_id,
-          this.state.social_type,
-          this.state.mobile,
-          this.state.password,
-          this.state.referrer_code,
+      if (props.route.params?.is_social) {
+        props.request_social_login(
+          props.route.params?.email,
+          props.route.params?.social_id,
+          props.route.params?.social_type,
+          props.route.params?.mobile,
+          props.route.params?.password,
+          props.route.params?.referrer_code,
         );
       } else {
-        this.props.request_user_registration(
-          this.state.email,
-          this.state.password,
-          this.state.mobile,
-          this.state.referrer_code,
+        props.request_user_registration(
+          props.route.params?.email,
+          props.route.params?.password,
+          props.route.params?.mobile,
+          props.route.params?.referrer_code,
         );
       }
     }
   };
 
-  render() {
-    // console.log(this.state.referrer_code);
-    // const {forgot_pass_email_sent} = this.props;
-    return (
-      <AuthContainer
-        close_click={() => this.props.navigation.goBack()}
-        loading_show={this.props.loading || this.state.loading}
-        bg_img={AppImages.otp_verification_bg}>
-        <>
-          <Text style={styles.app_name}>{translate('enter_email_otp')}</Text>
-          <OTPInputView
-            style={styles.otpInput}
-            pinCount={4}
-            // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-            // onCodeChanged = {code => { this.setState({code})}}
-            autoFocusOnLoad
-            codeInputFieldStyle={styles.underlineStyleBase}
-            codeInputHighlightStyle={styles.underlineStyleHighLighted}
-            onCodeFilled={user_entered_otp => {
-              this.setState({ user_entered_otp });
-            }}
+  return (
+    <AuthContainer
+      close_click={() => props.navigation.goBack()}
+      loading_show={props.loading}
+      bg_img={AppImages.otp_verification_bg}>
+      <>
+        <Text style={styles.app_name}>{translate('enter_email_otp')}</Text>
+        <OTPInputView
+          style={styles.otpInput}
+          pinCount={4}
+          // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+          // onCodeChanged = {code => {setState({code})}}
+          autoFocusOnLoad
+          codeInputFieldStyle={styles.underlineStyleBase}
+          codeInputHighlightStyle={styles.underlineStyleHighLighted}
+          onCodeFilled={user_entered_otp => {
+            setUserEnteredOtp(user_entered_otp);
+          }}
+        />
+        {showResend ? (
+          <Text
+            style={styles.reset_pass_text}
+            onPress={() => send_mail_request()}>
+            {translate('resend')}
+          </Text>
+        ) : null}
+        <Text style={styles.app_name}>{translate('enter_mobile_otp')}</Text>
+        <OTPInputView
+          style={styles.otpInput}
+          pinCount={4}
+          autoFocusOnLoad
+          codeInputFieldStyle={styles.underlineStyleBase}
+          codeInputHighlightStyle={styles.underlineStyleHighLighted}
+          onCodeFilled={user_entered_m_otp => {
+            setUserEnteredMOtp(user_entered_m_otp);
+          }}
+        />
+        {showResend ? (
+          <Text
+            style={styles.reset_pass_text}
+            onPress={() => send_mail_request()}>
+            {translate('resend')}
+          </Text>
+        ) : null}
+        <View>
+          <LBButton
+            label={translate('register_now')}
+            onPress={() => handle_otp_check()}
+            btnStyle={styles.btnStyle}
+            labelStyle={styles.btn_labelStyle}
           />
-          {this.state.show_resend ? (
+          <Text style={styles.footer_text}>
+            {translate('already_have_an_account')}{' '}
             <Text
-              style={styles.reset_pass_text}
-              onPress={() => this.send_mail_request()}>
-              {translate('resend')}
+              style={{ color: Theme.COLORS.secondary }}
+              onPress={() => props.navigation.navigate('Login')}>
+              {translate('sign_in')}
             </Text>
-          ) : null}
-          <Text style={styles.app_name}>{translate('enter_mobile_otp')}</Text>
-          <OTPInputView
-            style={styles.otpInput}
-            pinCount={4}
-            // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-            // onCodeChanged = {code => { this.setState({code})}}
-            autoFocusOnLoad
-            codeInputFieldStyle={styles.underlineStyleBase}
-            codeInputHighlightStyle={styles.underlineStyleHighLighted}
-            onCodeFilled={user_entered_m_otp => {
-              this.setState({ user_entered_m_otp });
-            }}
-          />
-          {this.state.show_resend ? (
-            <Text
-              style={styles.reset_pass_text}
-              onPress={() => this.send_mail_request()}>
-              {translate('resend')}
-            </Text>
-          ) : null}
-          <View>
-            <LBButton
-              label={translate('register_now')}
-              onPress={() => this.handle_otp_check()}
-              btnStyle={styles.btnStyle}
-              labelStyle={styles.btn_labelStyle}
-            />
-            <Text style={styles.footer_text}>
-              {translate('already_have_an_account')}{' '}
-              <Text
-                style={{ color: Theme.COLORS.secondary }}
-                onPress={() => this.props.navigation.navigate('Login')}>
-                {translate('sign_in')}
-              </Text>
-            </Text>
-          </View>
-        </>
-      </AuthContainer>
-    );
-  }
-}
+          </Text>
+        </View>
+      </>
+    </AuthContainer>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(VerifyUser);
