@@ -9,7 +9,7 @@ import { get_currency_string } from '@/Utils';
 import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import dayjs from 'dayjs';
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
 import styles from './style';
@@ -42,20 +42,22 @@ const mapStateToProps = ({ params }) => {
   };
 };
 
-class Bonus extends Component<any> {
-  state = {
-    showMonthPicker: false,
-  };
+const Bonus = props => {
+  const {
+    bonus_months_data,
+    current_selected_month,
+    user_activity_bonus,
+    loading,
+  } = props;
+  const loader_arr = [1, 2, 3, 4];
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
 
-  componentDidMount() {
-    if (this.props.bonus_months_data?.recent_month) {
-      this.props.request_user_activity_bonus(
-        this.props.bonus_months_data?.recent_month,
-      );
+  useEffect(() => {
+    if (props.bonus_months_data?.recent_month) {
+      props.request_user_activity_bonus(props.bonus_months_data?.recent_month);
     }
-  }
-
-  render_clicks = ({ item, index }) => {
+  }, []);
+  const render_clicks = ({ item, index }) => {
     return (
       <View style={styles.tabCard} key={index + item.id.toString()}>
         <View style={[styles.storeInfoCard, { maxWidth: '25%' }]}>
@@ -107,30 +109,29 @@ class Bonus extends Component<any> {
     );
   };
 
-  handle_month_selection = month_id => {
-    this.props.request_user_activity_bonus(month_id);
+  const handle_month_selection = month_id => {
+    props.request_user_activity_bonus(month_id);
     monthModal.current.props.onRequestClose();
   };
-
-  renderMonths = ({ item, index }) => {
+  const renderMonths = ({ item, index }) => {
     return (
       <TouchableOpacity
         style={[
           styles.monthTab,
           {
             backgroundColor:
-              this.props.current_selected_month === item.month_id
+              props.current_selected_month === item.month_id
                 ? Theme.COLORS.primary
                 : Theme.COLORS.white,
           },
         ]}
-        onPress={() => this.handle_month_selection(item.month_id)}>
+        onPress={() => handle_month_selection(item.month_id)}>
         <Text
           style={[
             styles.monthText,
             {
               color:
-                this.props.current_selected_month === item.month_id
+                props.current_selected_month === item.month_id
                   ? Theme.COLORS.white
                   : Theme.COLORS.blackText,
             },
@@ -140,104 +141,93 @@ class Bonus extends Component<any> {
       </TouchableOpacity>
     );
   };
-  addEmptyCard = () => {
+  const addEmptyCard = () => {
     return <View style={{ height: 120 }} />;
   };
-  render() {
-    const {
-      bonus_months_data,
-      current_selected_month,
-      user_activity_bonus,
-      loading,
-    } = this.props;
-    const loader_arr = [1, 2, 3, 4];
-    return (
-      <Container>
-        <Header>
-          <Header.Left>
-            <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </Header.Left>
-          <Header.Title>
-            <Text style={styles.headerTitle}>
-              {translate('cashback_activities')}
-            </Text>
-          </Header.Title>
-          <Header.Right />
-        </Header>
-        <View style={styles.content}>
-          <View style={styles.navCard}>
-            <Text style={styles.screen_title}>{translate('bonus')}</Text>
-            <ListHeader
-              month={
-                user_activity_bonus.length
-                  ? dayjs(current_selected_month).format('MMM-YYYY')
-                  : null
-              }
-              title={translate('bonus')}
-              onPress={() => this.setState({ showMonthPicker: true })}
-            />
-          </View>
-          <View>
-            {!loading ? (
-              <FlatList
-                data={user_activity_bonus}
-                showsVerticalScrollIndicator={false}
-                extraData={this.props}
-                renderItem={this.render_clicks}
-                keyExtractor={(item, index) => index.toString()}
-                // style={styles.list}
-                ListFooterComponent={this.addEmptyCard}
-              />
-            ) : (
-              loader_arr.map((item, index) => {
-                return <TabLoader key={item.toString() + index} />;
-              })
-            )}
-            {!loading && !user_activity_bonus.length && <EmptyListView />}
-            {/* </View> */}
-          </View>
-        </View>
-        <BlurNavBar>
-          <NavigationList
-            list={NAV_LIST_1}
-            navigation={this.props.navigation}
-            style={styles.navListStyle}
-            numberOfLines={3}
-            containerStyle={{
-              marginTop: 0,
-              alignItems: 'center',
-            }}
-            textStyle={styles.routeText}
+  return (
+    <Container>
+      <Header>
+        <Header.Left>
+          <HeaderBackButton onPress={() => props.navigation.goBack()} />
+        </Header.Left>
+        <Header.Title>
+          <Text style={styles.headerTitle}>
+            {translate('cashback_activities')}
+          </Text>
+        </Header.Title>
+        <Header.Right />
+      </Header>
+      <View style={styles.content}>
+        <View style={styles.navCard}>
+          <Text style={styles.screen_title}>{translate('bonus')}</Text>
+          <ListHeader
+            month={
+              user_activity_bonus.length
+                ? dayjs(current_selected_month).format('MMM-YYYY')
+                : null
+            }
+            title={translate('bonus')}
+            onPress={() => setShowMonthPicker(true)}
           />
-        </BlurNavBar>
-        <BottomModal
-          style={styles.modalStyle}
-          ref={monthModal}
-          bottomModalShow={this.state.showMonthPicker}
-          setBottomModalVisibleFalse={() =>
-            this.setState({ showMonthPicker: false })
-          }>
-          <>
-            <View style={styles.modal_top_notch} />
-            <Text style={styles.title}>{translate('select_month')}</Text>
+        </View>
+        <View>
+          {!loading ? (
             <FlatList
-              style={styles.modalList}
-              data={bonus_months_data.revised_months}
+              data={user_activity_bonus}
+              showsVerticalScrollIndicator={false}
+              extraData={props}
+              renderItem={render_clicks}
               keyExtractor={(item, index) => index.toString()}
-              extraData={this.props}
-              renderItem={this.renderMonths}
+              // style={styles.list}
+              ListFooterComponent={addEmptyCard}
             />
-            <View style={styles.btnBar}>
-              <CloseButton
-                btnStyle={styles.closeBtn}
-                onPress={() => monthModal.current.props.onRequestClose()}
-              />
-            </View>
-          </>
-        </BottomModal>
-      </Container>
-    );
-  }
-}
+          ) : (
+            loader_arr.map((item, index) => {
+              return <TabLoader key={item.toString() + index} />;
+            })
+          )}
+          {!loading && !user_activity_bonus.length && <EmptyListView />}
+          {/* </View> */}
+        </View>
+      </View>
+      <BlurNavBar>
+        <NavigationList
+          list={NAV_LIST_1}
+          navigation={props.navigation}
+          style={styles.navListStyle}
+          numberOfLines={3}
+          containerStyle={{
+            marginTop: 0,
+            alignItems: 'center',
+          }}
+          textStyle={styles.routeText}
+        />
+      </BlurNavBar>
+      <BottomModal
+        style={styles.modalStyle}
+        ref={monthModal}
+        bottomModalShow={showMonthPicker}
+        setBottomModalVisibleFalse={() => setShowMonthPicker(false)}>
+        <>
+          <View style={styles.modal_top_notch} />
+          <Text style={styles.title}>{translate('select_month')}</Text>
+          <FlatList
+            style={styles.modalList}
+            data={bonus_months_data.revised_months}
+            keyExtractor={(item, index) => index.toString()}
+            extraData={props}
+            renderItem={renderMonths}
+          />
+          <View style={styles.btnBar}>
+            <CloseButton
+              btnStyle={styles.closeBtn}
+              onPress={() => monthModal.current.props.onRequestClose()}
+            />
+          </View>
+        </>
+      </BottomModal>
+    </Container>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Bonus);
