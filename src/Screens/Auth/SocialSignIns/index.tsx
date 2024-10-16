@@ -2,14 +2,13 @@ import { AppImages } from '@/Assets/Images';
 import { Theme } from '@/Assets/Theme';
 import { Toast } from '@/Components/Core/Toast';
 // import api, { userFbLogin } from '@/Services/api';
-import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 // import { appleAuth } from '@invertase/react-native-apple-authentication';
 // import {
 //   GoogleSignin,
 //   statusCodes,
 // } from '@react-native-google-signin/google-signin';
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   Dimensions,
   Platform,
