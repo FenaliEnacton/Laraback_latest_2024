@@ -1,43 +1,43 @@
-import OTPInputView from '@twotalltotems/react-native-otp-input';
-import { ErrorMessage, Formik } from 'formik';
-import React, { Component } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
-import FastImage from 'react-native-fast-image';
-import { connect } from 'react-redux';
-import { number, object, string } from 'yup';
-import styles from './style';
+import Icons from '@/Assets/icons';
+import { AppImages } from '@/Assets/Images';
 import { get_user_internal_nav_list } from '@/Assets/RouterList';
+import { Theme } from '@/Assets/Theme';
+import BottomModal from '@/Components/Core/BottomModal';
+import CloseButton from '@/Components/Core/CloseButton';
+import Container from '@/Components/Core/Container';
+import FormBottomModal from '@/Components/Core/FormBottomModal';
+import Header from '@/Components/Core/Header/Header';
+import HeaderRight from '@/Components/Core/Header/HeaderRight';
+import HeaderBackButton from '@/Components/Core/HeaderBackButton';
+import LangSupportTxtInput from '@/Components/Core/LangSupportTxtInput';
+import LBButton from '@/Components/Core/LBButton';
+import Loader from '@/Components/Core/Loader';
+import { Toast } from '@/Components/Core/Toast';
+import BlurNavBar from '@/Components/Generic/BlurNavBar';
+import NavigationList from '@/Components/User/NavigationList';
+import TotalEarned from '@/Components/User/TotalEarned';
+import { Config } from '@/react-native-config';
+import { request_user_email_otp } from '@/Redux/Actions/userAuthActions';
 import {
   request_user_payment_add_method,
   request_user_payment_methods,
   request_user_payment_request,
 } from '@/Redux/USER_REDUX/Actions/userPaymentActions';
-import { request_user_email_otp } from '@/Redux/Actions/userAuthActions';
-import LBButton from '@/Components/Core/LBButton';
-import { get_currency_string } from '@/Utils';
-import { translate } from '@/translations';
-import { Toast } from '@/Components/Core/Toast';
-import Icons from '@/Assets/icons';
-import { Theme } from '@/Assets/Theme';
-import { Config } from '@/react-native-config';
-import Container from '@/Components/Core/Container';
-import Header from '@/Components/Core/Header/Header';
-import HeaderBackButton from '@/Components/Core/HeaderBackButton';
-import HeaderRight from '@/Components/Core/Header/HeaderRight';
-import TotalEarned from '@/Components/User/TotalEarned';
-import BlurNavBar from '@/Components/Generic/BlurNavBar';
-import NavigationList from '@/Components/User/NavigationList';
-import BottomModal from '@/Components/Core/BottomModal';
-import CloseButton from '@/Components/Core/CloseButton';
-import { AppImages } from '@/Assets/Images';
-import FormBottomModal from '@/Components/Core/FormBottomModal';
-import LangSupportTxtInput from '@/Components/Core/LangSupportTxtInput';
-import Loader from '@/Components/Core/Loader';
 import {
   final_payable_amount_selector,
   payment_mode_selectors,
   payment_user_mode_selectors,
 } from '@/Redux/USER_REDUX/Selectors';
+import { translate } from '@/translations';
+import { get_currency_string } from '@/Utils';
+import OTPInputView from '@twotalltotems/react-native-otp-input';
+import { ErrorMessage, Formik } from 'formik';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import FastImage from 'react-native-fast-image';
+import { connect } from 'react-redux';
+import { number, object, string } from 'yup';
+import styles from './style';
 
 const NAV_LIST_1 = get_user_internal_nav_list([5555]);
 const mapDispatchToProps = {
@@ -60,27 +60,59 @@ const mapStateToProps = ({ params }) => {
   };
 };
 
-class CashbackPayment extends Component<any> {
-  state = {
-    selected_min_amount: '',
-    showMessageModal: false,
-    needed_amount: '',
-    showFormBottomModal: false,
-    pay_out_mode: {
-      id: '',
-      method_code: '',
-      inputs: [],
-    },
-    show_resend: false,
-    user_entered_otp: '',
-    selectedTab: this.props.user_methods ? 'added' : 'addNew',
+const CashbackPayment = props => {
+  const [selectedMinAmount, setSelectedMinAmount] = useState<any>('');
+  const [showMessageModal, setShowMessageModal] = useState(false);
+  const [neededAmount, setNeededAmount] = useState<any>('');
+  const [showFormBottomModal, setShowFormBottomModal] = useState(false);
+  const [payOutMode, setPayOutMode] = useState<any>({
+    id: '',
+    method_code: '',
+    inputs: [],
+    code: '',
+  });
+  const [showResend, setShowResend] = useState(false);
+  const [userEnteredOtp, setUserEnteredOtp] = useState<any>('');
+  const [selectedTab, setSelectedTab] = useState(
+    props.user_methods ? 'added' : 'addNew',
+  );
+  const [modalType, setModalType] = useState<any>('');
+  const [formState, setFormState] = useState({});
+  const [payoutModeInputValue, setPayoutModeInputValue] = useState<any>('');
+  const [payoutModeName, setPayoutModeName] = useState<any>('');
+  const [payoutModeEmail, setPayoutModeEmail] = useState<any>('');
+  const [emailSentOtp, setEmailSentOtp] = useState<any>('');
+
+  useEffect(() => {
+    props.request_user_payment_methods();
+  }, []);
+
+  const user_mode_clicked = item => {
+    if (props.is_payment_pending === 0) {
+      if (item.enabled) {
+        if (item.min_payable > item.total_payable) {
+          setShowMessageModal(true);
+          setModalType('insufficient');
+          setSelectedMinAmount(get_currency_string(item.min_payable));
+          setNeededAmount(
+            get_currency_string(item.min_payable - item.total_payable),
+          );
+        } else {
+          setShowFormBottomModal(true);
+          setModalType('payout');
+          setPayOutMode(item);
+        }
+      } else {
+        setShowMessageModal(true);
+        setModalType('enable');
+      }
+    } else {
+      Toast.showBottom(translate('previous_req_is_pending'));
+      return false;
+    }
   };
 
-  componentDidMount() {
-    this.props.request_user_payment_methods();
-  }
-
-  render_user_payout_mode = ({ item, index }) => {
+  const render_user_payout_mode = ({ item, index }) => {
     return (
       <View style={styles.user_mode_card}>
         <FastImage
@@ -98,7 +130,7 @@ class CashbackPayment extends Component<any> {
         </View>
         <LBButton
           label={item.method_code}
-          onPress={() => this.user_mode_clicked(item)}
+          onPress={() => user_mode_clicked(item)}
           btnStyle={styles.userPayModeBtnStyle}
           labelStyle={styles.userPayModeBtnLabel}
         />
@@ -106,43 +138,13 @@ class CashbackPayment extends Component<any> {
     );
   };
 
-  user_mode_clicked = item => {
-    if (this.props.is_payment_pending === 0) {
-      if (item.enabled) {
-        if (item.min_payable > item.total_payable) {
-          this.setState({
-            showMessageModal: true,
-            modal_type: 'insufficient',
-            selected_min_amount: get_currency_string(item.min_payable),
-            needed_amount: get_currency_string(
-              item.min_payable - item.total_payable,
-            ),
-          });
-        } else {
-          this.setState({
-            showFormBottomModal: true,
-            modal_type: 'payout',
-            pay_out_mode: item,
-          });
-        }
-      } else {
-        this.setState({ showMessageModal: true, modal_type: 'enable' });
-      }
-    } else {
-      Toast.showBottom(translate('previous_req_is_pending'));
-      return false;
-    }
+  const add_mode_clicked = item => {
+    setShowFormBottomModal(true);
+    setModalType('add_mode');
+    setPayOutMode(item);
   };
 
-  add_mode_clicked = item => {
-    this.setState({
-      showFormBottomModal: true,
-      modal_type: 'add_mode',
-      pay_out_mode: item,
-    });
-  };
-
-  render_payout_mode = ({ item, index }) => {
+  const render_payout_mode = ({ item, index }) => {
     return (
       <View style={styles.user_mode_card}>
         <View style={styles.user_top_content}>
@@ -193,7 +195,7 @@ class CashbackPayment extends Component<any> {
         </View>
         <LBButton
           label={item.name}
-          onPress={() => this.add_mode_clicked(item)}
+          onPress={() => add_mode_clicked(item)}
           btnStyle={styles.userPayModeBtnStyle}
           labelStyle={styles.userPayModeBtnLabel}
         />
@@ -201,87 +203,81 @@ class CashbackPayment extends Component<any> {
     );
   };
 
-  handle_pay_out = values => {
-    this.props.request_user_payment_request(
-      this.state.pay_out_mode.id,
-      this.state.pay_out_mode.method_code,
+  const handle_pay_out = values => {
+    props.request_user_payment_request(
+      payOutMode.id,
+      payOutMode.method_code,
       values.Amount,
     );
-    this.setState({ showFormBottomModal: false });
+    setShowFormBottomModal(false);
   };
 
-  handle_add_mode = values => {
+  const handle_add_mode = values => {
     let inputs_value: any = [];
-    let inputs: any = this.state.pay_out_mode.inputs;
+    let inputs: any = payOutMode.inputs;
     for (let i = 0; i < inputs.length; i++) {
       let stateValue = i + 1;
-      if (this.state['value' + stateValue]) {
-        inputs_value[inputs[i].name] = this.state['value' + stateValue];
+      if (formState['value' + stateValue]) {
+        inputs_value[inputs[i].name] = formState['value' + stateValue];
       } else {
         Toast.errorBottom(translate('enter_all_fields'));
         return;
       }
     }
     if (Config.is_lara_plus) {
-      this.setState({
-        payout_mode_inputs_value: inputs_value,
-        payout_mode_name: values.Name,
-        payout_mode_email: values.Account,
-      });
+      setPayoutModeInputValue(inputs_value);
+      setPayoutModeName(values.Name);
+      setPayoutModeEmail(values.Account);
+
       let min = Math.ceil(1000);
       let max = Math.floor(9999);
       let otp = Math.floor(Math.random() * (max - min + 1)) + min;
-      this.props.request_user_email_otp(this.props.user_info.email, otp);
-      this.setState({ modal_type: 'pay_out_email_otp', email_sent_otp: otp });
+      props.request_user_email_otp(props.user_info.email, otp);
+      setModalType('pay_out_email_otp');
+      setEmailSentOtp(otp);
       setTimeout(() => {
-        this.setState({ show_resend: true });
+        setShowResend(true);
       }, 100000);
     } else {
-      this.props.request_user_payment_add_method(
+      props.request_user_payment_add_method(
         { ...inputs_value },
-        // @ts-ignore
-        this.state.pay_out_mode.code,
+        payOutMode.code, //CHECK FUNCTIONALITY
         values.Name,
         values.Account,
       );
-      this.setState({ showFormBottomModal: false });
+      setShowFormBottomModal(false);
     }
   };
-
-  resend_otp = () => {
+  const resend_otp = () => {
     let min = Math.ceil(1000);
     let max = Math.floor(9999);
     let otp = Math.floor(Math.random() * (max - min + 1)) + min;
-    this.props.request_user_email_otp(this.props.user_info.email, otp);
-    this.setState({ email_sent_otp: otp, resend_otp: false });
+    props.request_user_email_otp(props.user_info.email, otp);
+    emailSentOtp(otp);
+    setShowResend(false);
     setTimeout(() => {
-      this.setState({ show_resend: true });
+      setShowResend(true);
     }, 100000);
   };
 
-  handle_otp_check = () => {
-    // @ts-ignore
-    if (this.state.email_sent_otp == this.state.user_entered_otp) {
+  const handle_otp_check = () => {
+    if (emailSentOtp == userEnteredOtp) {
       Toast.successBottom(translate('OTP_verified'));
-      this.props.request_user_payment_add_method(
-        // @ts-ignore
-        { ...this.state.payout_mode_inputs_value },
-        // @ts-ignore
-        this.state.pay_out_mode.code,
-        // @ts-ignore
-        this.state.payout_mode_name,
-        // @ts-ignore
-        this.state.payout_mode_email,
+      props.request_user_payment_add_method(
+        { ...payoutModeInputValue },
+        payOutMode.code,
+        payoutModeName,
+        payoutModeEmail,
       );
-      this.setState({ showFormBottomModal: false });
-      this.props.request_user_payment_methods();
+      setShowFormBottomModal(false);
+      props.request_user_payment_methods();
     } else {
       Toast.errorBottom(translate('email_otp_is_not_correct'));
       return false;
     }
   };
 
-  getValidationSchema = type => {
+  const getValidationSchema = type => {
     switch (type.account_type) {
       case 'email':
         return string()
@@ -295,503 +291,491 @@ class CashbackPayment extends Component<any> {
         return string().required(translate('required_field'));
     }
   };
-
-  addEmptyCard = () => {
+  const addEmptyCard = () => {
     return <View style={{ height: 75 }} />;
   };
-  render() {
-    const { user_methods, payment_modes } = this.props;
-    const {
-      selected_min_amount,
-      // @ts-ignore
-      modal_type,
-      needed_amount,
-      pay_out_mode,
-      selectedTab,
-    }: any = this.state;
-    const addModeSchema = object().shape({
-      Name: string().trim().min(3).required(translate('required_field')),
-      Account: this.getValidationSchema(pay_out_mode),
-    });
-    return (
-      <Container>
-        <Header>
-          <Header.Left>
-            <HeaderBackButton onPress={() => this.props.navigation.goBack()} />
-          </Header.Left>
-          <Header.Title>
-            <Text style={styles.headerTitle}>
-              {translate('cashback_payment')}
-            </Text>
-          </Header.Title>
-          <HeaderRight />
-        </Header>
-        <View style={{ marginTop: 55 }}>
-          <TotalEarned />
-          <View style={styles.tabCard}>
-            {user_methods.length ? (
-              <TouchableOpacity
-                style={[
-                  selectedTab === 'added' ? styles.selectedTabText : null,
-                ]}
-                onPress={() => {
-                  this.setState({ selectedTab: 'added' });
-                }}>
-                <Text
-                  style={[
-                    styles.tabTitle,
-                    selectedTab === 'added'
-                      ? { color: Theme.COLORS.secondary }
-                      : null,
-                  ]}>
-                  {translate('recently_added_accounts')}
-                </Text>
-              </TouchableOpacity>
-            ) : null}
+
+  const handleChangeInputValues = (index, value) => {
+    setFormState(prevState => ({
+      ...prevState,
+      ['value' + (index + 1)]: value,
+    }));
+  };
+
+  const { user_methods, payment_modes } = props;
+  const addModeSchema = object().shape({
+    Name: string().trim().min(3).required(translate('required_field')),
+    Account: getValidationSchema(payOutMode),
+  });
+
+  return (
+    <Container>
+      <Header>
+        <Header.Left>
+          <HeaderBackButton onPress={() => props.navigation.goBack()} />
+        </Header.Left>
+        <Header.Title>
+          <Text style={styles.headerTitle}>
+            {translate('cashback_payment')}
+          </Text>
+        </Header.Title>
+        <HeaderRight />
+      </Header>
+      <View style={{ marginTop: 55 }}>
+        <TotalEarned />
+        <View style={styles.tabCard}>
+          {user_methods.length ? (
             <TouchableOpacity
-              style={[selectedTab === 'addNew' ? styles.selectedTabText : null]}
+              style={[selectedTab === 'added' ? styles.selectedTabText : null]}
               onPress={() => {
-                this.setState({ selectedTab: 'addNew' });
+                setSelectedTab('added');
               }}>
               <Text
                 style={[
                   styles.tabTitle,
-                  selectedTab === 'addNew'
+                  selectedTab === 'added'
                     ? { color: Theme.COLORS.secondary }
                     : null,
                 ]}>
-                {translate('add_new_account')}
+                {translate('recently_added_accounts')}
               </Text>
             </TouchableOpacity>
-          </View>
-          {user_methods.length && selectedTab === 'added' ? (
-            <>
-              <Text style={styles.list_title}>
-                {translate('recently_added_account_for_payment')}
-              </Text>
-              <FlatList
-                keyExtractor={(item, index) => index.toString()}
-                data={user_methods}
-                extraData={this.props}
-                renderItem={this.render_user_payout_mode}
-                style={styles.list}
-                showsHorizontalScrollIndicator={false}
-                ListFooterComponent={this.addEmptyCard}
-                // numColumns={2}
-                // horizontal={true}
-              />
-            </>
           ) : null}
-          {selectedTab === 'addNew' ? (
-            <>
-              <Text style={styles.list_title}>
-                {translate('choose_how_you_want_to_withdraw')}
-              </Text>
-              <FlatList
-                data={payment_modes}
-                keyExtractor={(item, index) => index.toString()}
-                extraData={this.props}
-                style={styles.list}
-                renderItem={this.render_payout_mode}
-                showsHorizontalScrollIndicator={false}
-                ListFooterComponent={this.addEmptyCard}
-              />
-            </>
-          ) : null}
-          <BlurNavBar>
-            <NavigationList
-              list={NAV_LIST_1}
-              navigation={this.props.navigation}
-              style={styles.navListStyle}
-              containerStyle={{
-                alignItems: 'center',
-                marginTop: 0,
-              }}
-              numberOfLines={1}
-              textStyle={styles.routeText}
-            />
-          </BlurNavBar>
+          <TouchableOpacity
+            style={[selectedTab === 'addNew' ? styles.selectedTabText : null]}
+            onPress={() => {
+              setSelectedTab('addNew');
+            }}>
+            <Text
+              style={[
+                styles.tabTitle,
+                selectedTab === 'addNew'
+                  ? { color: Theme.COLORS.secondary }
+                  : null,
+              ]}>
+              {translate('add_new_account')}
+            </Text>
+          </TouchableOpacity>
         </View>
-        <BottomModal
-          bottomModalShow={this.state.showMessageModal}
-          setBottomModalVisibleFalse={() =>
-            this.setState({ showMessageModal: false })
-          }>
+        {user_methods.length && selectedTab === 'added' ? (
           <>
-            <View style={styles.modal_top_notch} />
-            <CloseButton
-              btnStyle={styles.closeBtn}
-              onPress={() => this.setState({ showMessageModal: false })}
+            <Text style={styles.list_title}>
+              {translate('recently_added_account_for_payment')}
+            </Text>
+            <FlatList
+              keyExtractor={(item, index) => index.toString()}
+              data={user_methods}
+              extraData={props}
+              renderItem={render_user_payout_mode}
+              style={styles.list}
+              showsHorizontalScrollIndicator={false}
+              ListFooterComponent={addEmptyCard}
+              // numColumns={2}
+              // horizontal={true}
             />
-            {modal_type === 'insufficient' ? (
-              <>
-                <FastImage
-                  source={AppImages.insufficient_balance}
-                  style={styles.modal_img}
-                  resizeMode={FastImage.resizeMode.contain}
-                />
-                <Text style={styles.sub_text}>
-                  {translate('minimum_amount_for')} {selected_min_amount}.
-                </Text>
-                <Text style={[styles.sub_text, { marginBottom: 20 }]}>
-                  {translate('you_need')} {needed_amount}{' '}
-                  {translate('more_or_choose')}.
-                </Text>
-              </>
-            ) : null}
-            {modal_type === 'enable' ? (
-              <>
-                <FastImage
-                  source={AppImages.confirm_payment_img}
-                  style={styles.modal_img}
-                  resizeMode={FastImage.resizeMode.contain}
-                />
-                <Text style={styles.modal_title}>
-                  {translate('confirm_bank_details')}
-                </Text>
-                <Text style={[styles.sub_text, { marginBottom: 20 }]}>
-                  {translate('after_saving_mode_please_confirm_on_email')}
-                </Text>
-              </>
-            ) : null}
           </>
-        </BottomModal>
-        <FormBottomModal
-          bottomModalShow={this.state.showFormBottomModal}
-          setBottomModalVisibleFalse={() =>
-            this.setState({ showFormBottomModal: false })
-          }>
-          <View style={styles.modal_top_notch} />
-          {/* <CloseButton
-            btnStyle={styles.closeBtn}
-            onPress={() => this.setState({showFormBottomModal: false})}
-          /> */}
-          {modal_type === 'payout' ? (
-            <>
-              <Text style={styles.list_title}>{pay_out_mode.name}</Text>
-              <View style={styles.tb_row}>
-                <Text style={styles.tb_label}>{pay_out_mode.name}</Text>
-                <Text style={styles.tb_value}>{pay_out_mode.account}</Text>
-              </View>
-              <View style={styles.tb_row}>
-                <Text style={styles.tb_label}>{translate('min_pay_out')}</Text>
-                <Text style={styles.tb_value}>
-                  {get_currency_string(pay_out_mode.min_payable)}
-                </Text>
-              </View>
-              {pay_out_mode.inputs &&
-                pay_out_mode.inputs.map(e => {
-                  return (
-                    <View style={styles.tb_row}>
-                      <Text style={styles.tb_label}>{e.label}</Text>
-                      <Text style={styles.tb_value}>{e.value}</Text>
-                    </View>
-                  );
-                })}
-              <View style={styles.tb_row}>
-                <Text style={styles.tb_label}>{translate('with_terms')}</Text>
-                <Text style={styles.tb_value}>
-                  {get_currency_string(pay_out_mode.payment_speed)}
-                </Text>
-              </View>
-
-              <View style={styles.tb_row}>
-                <Text>{translate('available_pay_out')}</Text>
-                <View style={styles.AllowedBalanceBox}>
-                  <Icons.AntDesign
-                    name={pay_out_mode.reward_allowed ? 'check' : 'close'}
-                    color={
-                      pay_out_mode.reward_allowed
-                        ? Theme.COLORS.green_approved
-                        : Theme.COLORS.error
-                    }
-                    size={12}
-                  />
-                  <Text
-                    style={[
-                      styles.cb_text,
-                      pay_out_mode.reward_allowed
-                        ? {}
-                        : { color: Theme.COLORS.error },
-                    ]}>
-                    {translate('reward')}
-                  </Text>
-                  <Icons.AntDesign
-                    name={pay_out_mode.cashback_allowed ? 'check' : 'close'}
-                    color={
-                      pay_out_mode.cashback_allowed
-                        ? Theme.COLORS.green_approved
-                        : Theme.COLORS.error
-                    }
-                    size={12}
-                  />
-                  <Text
-                    style={[
-                      styles.cb_text,
-                      pay_out_mode.cashback_allowed
-                        ? {}
-                        : { color: Theme.COLORS.error },
-                    ]}>
-                    {translate('cashback')}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.tb_row}>
-                <Text style={styles.tb_label}>
-                  {translate('available_balance')}
-                </Text>
-                <Text style={styles.tb_value}>
-                  {get_currency_string(pay_out_mode.total_payable)}
-                </Text>
-              </View>
-              <Formik
-                initialValues={{
-                  Amount: '',
-                }}
-                validationSchema={object().shape({
-                  Amount: number()
-                    .min(pay_out_mode.min_payable)
-                    .max(pay_out_mode.total_payable)
-                    .required(translate('required_field')),
-                })}
-                onSubmit={values => this.handle_pay_out(values)}>
-                {({
-                  handleBlur,
-                  handleChange,
-                  values,
-                  handleSubmit,
-                  setFieldValue,
-                }) => {
-                  return (
-                    <>
-                      <Text style={styles.input_title}>
-                        {translate('amount')}
-                        <Text style={{ color: Theme.COLORS.secondary }}>*</Text>
-                      </Text>
-                      <LangSupportTxtInput
-                        style={styles.textInput}
-                        placeholder={translate('amount')}
-                        value={values.Amount}
-                        onBlur={handleBlur('Amount')}
-                        onChangeText={handleChange('Amount')}
-                        name="Amount"
-                      />
-                      <ErrorMessage name="Amount">
-                        {msg => <Text style={styles.errorMessage}>{msg}</Text>}
-                      </ErrorMessage>
-                      <LBButton
-                        label={translate('request_payout')}
-                        btnStyle={[
-                          styles.btnStyle,
-                          { backgroundColor: Theme.COLORS.secondary },
-                        ]}
-                        // labelStyle={styles.btn_labelStyle}
-                        onPress={handleSubmit}
-                      />
-                    </>
-                  );
-                }}
-              </Formik>
-            </>
-          ) : null}
-          {modal_type === 'add_mode' ? (
-            <>
-              <Text style={[styles.modal_title, { marginVertical: 15 }]}>
-                {pay_out_mode.name}
-              </Text>
-              <Formik
-                initialValues={{
-                  Name: '',
-                  Account: '',
-                }}
-                validationSchema={addModeSchema}
-                onSubmit={values => this.handle_add_mode(values)}>
-                {({
-                  handleBlur,
-                  handleChange,
-                  values,
-                  handleSubmit,
-                  setFieldValue,
-                }) => {
-                  return (
-                    <View
-                    // style={styles.formModalContainer}
-                    >
-                      <Text style={styles.input_title}>
-                        {translate('name')}
-                      </Text>
-                      <LangSupportTxtInput
-                        style={styles.textInput}
-                        placeholder={translate('name')}
-                        value={values.Name}
-                        onBlur={handleBlur('Name')}
-                        onChangeText={handleChange('Name')}
-                        name="Name"
-                      />
-                      <ErrorMessage name="Name">
-                        {msg => <Text style={styles.errorMessage}>{msg}</Text>}
-                      </ErrorMessage>
-                      <Text style={styles.input_title}>
-                        {pay_out_mode.account_name}
-                      </Text>
-                      <LangSupportTxtInput
-                        style={styles.textInput}
-                        placeholder={pay_out_mode.account_name}
-                        value={values.Account}
-                        onBlur={handleBlur('Account')}
-                        onChangeText={handleChange('Account')}
-                        name="Account"
-                      />
-                      <ErrorMessage name="Account">
-                        {msg => <Text style={styles.errorMessage}>{msg}</Text>}
-                      </ErrorMessage>
-                      {pay_out_mode.inputs.map((item, index) => {
-                        let formIndex = index + 1;
-                        return (
-                          <View key={index.toString()}>
-                            {item.type == 'select' ? (
-                              <>
-                                <Text style={styles.label}>
-                                  {item.placeholder}
-                                </Text>
-                                <View style={styles.radio_list}>
-                                  {Object.entries(item.options).map(
-                                    ([key, value]) => {
-                                      return (
-                                        <View style={styles.radioTab}>
-                                          <TouchableOpacity
-                                            onPress={() =>
-                                              this.setState({
-                                                ['value' + formIndex]: key,
-                                                radio: true,
-                                              })
-                                            }>
-                                            <Icons.Ionicons
-                                              name={
-                                                this.state[
-                                                  'value' + formIndex
-                                                ] === key
-                                                  ? 'md-radio-button-on'
-                                                  : 'md-radio-button-off'
-                                              }
-                                              color={Theme.COLORS.primary}
-                                              size={20}
-                                            />
-                                          </TouchableOpacity>
-                                          <Text
-                                            style={[
-                                              styles.radio,
-                                              this.state[
-                                                'value' + formIndex
-                                              ] === key
-                                                ? {
-                                                    color: Theme.COLORS.primary,
-                                                  }
-                                                : {},
-                                            ]}>
-                                            {/* @ts-ignore */}
-                                            {value[Config.LANG]}
-                                          </Text>
-                                        </View>
-                                      );
-                                    },
-                                  )}
-                                </View>
-                              </>
-                            ) : (
-                              <View>
-                                <Text style={styles.input_title}>
-                                  {item.label}
-                                </Text>
-                                <LangSupportTxtInput
-                                  style={styles.textInput}
-                                  placeholder={item.placeholder}
-                                  onChangeText={value =>
-                                    this.setState({
-                                      ['value' + formIndex]: value,
-                                      radio: false,
-                                    })
-                                  }
-                                />
-                              </View>
-                            )}
-                          </View>
-                        );
-                      })}
-                      <LBButton
-                        label={translate('save')}
-                        btnStyle={[
-                          styles.btnStyle,
-                          { backgroundColor: Theme.COLORS.secondary },
-                        ]}
-                        // labelStyle={styles.btn_labelStyle}
-                        onPress={handleSubmit}
-                      />
-                    </View>
-                  );
-                }}
-              </Formik>
-            </>
-          ) : null}
-          {modal_type === 'pay_out_email_otp' ? (
-            <>
-              <Text style={[styles.app_name, { textTransform: null }]}>
-                {translate('enter_email_otp')}
-              </Text>
-              <Text
-                style={[
-                  styles.reset_pass_text,
-                  { textAlign: 'center', textTransform: 'none' },
-                ]}>
-                {translate('enter_otp_received_in_your_mail')}
-              </Text>
-              <OTPInputView
-                style={styles.otpInput}
-                pinCount={4}
-                // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                // onCodeChanged = {code => { this.setState({code})}}
-                autoFocusOnLoad
-                // codeInputFieldStyle={styles.underlineStyleBase}
-                // codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                onCodeFilled={user_entered_otp => {
-                  this.setState({ user_entered_otp });
-                }}
-              />
-
-              <Text
-                style={[
-                  styles.reset_pass_text,
-                  this.state.show_resend
-                    ? { color: Theme.COLORS.black }
-                    : { color: Theme.COLORS.border_light },
-                ]}
-                onPress={() => {
-                  if (this.state.show_resend) {
-                    this.resend_otp();
-                  }
-                }}>
-                {translate('resend')}
-              </Text>
-
-              <LBButton
-                label={translate('request_payout')}
-                onPress={() => this.handle_otp_check()}
-                btnStyle={styles.btnStyle}
-                // labelStyle={styles.btn_labelStyle}
-              />
-            </>
-          ) : null}
-          <View style={styles.btnBar}>
-            <CloseButton
-              btnStyle={styles.closeBtn}
-              onPress={() => this.setState({ showFormBottomModal: false })}
+        ) : null}
+        {selectedTab === 'addNew' ? (
+          <>
+            <Text style={styles.list_title}>
+              {translate('choose_how_you_want_to_withdraw')}
+            </Text>
+            <FlatList
+              data={payment_modes}
+              keyExtractor={(item, index) => index.toString()}
+              extraData={props}
+              style={styles.list}
+              renderItem={render_payout_mode}
+              showsHorizontalScrollIndicator={false}
+              ListFooterComponent={addEmptyCard}
             />
-          </View>
-        </FormBottomModal>
-        <Loader show={this.props.loading} />
-      </Container>
-    );
-  }
-}
+          </>
+        ) : null}
+        <BlurNavBar>
+          <NavigationList
+            list={NAV_LIST_1}
+            navigation={props.navigation}
+            style={styles.navListStyle}
+            containerStyle={{
+              alignItems: 'center',
+              marginTop: 0,
+            }}
+            numberOfLines={1}
+            textStyle={styles.routeText}
+          />
+        </BlurNavBar>
+      </View>
+      <BottomModal
+        bottomModalShow={showMessageModal}
+        setBottomModalVisibleFalse={() => setShowMessageModal(false)}>
+        <>
+          <View style={styles.modal_top_notch} />
+          <CloseButton
+            btnStyle={styles.closeBtn}
+            onPress={() => setShowMessageModal(false)}
+          />
+          {modalType === 'insufficient' ? (
+            <>
+              <FastImage
+                source={AppImages.insufficient_balance}
+                style={styles.modal_img}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+              <Text style={styles.sub_text}>
+                {translate('minimum_amount_for')} {selectedMinAmount}.
+              </Text>
+              <Text style={[styles.sub_text, { marginBottom: 20 }]}>
+                {translate('you_need')} {neededAmount}{' '}
+                {translate('more_or_choose')}.
+              </Text>
+            </>
+          ) : null}
+          {modalType === 'enable' ? (
+            <>
+              <FastImage
+                source={AppImages.confirm_payment_img}
+                style={styles.modal_img}
+                resizeMode={FastImage.resizeMode.contain}
+              />
+              <Text style={styles.modal_title}>
+                {translate('confirm_bank_details')}
+              </Text>
+              <Text style={[styles.sub_text, { marginBottom: 20 }]}>
+                {translate('after_saving_mode_please_confirm_on_email')}
+              </Text>
+            </>
+          ) : null}
+        </>
+      </BottomModal>
+      <FormBottomModal
+        bottomModalShow={showFormBottomModal}
+        setBottomModalVisibleFalse={() => setShowFormBottomModal(false)}>
+        <View style={styles.modal_top_notch} />
+        {/* <CloseButton
+            btnStyle={styles.closeBtn}
+            onPress={() => setShowFormBottomModal(false)}
+          /> */}
+        {modalType === 'payout' ? (
+          <>
+            <Text style={styles.list_title}>{payOutMode.name}</Text>
+            <View style={styles.tb_row}>
+              <Text style={styles.tb_label}>{payOutMode.name}</Text>
+              <Text style={styles.tb_value}>{payOutMode.account}</Text>
+            </View>
+            <View style={styles.tb_row}>
+              <Text style={styles.tb_label}>{translate('min_pay_out')}</Text>
+              <Text style={styles.tb_value}>
+                {get_currency_string(payOutMode.min_payable)}
+              </Text>
+            </View>
+            {payOutMode.inputs &&
+              payOutMode.inputs.map(e => {
+                return (
+                  <View style={styles.tb_row}>
+                    <Text style={styles.tb_label}>{e.label}</Text>
+                    <Text style={styles.tb_value}>{e.value}</Text>
+                  </View>
+                );
+              })}
+            <View style={styles.tb_row}>
+              <Text style={styles.tb_label}>{translate('with_terms')}</Text>
+              <Text style={styles.tb_value}>
+                {get_currency_string(payOutMode.payment_speed)}
+              </Text>
+            </View>
+
+            <View style={styles.tb_row}>
+              <Text>{translate('available_pay_out')}</Text>
+              <View style={styles.AllowedBalanceBox}>
+                <Icons.AntDesign
+                  name={payOutMode.reward_allowed ? 'check' : 'close'}
+                  color={
+                    payOutMode.reward_allowed
+                      ? Theme.COLORS.green_approved
+                      : Theme.COLORS.error
+                  }
+                  size={12}
+                />
+                <Text
+                  style={[
+                    styles.cb_text,
+                    payOutMode.reward_allowed
+                      ? {}
+                      : { color: Theme.COLORS.error },
+                  ]}>
+                  {translate('reward')}
+                </Text>
+                <Icons.AntDesign
+                  name={payOutMode.cashback_allowed ? 'check' : 'close'}
+                  color={
+                    payOutMode.cashback_allowed
+                      ? Theme.COLORS.green_approved
+                      : Theme.COLORS.error
+                  }
+                  size={12}
+                />
+                <Text
+                  style={[
+                    styles.cb_text,
+                    payOutMode.cashback_allowed
+                      ? {}
+                      : { color: Theme.COLORS.error },
+                  ]}>
+                  {translate('cashback')}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.tb_row}>
+              <Text style={styles.tb_label}>
+                {translate('available_balance')}
+              </Text>
+              <Text style={styles.tb_value}>
+                {get_currency_string(payOutMode.total_payable)}
+              </Text>
+            </View>
+            <Formik
+              initialValues={{
+                Amount: '',
+              }}
+              validationSchema={object().shape({
+                Amount: number()
+                  .min(payOutMode.min_payable)
+                  .max(payOutMode.total_payable)
+                  .required(translate('required_field')),
+              })}
+              onSubmit={values => handle_pay_out(values)}>
+              {({
+                handleBlur,
+                handleChange,
+                values,
+                handleSubmit,
+                setFieldValue,
+              }) => {
+                return (
+                  <>
+                    <Text style={styles.input_title}>
+                      {translate('amount')}
+                      <Text style={{ color: Theme.COLORS.secondary }}>*</Text>
+                    </Text>
+                    <LangSupportTxtInput
+                      style={styles.textInput}
+                      placeholder={translate('amount')}
+                      value={values.Amount}
+                      onBlur={handleBlur('Amount')}
+                      onChangeText={handleChange('Amount')}
+                      name="Amount"
+                    />
+                    <ErrorMessage name="Amount">
+                      {msg => <Text style={styles.errorMessage}>{msg}</Text>}
+                    </ErrorMessage>
+                    <LBButton
+                      label={translate('request_payout')}
+                      btnStyle={[
+                        styles.btnStyle,
+                        { backgroundColor: Theme.COLORS.secondary },
+                      ]}
+                      // labelStyle={styles.btn_labelStyle}
+                      onPress={handleSubmit}
+                    />
+                  </>
+                );
+              }}
+            </Formik>
+          </>
+        ) : null}
+        {modalType === 'add_mode' ? (
+          <>
+            <Text style={[styles.modal_title, { marginVertical: 15 }]}>
+              {payOutMode.name}
+            </Text>
+            <Formik
+              initialValues={{
+                Name: '',
+                Account: '',
+              }}
+              validationSchema={addModeSchema}
+              onSubmit={values => handle_add_mode(values)}>
+              {({
+                handleBlur,
+                handleChange,
+                values,
+                handleSubmit,
+                setFieldValue,
+              }) => {
+                return (
+                  <View
+                  // style={styles.formModalContainer}
+                  >
+                    <Text style={styles.input_title}>{translate('name')}</Text>
+                    <LangSupportTxtInput
+                      style={styles.textInput}
+                      placeholder={translate('name')}
+                      value={values.Name}
+                      onBlur={handleBlur('Name')}
+                      onChangeText={handleChange('Name')}
+                      name="Name"
+                    />
+                    <ErrorMessage name="Name">
+                      {msg => <Text style={styles.errorMessage}>{msg}</Text>}
+                    </ErrorMessage>
+                    <Text style={styles.input_title}>
+                      {payOutMode.account_name}
+                    </Text>
+                    <LangSupportTxtInput
+                      style={styles.textInput}
+                      placeholder={payOutMode.account_name}
+                      value={values.Account}
+                      onBlur={handleBlur('Account')}
+                      onChangeText={handleChange('Account')}
+                      name="Account"
+                    />
+                    <ErrorMessage name="Account">
+                      {msg => <Text style={styles.errorMessage}>{msg}</Text>}
+                    </ErrorMessage>
+                    {payOutMode.inputs.map((item, index) => {
+                      let formIndex = index + 1;
+                      return (
+                        <View key={index.toString()}>
+                          {item.type == 'select' ? (
+                            <>
+                              <Text style={styles.label}>
+                                {item.placeholder}
+                              </Text>
+                              <View style={styles.radio_list}>
+                                {Object.entries(item.options).map(
+                                  ([key, value]: any) => {
+                                    return (
+                                      <View style={styles.radioTab}>
+                                        <TouchableOpacity
+                                          onPress={
+                                            () =>
+                                              handleChangeInputValues(
+                                                index,
+                                                key,
+                                              )
+
+                                            // this.setState({
+                                            //   ['value' + formIndex]: key,
+                                            //   radio: true,
+                                            // })
+                                          }>
+                                          <Icons.Ionicons
+                                            name={
+                                              formState['value' + formIndex] ===
+                                              key
+                                                ? 'md-radio-button-on'
+                                                : 'md-radio-button-off'
+                                            }
+                                            color={Theme.COLORS.primary}
+                                            size={20}
+                                          />
+                                        </TouchableOpacity>
+                                        <Text
+                                          style={[
+                                            styles.radio,
+                                            formState['value' + formIndex] ===
+                                            key
+                                              ? { color: Theme.COLORS.primary }
+                                              : {},
+                                          ]}>
+                                          {value[Config.LANG]}
+                                        </Text>
+                                      </View>
+                                    );
+                                  },
+                                )}
+                              </View>
+                            </>
+                          ) : (
+                            <View>
+                              <Text style={styles.input_title}>
+                                {item.label}
+                              </Text>
+                              <LangSupportTxtInput
+                                style={styles.textInput}
+                                placeholder={item.placeholder}
+                                onChangeText={value =>
+                                  handleChangeInputValues(index, value)
+                                }
+                              />
+                            </View>
+                          )}
+                        </View>
+                      );
+                    })}
+                    <LBButton
+                      label={translate('save')}
+                      btnStyle={[
+                        styles.btnStyle,
+                        { backgroundColor: Theme.COLORS.secondary },
+                      ]}
+                      // labelStyle={styles.btn_labelStyle}
+                      onPress={handleSubmit}
+                    />
+                  </View>
+                );
+              }}
+            </Formik>
+          </>
+        ) : null}
+        {modalType === 'pay_out_email_otp' ? (
+          <>
+            <Text style={[styles.app_name, { textTransform: null }]}>
+              {translate('enter_email_otp')}
+            </Text>
+            <Text
+              style={[
+                styles.reset_pass_text,
+                { textAlign: 'center', textTransform: 'none' },
+              ]}>
+              {translate('enter_otp_received_in_your_mail')}
+            </Text>
+            <OTPInputView
+              style={styles.otpInput}
+              pinCount={4}
+              // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+              // onCodeChanged = {code => { this.setState({code})}}
+              autoFocusOnLoad
+              // codeInputFieldStyle={styles.underlineStyleBase}
+              // codeInputHighlightStyle={styles.underlineStyleHighLighted}
+              onCodeFilled={user_entered_otp => {
+                setUserEnteredOtp(user_entered_otp);
+              }}
+            />
+
+            <Text
+              style={[
+                styles.reset_pass_text,
+                showResend
+                  ? { color: Theme.COLORS.black }
+                  : { color: Theme.COLORS.border_light },
+              ]}
+              onPress={() => {
+                if (showResend) {
+                  resend_otp();
+                }
+              }}>
+              {translate('resend')}
+            </Text>
+
+            <LBButton
+              label={translate('request_payout')}
+              onPress={() => handle_otp_check()}
+              btnStyle={styles.btnStyle}
+              // labelStyle={styles.btn_labelStyle}
+            />
+          </>
+        ) : null}
+        <View style={styles.btnBar}>
+          <CloseButton
+            btnStyle={styles.closeBtn}
+            onPress={() => setShowFormBottomModal(false)}
+          />
+        </View>
+      </FormBottomModal>
+      <Loader show={props.loading} />
+    </Container>
+  );
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CashbackPayment);
