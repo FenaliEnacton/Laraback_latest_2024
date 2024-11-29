@@ -1,9 +1,6 @@
 import Container from '@/Components/Core/Container';
 import DrawerMenu from '@/Components/Core/DrawerMenu';
 import Header from '@/Components/Core/Header/Header';
-import HeaderLeft from '@/Components/Core/Header/HeaderLeft';
-import HeaderRight from '@/Components/Core/Header/HeaderRight';
-import HeaderTitle from '@/Components/Core/Header/HeaderTitle';
 import HeaderBackButton from '@/Components/Core/HeaderBackButton';
 import LogoutModal from '@/Components/Core/LogoutModal';
 import EmptyListView from '@/Components/Generic/EmptyListView';
@@ -37,15 +34,15 @@ const Favorites = props => {
   return (
     <Container>
       <Header>
-        <HeaderLeft>
+        <Header.Left>
           <HeaderBackButton onPress={() => props.navigation.goBack()} />
-        </HeaderLeft>
-        <HeaderTitle>
+        </Header.Left>
+        <Header.Title>
           <Text style={styles.headerTitle}>
             {translate('favorites_stores')}
           </Text>
-        </HeaderTitle>
-        <HeaderRight />
+        </Header.Title>
+        <Header.Right />
       </Header>
       <View style={styles.content}>
         <FlatList
