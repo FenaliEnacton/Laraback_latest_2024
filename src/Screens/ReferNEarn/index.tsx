@@ -14,11 +14,10 @@ import Loader from '@/Components/Core/Loader';
 import { Toast } from '@/Components/Core/Toast';
 import GradientFooter from '@/Components/Generic/GradientFooter';
 import NavigationList from '@/Components/User/NavigationList';
-import { request_refer_n_earn_info } from '@/Redux/Actions/publicDataActions';
-import { is_user_logged_in } from '@/Redux/Selectors';
-import { request_user_referral_invite } from '@/Redux/USER_REDUX/Actions/userReferralActions';
-import { get_referral_link } from '@/Redux/USER_REDUX/Selectors';
-import { get_currency_string } from '@/Utils';
+import usePublicData from '@/Hooks/Api/use-public-data';
+import useUserAuth from '@/Hooks/Api/use-user-auth';
+import useUserReferral from '@/Hooks/Api/use-user-referral';
+import { get_currency_string, is_email_valid } from '@/Utils';
 import { Config } from '@/react-native-config';
 import { translate } from '@/translations';
 import Clipboard from '@react-native-clipboard/clipboard';
@@ -36,39 +35,39 @@ import FastImage from 'react-native-fast-image';
 import HTMLView from 'react-native-htmlview';
 import LinearGradient from 'react-native-linear-gradient';
 import Share from 'react-native-share';
-import { connect } from 'react-redux';
 import { object, string } from 'yup';
 import styles from './style';
 const NAV_LIST_1 = get_user_internal_nav_list([10003, 10004]);
-const bottom_modal = React.createRef() as any;
-
-const mapDispatchToProps = {
-  request_refer_n_earn_info,
-  request_user_referral_invite,
-};
-
-const mapStateToProps = ({ params }) => {
-  return {
-    refer_n_earn_info: params.refer_n_earn_info || {},
-    is_member: is_user_logged_in(params) || false,
-    referral_link: get_referral_link(params) || '',
-    loading: params.loading,
-    app_settings: params.app_settings || {},
-    user_info: params.user_info || {},
-    bonus_types: params.bonus_types || {},
-  };
-};
 
 const ReferNEarn = props => {
   const [showBottomModal, setShowBottomModal] = useState(false);
   const [modalType, setModalType] = useState('terms');
 
+  const { userInfo } = useUserAuth();
+  const { request_user_referral_invite } = useUserReferral();
+  const {
+    referNEarnInfo,
+    request_refer_n_earn_info,
+    loadingReferNEarnInfo,
+    appSettings,
+    bonusTypes,
+  }: any = usePublicData();
+  const is_member = userInfo?.id ? true : false;
+  let referral_link = '';
   useEffect(() => {
-    props.request_refer_n_earn_info();
+    if (userInfo?.referral_code) {
+      referral_link =
+        Config.REGISTER_PAGE.replace(':locale', Config.LANG) +
+        (userInfo?.referral_code ? userInfo?.referral_code : '');
+    }
+  }, [userInfo]);
+
+  useEffect(() => {
+    request_refer_n_earn_info();
   }, []);
 
   const copy_referral_url = () => {
-    Clipboard.setString(props.referral_link);
+    Clipboard.setString(referral_link);
     Toast.successBottom(translate('copied'));
   };
 
@@ -76,7 +75,7 @@ const ReferNEarn = props => {
     const shareOptions = {
       title: Config.APP_NAME,
       message: `${translate('join_refer')}\n`,
-      url: props.referral_link,
+      url: referral_link,
       // social: Share.Social[type],
     };
     Share.open(shareOptions)
@@ -88,38 +87,25 @@ const ReferNEarn = props => {
       });
   };
 
-  const is_email_valid = email => {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  };
-
   const send_invite_link = values => {
     if (values.email) {
       let emails = values.email.split(',');
       if (emails.every(is_email_valid)) {
-        props.request_user_referral_invite(values.email);
+        request_user_referral_invite(values.email);
       } else {
-        Toast.errorBottom('Please enter valid email');
+        Toast.errorBottom(translate('enter_valid_email'));
       }
     }
   };
 
   const handle_invite_now_click = () => {
-    if (!props.is_member) {
+    if (is_member) {
       props.navigation.navigate('Login');
     }
   };
-  const {
-    refer_n_earn_info,
-    is_member,
-    app_settings,
-    user_info,
-    referral_link,
-    bonus_types,
-  } = props;
-  const refer_n_earn_list = refer_n_earn_info['procash/section']?.blocks
-    ? refer_n_earn_info['procash/section']?.blocks
+
+  const refer_n_earn_list = referNEarnInfo['procash/section']?.blocks
+    ? referNEarnInfo['procash/section']?.blocks
     : [];
 
   const email_schema = object().shape({
@@ -170,9 +156,9 @@ const ReferNEarn = props => {
                 style={{ marginRight: 5 }}
               />
               <Text style={styles.bonus_text}>
-                {user_info.referral_percent
-                  ? user_info.referral_percent
-                  : app_settings.cashback.referral_percent}
+                {userInfo.referral_percent
+                  ? userInfo.referral_percent
+                  : appSettings?.cashback?.referral_percent}
                 {translate('rewards_make')}
               </Text>
             </View>
@@ -185,7 +171,7 @@ const ReferNEarn = props => {
               />
               <Text style={styles.bonus_text}>
                 {translate('joins_earn')}
-                {get_currency_string(bonus_types.refer_bonus.amount)}{' '}
+                {get_currency_string(bonusTypes.refer_bonus.amount)}{' '}
                 {translate('referral_bonus')}
               </Text>
             </View>
@@ -198,7 +184,7 @@ const ReferNEarn = props => {
               />
               <Text style={styles.bonus_text}>
                 {translate('will_earn')}{' '}
-                {get_currency_string(bonus_types.join_with_refer.amount)}{' '}
+                {get_currency_string(bonusTypes.join_with_refer.amount)}{' '}
                 {translate('join_bonus')}
               </Text>
             </View>
@@ -390,8 +376,8 @@ const ReferNEarn = props => {
             main_title={''}
             sub_title={translate('home_gr_sub_title').replace(
               '{:cashback_percent}',
-              app_settings?.cashback?.referral_percent
-                ? app_settings?.cashback?.referral_percent
+              appSettings?.cashback?.referral_percent
+                ? appSettings?.cashback?.referral_percent
                 : 5,
             )}
             image={AppImages.gr_refer_img}
@@ -401,9 +387,7 @@ const ReferNEarn = props => {
           <HTMLView
             style={styles.terms_content}
             value={
-              refer_n_earn_info['procash/custom-list']?.terms?.markup[
-                Config.LANG
-              ]
+              referNEarnInfo['procash/custom-list']?.terms?.markup[Config.LANG]
             }
             stylesheet={StyleSheet.create({
               ...Theme.fontStyles.html_view_txtStyles,
@@ -412,7 +396,6 @@ const ReferNEarn = props => {
         </ScrollContent>
       )}
       <BottomModal
-        ref={bottom_modal}
         bottomModalShow={showBottomModal}
         setBottomModalVisibleFalse={() => setShowBottomModal(false)}>
         <>
@@ -431,7 +414,7 @@ const ReferNEarn = props => {
                 <HTMLView
                   style={styles.terms_content}
                   value={
-                    refer_n_earn_info['procash/custom-list']?.terms?.markup[
+                    referNEarnInfo['procash/custom-list']?.terms?.markup[
                       Config.LANG
                     ]
                   }
@@ -469,14 +452,14 @@ const ReferNEarn = props => {
           <View style={styles.btnBar}>
             <CloseButton
               // btnStyle={styles.closeBtn}
-              onPress={() => bottom_modal?.current.props.onRequestClose()}
+              onPress={() => setShowBottomModal(false)}
             />
           </View>
         </>
       </BottomModal>
-      <Loader show={props.loading} />
+      <Loader show={loadingReferNEarnInfo} />
     </Container>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ReferNEarn);
+export default ReferNEarn;

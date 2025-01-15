@@ -413,5 +413,6 @@
   "add_new_account": "Add new account",
   "see_all": "See All",
   "user": "User",
-  "recent_search": "Recent search"
+  "recent_search": "Recent search",
+  "enter_valid_email": "Please enter valid email"
 }
